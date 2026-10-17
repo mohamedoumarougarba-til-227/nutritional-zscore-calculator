@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#176348">
+    <meta name="description" content="Repères nutritionnels OMS, historique local et sauvegardes pour les soignants au Niger. Gratuit et sans compte.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>Z-score Niger</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <link rel="stylesheet" href="css/workspace.css" crossorigin="anonymous" integrity="sha256-GabNJMIk79q4hxT1t5tDtXudBJybS9yL21QFN7pOmC0=">
+    <script src="js/workspace-bootstrap.js" crossorigin="anonymous" integrity="sha256-ODsxT/gjRh463wR2WQULYZ6kiKlAwTezqDC6QgkYN+0="></script>
+    <meta name="zscore-data-integrity" content="{&quot;data/interface-translations.json&quot;:&quot;aaeb04d9e74112937a9c29cf70bfde8e3165ef801fc811dc5f6a2a2d52b18837&quot;,&quot;data/who-manifest.json&quot;:&quot;0c707413e3a5a63d1ce9fe9a28d62d161fc49527ad6b9cfe7b3d8bda790da0b6&quot;,&quot;data/who-official.json&quot;:&quot;4ce52083be714b20fe6df6eefa597cf67531dc31fe842a7befba42016a839701&quot;,&quot;vendor/pdf/Amiri-Regular.ttf&quot;:&quot;ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7&quot;,&quot;vendor/pdf/Amiri-Bold.ttf&quot;:&quot;cfccb794268e7d573d857e6d6a67f89cf8a053e8ffd85dfa0c8ec1bb36fc4827&quot;}">
+</head>
+<body>
+    <div id="app-root"><div class="startup"><div class="brand-mark" aria-hidden="true">Z</div><h1>Z-score Niger</h1><p role="status">Chargement… / Loading… / جارٍ التحميل…</p></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="workspace-dialog" aria-labelledby="dialog-title"></dialog>
+    <dialog id="header-dialog" class="header-dialog" aria-labelledby="header-dialog-title"></dialog>
+    <noscript>JavaScript est nécessaire pour le calcul et les sauvegardes locales. / JavaScript is required. / يلزم تفعيل JavaScript.</noscript>
+    <script src="js/utils/validators.js" crossorigin="anonymous" integrity="sha256-DzMZyyaJVwEZNfJ+NLnmnSaDw316AJ8wOBEREEG3Pw8="></script>
+    <script src="js/utils/formatters.js" crossorigin="anonymous" integrity="sha256-OeSJqQZJ7MByFtiBtc+6VcrIXktlexpcb7/7uVaXX00="></script>
+    <script src="js/models/Child.js" crossorigin="anonymous" integrity="sha256-FkvJsECcscUGPgWaHWuMy23RwY3wEPHV6G61Qk4UnKU="></script>
+    <script src="js/models/ZScoreResult.js" crossorigin="anonymous" integrity="sha256-ob4wC3l59JOD99Hc6/wxCYDhMGrhUdeiU+z0/AxVvtA="></script>
+    <script src="js/models/UserSettings.js" crossorigin="anonymous" integrity="sha256-R1fY6lylyKh+C32L4WzYDp2Kc2HuJQoaoJo/EDTNGZM="></script>
+    <script src="js/services/storage-manager.js" crossorigin="anonymous" integrity="sha256-9lahbUFCW38u+HTsqXNswo6mxhFOGzrATPLQCbGAwfg="></script>
+    <script src="js/services/export-manager.js" crossorigin="anonymous" integrity="sha256-OYRJT5K8sv6LvhcrJEST/l+yLwx5snEn/XmqL5Zj1xE="></script>
+    <script src="js/services/clinical-engine.js" crossorigin="anonymous" integrity="sha256-rJuexnOkJH7OyzQcYVTdhKw1BArYTdOUQseGk/lWYcQ="></script>
+    <script src="js/services/history-manager.js" crossorigin="anonymous" integrity="sha256-0gsCTYTQZfA58mIwVTGCVFe70tyNSvLRY00DyDXBfXs="></script>
+    <script src="js/services/transfer-manager.js" crossorigin="anonymous" integrity="sha256-tx5DIJC66gjSeUlA2Fgifl8LhpGnXAXoGoiDziU5j7w="></script>
+    <script src="js/services/csv-manager.js" crossorigin="anonymous" integrity="sha256-+8LWWOYr0mZ5PIW3WD+FUwCtMdcrA/TMVv7q2Hc9Wyw="></script>
+    <script src="js/components/growth-chart.js" crossorigin="anonymous" integrity="sha256-xDYbJPzD3dgkOIgrRHxR/gFdRtLZ02mFUTmb5qsTX00="></script>
+    <script src="vendor/pdf/jspdf-4.2.1.umd.min.js" crossorigin="anonymous" integrity="sha256-5lUfzcMvCdaFOyxRJtGNAdlEfg2mGKQaEevu4PbCDVQ="></script>
+    <script src="vendor/pdf/autotable-5.0.8.min.js" crossorigin="anonymous" integrity="sha256-pl3/LGqClrFq/yTmn3aDzX267UpOwmtQfWhA7ifVRkk="></script>
+    <script src="js/services/pdf-manager.js" crossorigin="anonymous" integrity="sha256-wxUdHJhHI6TWyr6qDaFx33TvqxwMg02S8VmElvLd8LE="></script>
+    <script src="js/workspace-app.js" crossorigin="anonymous" integrity="sha256-TRsebV5Q/EjHvm3E6fsgGE3BERRtbDwJtqwP8Bn6gcE="></script>
+</body>
+</html>

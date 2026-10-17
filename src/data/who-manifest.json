@@ -1,0 +1,32 @@
+{
+  "file": "who-official.json",
+  "sha256": "4ce52083be714b20fe6df6eefa597cf67531dc31fe842a7befba42016a839701",
+  "bytes": 298833,
+  "referenceVersion": "WHO-2006-anthro-b776d8a12b1c",
+  "sources": [
+    {
+      "file": "weianthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/weianthro.txt",
+      "sha256": "bc15a6a623dd1d5beaeed1497666332aa54bc4ccd15ff9658c487d79694ab77b",
+      "bytes": 111813
+    },
+    {
+      "file": "lenanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/lenanthro.txt",
+      "sha256": "709f7a11881451daf7820f022d363d5bdb93746b5361d6bd9218af6ff838e0c2",
+      "bytes": 100323
+    },
+    {
+      "file": "wflanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/wflanthro.txt",
+      "sha256": "ad470cf41b147bd2a16026e57fd17968df7bf746b9f0bf2ff85df95239643778",
+      "bytes": 43302
+    },
+    {
+      "file": "wfhanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/wfhanthro.txt",
+      "sha256": "0050d31041c2f7d4f8a34f27e8066fd73a24806835b9e4a0de1a7ee46d54d582",
+      "bytes": 37158
+    }
+  ]
+}

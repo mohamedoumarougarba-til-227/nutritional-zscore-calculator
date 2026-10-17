@@ -1,0 +1,85 @@
+# Préparer et adopter une mise à jour
+
+## Présentation de l’application — 2.9.15, 17 octobre 2026
+
+À la demande du propriétaire, retrait des mentions Prototype, Bêta, Version de développement et de la mention de relecture médicale à réaliser dans les textes de l’application, en français, anglais et arabe. Le pied de page utilise À propos ; les informations, l’aide, l’impression et les PDF décrivent les repères nutritionnels et leurs limites d’usage. Aucun calcul, schéma de sauvegarde ou droit d’accès modifié. Ce changement éditorial ne constitue pas une nouvelle validation médicale ni une publication. Les preuves historiques et les validations encore ouvertes dans le suivi sont conservées.
+
+143 tests automatisés réussis, puis 33 contrôles ciblés réussis après harmonisation des styles ; mise à jour et fenêtre d’information vérifiées dans le navigateur intégré. Aucun nouvel essai TECNO ou Chrome natif. [Bilan, fichiers et commandes](../../.local/audit/historique/2026-10-17/libelles-application/rapport.md). Release `4f79df19ff478725810b049ed95b9bc5e232023eabf86aa4c9a619554db32517` ; paquet local de 43 fichiers / 2 096 308 octets, non publié.
+
+## État de sauvegarde corrigé — 2.9.14
+
+Une ancienne écriture ne peut plus afficher Enregistré pour une saisie plus récente ni modifier l’indicateur d’un autre travail. Écriture immédiate et reprise après échec affichent Sauvegarde en cours jusqu’à confirmation de la dernière version concernée. **143 tests automatisés réussis**. [Bilan et portée](../../.local/audit/historique/2026-10-16/etat-sauvegarde/rapport.md). Release 2abd656c802ae9228c4756246aad382d6e36f6a2683ee7f53c078d91ab5ea576 ; paquet 43 fichiers / 2096660 octets, non publié.
+
+## Correction de fiabilité — 2.9.13
+
+Import CSV protégé contre les activations simultanées ; lecture de fichier annulée si le travail ou la page a changé ; erreur de lecture signalée et commandes réactivées après échec. Les lignes ajoutées restent disponibles si leur sauvegarde échoue. **138 tests automatisés réussis**, contrôle ciblé du collage CSV dans le navigateur intégré ; sélecteur réel et TECNO non validés à nouveau. [Rapport et preuves](../../.local/audit/historique/2026-10-16/csv-concurrence/rapport.md). Release 3cb9816d148766490733869a8f3513bcece3a26851e76cfb32ac14874e06522f, paquet 43 fichiers / 2096311 octets, non publié.
+
+## État actuel — 16 octobre, 2.9.12
+
+Lots : Reprendre un travail/Nouveau travail en haut ; informations import/âge estimé regroupées dans une seule aide i près du titre, sans répétition par ligne. Les alertes propres aux mesures restent visibles et les métadonnées/rapports détaillés sont conservés. **130 tests automatisés réussis** ; reprise/nouveau/reprise et rendu ordinateur/mobile vérifiés dans le navigateur intégré, sans nouvel essai physique TECNO. [Bilan technique](../../.local/audit/historique/2026-10-16/utilite-et-perimetre/rapport.md).
+
+[Étude d’utilité pour le Niger](../projet/ETUDE_UTILITE_NIGER.md) et [audit du périmètre initial](../projet/AUDIT_PERIMETRE_INITIAL.md) ajoutés : intérêt plausible à démontrer au pilote ; promesses initiales absentes, choix remplacés et validations externes distingués. Aucun ajout de synchronisation, PB, triage national ou export DHIS2 sans spécification. Release 93c3672e788f1a5fed1fd4bee286428810d01dc6724e709f1f3a4d4a83a71d1c ; paquet neuf 43 fichiers / 2 094 362 octets, non publié. Objectif global actif et incomplet ; cible 3 Go/plafond 5 Go inchangés.
+
+Version actuelle de l’interface : 2.9.15. Version du moteur : 2.0.0, indépendante de la présentation. La référence des résultats précédents reste celle enregistrée lors de leur calcul.
+
+## Pour le propriétaire des fichiers et de l’hébergement
+
+1. Conserver une copie de la version précédente et des preuves. Modifier les sources autorisées. Incrémenter `WorkspaceApp.version` pour une nouvelle version destinée à être distribuée. Ajouter toute nouvelle ressource nécessaire à `tools/scripts/offline-assets.json` ; les tests contrôlent la couverture des ressources de la page.
+2. Exécuter `npm run build:release`. Le générateur calcule les empreintes de toutes les ressources, met à jour les attributs SRI et les empreintes des données dans `src/index.html`, attribue un identifiant à leur ensemble et produit `src/sw.js` et `src/release-manifest.json`. Modifier le modèle `tools/scripts/service-worker.template.js`, plutôt que le fichier généré. Une transformation des scripts ou du CSS par l’hébergement après génération invalide leurs empreintes : distribuer les octets vérifiés.
+3. Exécuter `npm run check:release`, `npm test` et `npm run audit:clinical`. Conserver les sorties et le manifeste. Une modification scientifique exige des comparaisons indépendantes et une revue métier ; les tests verts ne constituent pas un avis médical. Toute modification d’une ressource après génération exige une nouvelle génération et les contrôles appropriés.
+4. Exécuter `npm run prepare:public`, puis `node tools/scripts/prepare-public.cjs --verify .local/public-builds/<dossier-produit>`. Distribuer le dossier produit pour un hébergement HTTPS avec remplacement atomique de version. Ne pas copier intégralement `src/` : les anciens modules de démonstration et tables historiques restent conservés dans les sources, mais sont exclus du paquet et du cache 2.6.1. Conserver les versions antérieures. Réserver les droits de modification au propriétaire autorisé. Les visiteurs n’ont aucune API publique d’édition des références. Les empreintes détectent un ensemble incohérent ; la protection du compte d’hébergement reste essentielle.
+
+Cette procédure prépare les fichiers. Aucune publication n’est autorisée par ce document : obtenir le feu vert explicite, l’avis métier, les essais terrain et la vérification des droits/licences nécessaires avant ouverture publique.
+
+`npm start` vérifie le manifeste avant de démarrer. Le serveur local sert `src/` en lecture seule. Il est possible de l’arrêter puis de le relancer sans téléchargement externe. Sur un navigateur déjà équipé, un simple rechargement conserve la version du cache actif ; utiliser le parcours d’adoption ci-dessous pour voir une version modifiée.
+
+## Pour la personne utilisant le calculateur
+
+- Dans **Références et aide**, **Vérifier les mises à jour** recherche une version complète. Le téléchargement peut prendre du temps ; garder le travail en cours.
+- Quand la version est prête, **Sauvegarder et mettre à jour** crée d’abord une version locale **Avant mise à jour**, puis rouvre l’application. À la réouverture, consulter les sauvegardes et reprendre le travail choisi dans une copie.
+- Si d’autres onglets du calculateur sont ouverts, sauvegarder leur travail puis les fermer avant de réessayer. L’application ne les recharge pas automatiquement.
+- Si la sauvegarde échoue, l’activation est arrêtée. Exporter une copie indépendante et vérifier l’espace disponible avant de réessayer.
+- Si le téléchargement est incomplet ou les fichiers incohérents, continuer avec la version actuelle et vérifier plus tard. Aucune valeur précédente n’est recalculée silencieusement.
+
+Les anciens caches et historiques sont conservés. Plusieurs versions peuvent donc occuper davantage d’espace ; aucune purge automatique n’est prévue. Un export complet indépendant reste nécessaire pour se protéger d’un effacement du navigateur ou de la perte du téléphone.
+
+## Adoption 2.7.2
+
+Release retenue : 7a5d02e3a6a9741db9b1af4ec0cab15a97bb043b9c3f9fb04cd19d3e3d59ffda. 40 ressources, 2 033 079 octets de corps HTTP ; paquet de 43 fichiers/2 045 238 octets. Destinations explicites du focus après calcul et reprise, sans migration ni modification du moteur, des références, du PDF ou du transfert. Les 188 sessions présentes avant les essais et autres enregistrements sont inchangés ; 201 sessions après les calculs et reprises fictifs. Adoption depuis 2.7.1, réouverture et restauration/calcul sans serveur vérifiés. Aucune publication. Preuves : [rapport clavier](../../.local/audit/historique/2026-10-14/parcours-clavier/rapport.md).
+
+## Adoption 2.7.1
+
+Release retenue : 94bc91b8d1afbf8d3dde9e3a23bcd09cfaa777d3dd31f192c309af74211c3625. 40 ressources, 2 032 674 octets de corps HTTP ; paquet vérifié de 43 fichiers/2 044 833 octets. Aide intégrée et corrections du focus/conseils, sans changement du moteur, des tables OMS, du PDF ou des modules de stockage/transfert. Les 186 sessions antérieures restent identiques dans 188 sessions après deux adoptions locales, chacune précédée d'une sauvegarde. Rechargement et guide au clavier vérifiés après arrêt confirmé du serveur. Le paquet n'est pas publié. Preuves : [rapport 2.7.1](../../.local/audit/historique/2026-10-14/accessibilite-aide/rapport.md).
+
+## Adoption 2.7.0
+
+Release retenue : 627314bb03f72e77688fa91799ce64cb200cf7044f75d3073e074c06846c4605. 40 ressources, 2 023 290 octets de corps HTTP ; paquet vérifié de 43 fichiers, 2 035 449 octets. Aucun changement du moteur, des tables OMS ou des modules de stockage/transfert. Les anciennes versions et caches sont conservés.
+
+Adoption depuis 2.6.2 puis révisions locales de 2.7.0 vérifiées. Archives avant/après contrôlées indépendamment : les 181 sessions précédentes et autres enregistrements restent inchangés ; 186 sessions à la fin des essais. Après arrêt confirmé du serveur et fermeture du port : rechargement, aperçu, reprise en copie de 500 mesures et PDF compact réussis. La dernière révision protège l'affichage des libellés hérités inconnus ; les modèles ordinaires de 500 mesures dans les trois langues restent strictement identiques à ceux utilisés pour les exports natifs précédents. Aucune publication ni essai physique acquis. Preuves : [rapport PDF compact](../../.local/audit/historique/2026-10-14/pdf-compact/rapport.md).
+
+## Vérifications et limites actuelles
+
+En 2.6.2, optimisation du calcul de volume du catalogue, sans modification des archives ni du schéma. Adoption depuis 2.6.1 et ouverture du catalogue/aperçu de 501 mesures sans serveur vérifiées. Toutes les anciennes sessions restent identiques ; nouvelle version « Avant mise à jour » ajoutée. Paquet historique 2.6.2 : 43 fichiers, 2 029 247 octets, 40 ressources en cache. Preuves : audit/2026-10-14/performance-catalogue/rapport.md.
+
+
+En 2.6.1, 40 ressources actives dans le cache ; 43 fichiers dans le paquet préparé, 2 028 397 octets. Le paquet est vérifié contre les sources, avec licences et en-têtes statiques ; les fichiers ajoutés/altérés et une liste réintroduisant les anciens modules sont refusés. Aucune publication. Guides et procédure : [GUIDE_ADMINISTRATEUR.md](../guides/GUIDE_ADMINISTRATEUR.md), [PREPARATION_PUBLICATION.md](PREPARATION_PUBLICATION.md). Preuves : `audit/2026-10-14/guides-references/`.
+
+En 2.6.0, les copies de secours locales et imports préparés peuvent être retrouvés et revérifiés après réouverture, sans migration de la base principale ni purge des anciennes copies. Création locale, aperçu, ajout de 89 sessions sans écrasement, rechargement sans serveur et alerte de doublon vérifiés dans le navigateur ; ce parcours n'utilise pas le sélecteur d'import de fichier. Les essais après adoption conservent les originaux et les valeurs enregistrées. Commandes de détail compactes sur petit écran, brouillons dépliables, aucune modification du moteur OMS. Preuves : `audit/2026-10-13/reprise-transferts/rapport.md`.
+
+En 2.5.0 : 60 ressources, 2 310 968 octets de corps HTTP, 17 scripts avec SRI. Nouveau format `.zscore` chargé localement et mis en cache, sans changement du moteur OMS ni du schéma de la base principale. Adoption depuis 2.4.0, export progressif et JSON après rechargement sans serveur vérifiés ; 86 anciennes sessions inchangées dans l'export contrôlé. `.zscore` exige cette version ou une version ultérieure ; garder le JSON pour un lecteur ancien si sa taille le permet. L'import de fichier dans le navigateur de test reste non validé, ainsi que la compatibilité/performance physique TECNO. Preuves : `audit/2026-10-13/transfert-progressif/rapport.md`.
+
+En 2.4.0 : 59 ressources, 2 288 843 octets de corps HTTP. Catalogue progressif, estimation de capacité et lecture de la version sélectionnée, sans migration de base. Adoption depuis 2.3.1, sauvegarde préalable, aperçu et reprise en copie de 500 mesures après arrêt du serveur vérifiés ; l'export de 35 560 230 octets conserve les 81 sessions précédentes à l'identique. Les caches antérieurs restent conservés. Les archives dépassant la limite d'import de 50 MiB exigent encore une solution de transfert complet. Preuves : `audit/2026-10-13/capacite-historique/rapport.md`.
+
+Les tests techniques couvrent intégrité d’installation, cache distinct, refus d’octets provenant d’une autre version, protection des onglets et sauvegarde avant activation. Les essais navigateur couvrent passage 2.1.0 → 2.1.1, déploiement incohérent, deux brouillons, export après mise à jour et ouverture de la version adoptée sans serveur. Preuves : `audit/2026-10-12/mises-a-jour-pwa/`.
+
+La première ouverture est aussi contrôlée en 2.2.0 : les scripts et le CSS sont vérifiés par SRI, puis les trois JSON contre les empreintes inscrites dans la page. Aucun calculateur ni initialisation du stockage en cas d’incohérence. Le message permet de réessayer après correction, sans suppression des sauvegardes. Quatre essais navigateur (script, CSS, bootstrap et dictionnaire altérés) ont été refusés ; leur correction et la reprise ont réussi. Une première ouverture valide, un calcul et une reprise en copie après arrêt du serveur ont été vérifiés. Preuves : `audit/2026-10-12/premiere-ouverture/rapport.md`.
+
+Ces empreintes assurent la cohérence avec la page reçue ; une personne contrôlant tout l’hébergement pourrait changer aussi cette page. Réserver les modifications au propriétaire, utiliser HTTPS et conserver le remplacement atomique des fichiers. Le chargement initial des tables reste indispensable ; le mode hors ligne exige une installation complète réussie.
+
+Une version contient 59 ressources vérifiées, soit 2 271 701 octets de corps HTTP en 2.3.1, hors en-têtes et recherches documentaires. L’adoption 2.2.0 → 2.2.1 et un lot fictif de 500 résultats, avec conservation de l’ancien export, ont été vérifiés ; reprise du lot après arrêt du serveur réussie. Preuves : `audit/2026-10-12/grand-historique/rapport.md`. Les accès au serveur 127.0.0.1 restent locaux. Aucun essai physique TECNO ni avis métier n’est acquis. La grille `VALIDATION_TERRAIN.md` doit être complétée séparément.
+
+Le fonctionnement s’appuie sur le [cycle de vie documenté des service workers](https://web.dev/articles/service-worker-lifecycle) : une installation réussie prépare une version en attente ; une installation rejetée conserve la version active. Notre composant ajoute le contrôle des empreintes et la sauvegarde avant adoption. Les exemples de purge de cache de la documentation ne sont pas appliqués à ce projet.
+
+La version 2.3.0 ajoute les scripts PDF et les polices locales. Les 16 scripts et le CSS portent SRI ; les polices sont aussi épinglées par la page et vérifiées avant génération du rapport. Adoption 2.2.1 → 2.3.0, export de 500 dossiers en trois langues et export arabe après rechargement sans serveur vérifiés. Les anciens caches restent conservés. Preuves : `audit/2026-10-13/pdf-pagine/rapport.md`.
+
+La version 2.3.1 corrige les lots et aperçus sur les écrans étroits ; les boutons d'un aperçu restent accessibles pendant le défilement de son contenu. Adoption depuis 2.3.0, sauvegarde avant mise à jour, reprise en copie de 500 mesures après arrêt confirmé du serveur, export complet et conservation à l'identique des 65 sessions du précédent export vérifiés. Aucun ancien cache supprimé. Les essais intermédiaires locaux ont aussi leurs identifiants de release distincts ; seule la release finale `5a211f902acdb72103741bce75ec3917e16823e8560933431fdfa038b926de6c` est le résultat retenu. Preuves : `audit/2026-10-13/lots-lisibles/rapport.md`.

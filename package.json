@@ -1,0 +1,22 @@
+{
+  "name": "nutritional-zscore-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Calcul nutritionnel local : aucune dépendance d’exécution, tests IndexedDB dédiés",
+  "scripts": {
+    "build:release": "node tools/scripts/build-release.cjs",
+    "check:release": "node tools/scripts/build-release.cjs --check",
+    "prepare:public": "node tools/scripts/prepare-public.cjs",
+    "prestart": "node tools/scripts/build-release.cjs --check",
+    "start": "node tools/scripts/serve.cjs",
+    "test": "node --test tools/tests/*.test.cjs",
+    "audit:clinical": "node tools/scripts/clinical-audit.cjs",
+    "audit:licenses": "node tools/scripts/audit-licenses.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5"
+  }
+}

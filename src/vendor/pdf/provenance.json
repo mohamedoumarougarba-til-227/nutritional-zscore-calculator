@@ -1,0 +1,96 @@
+{
+  "at": "2026-10-13T00:00:53.792Z",
+  "purpose": "Local PDF generation with embedded multilingual fonts; no optional HTML/image dependencies",
+  "fontsCommit": "fffdadf0f0c9cc1ec8b407063424a8bfbee05611",
+  "registryIntegrityVerified": true,
+  "maximumDownloadBytes": 50000000,
+  "measuredPayloadBytes": 4874520,
+  "downloads": [
+    {
+      "url": "https://registry.npmjs.org/jspdf/-/jspdf-4.2.1.tgz",
+      "file": "jspdf-4.2.1.tgz",
+      "bytes": 3963861,
+      "sha256": "e97bd16e3211928442c631b20dcefa78a8e10dad8ccbe97160b89b214745603a",
+      "acquiredBy": "npm pack --ignore-scripts (previous command)"
+    },
+    {
+      "url": "https://registry.npmjs.org/jspdf-autotable/-/jspdf-autotable-5.0.8.tgz",
+      "file": "jspdf-autotable-5.0.8.tgz",
+      "bytes": 55683,
+      "sha256": "9989678462a02b0e45d80da98416b2ef2e15ff8be268acddfa62bdc9ea3bc2d6",
+      "acquiredBy": "npm pack --ignore-scripts (previous command)"
+    },
+    {
+      "url": "https://api.github.com/repos/google/fonts/commits?path=ofl/amiri&per_page=1",
+      "file": "amiri-commit.json",
+      "bytes": 4134,
+      "sha256": "ec0ea97d0c9109bbef1dd2d45f6a2a7e2151a50ace2ae1c43fb26a3591880286"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/fffdadf0f0c9cc1ec8b407063424a8bfbee05611/ofl/amiri/Amiri-Regular.ttf",
+      "file": "source-Amiri-Regular.ttf",
+      "bytes": 431116,
+      "sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/fffdadf0f0c9cc1ec8b407063424a8bfbee05611/ofl/amiri/Amiri-Bold.ttf",
+      "file": "source-Amiri-Bold.ttf",
+      "bytes": 413480,
+      "sha256": "cfccb794268e7d573d857e6d6a67f89cf8a053e8ffd85dfa0c8ec1bb36fc4827"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/fffdadf0f0c9cc1ec8b407063424a8bfbee05611/ofl/amiri/OFL.txt",
+      "file": "source-OFL.txt",
+      "bytes": 4389,
+      "sha256": "72de68e5954f4fdd24702292ef5a32f003ca960ec9330dc86e5eefb5dffb9b22"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/fffdadf0f0c9cc1ec8b407063424a8bfbee05611/ofl/amiri/METADATA.pb",
+      "file": "source-METADATA.pb",
+      "bytes": 1857,
+      "sha256": "3df4f62489d9b01bb900d36e73120c06dfed0c49b585ff4398fd8a11410fd114"
+    }
+  ],
+  "selected": [
+    {
+      "path": "vendor/pdf/jspdf-4.2.1.umd.min.js",
+      "bytes": 420165,
+      "sha256": "e6551fcdc32f09d6853b2c5126d18d01d9447e0da618a41a11ebeee0f6c20d54"
+    },
+    {
+      "path": "vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt",
+      "bytes": 1142,
+      "sha256": "dc388ec35ff463288cdde3588a36fd4ed12a45deff053243b37309acc9ef583b"
+    },
+    {
+      "path": "vendor/pdf/autotable-5.0.8.min.js",
+      "bytes": 32389,
+      "sha256": "a65dff2c6a8296b16aff24e69f7683cd7dbaed4a4ec26b507d6840ee27d54649"
+    },
+    {
+      "path": "vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt",
+      "bytes": 1133,
+      "sha256": "99a374e0385cf714d2faae5f6e02ec79217c6bcecec39bdb9e102091471b960a"
+    },
+    {
+      "path": "vendor/pdf/Amiri-Regular.ttf",
+      "bytes": 431116,
+      "sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7"
+    },
+    {
+      "path": "vendor/pdf/Amiri-Bold.ttf",
+      "bytes": 413480,
+      "sha256": "cfccb794268e7d573d857e6d6a67f89cf8a053e8ffd85dfa0c8ec1bb36fc4827"
+    },
+    {
+      "path": "vendor/pdf/OFL.txt",
+      "bytes": 4389,
+      "sha256": "72de68e5954f4fdd24702292ef5a32f003ca960ec9330dc86e5eefb5dffb9b22"
+    },
+    {
+      "path": "vendor/pdf/METADATA.pb",
+      "bytes": 1857,
+      "sha256": "3df4f62489d9b01bb900d36e73120c06dfed0c49b585ff4398fd8a11410fd114"
+    }
+  ]
+}

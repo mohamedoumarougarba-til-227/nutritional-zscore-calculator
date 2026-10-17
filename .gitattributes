@@ -1,0 +1,3 @@
+# Les empreintes SRI, OMS, polices et releases exigent les octets exacts.
+# Aucune conversion LF/CRLF à l’ajout ni au checkout.
+* -text

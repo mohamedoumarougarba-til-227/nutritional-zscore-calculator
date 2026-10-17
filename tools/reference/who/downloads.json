@@ -1,0 +1,104 @@
+{
+  "commit": "b776d8a12b1c97369c748b561159fd2ec4f4db58",
+  "files": [
+    {
+      "path": "data-raw/growthstandards/weianthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/weianthro.txt",
+      "bytes": 111813,
+      "downloadedBytes": 0,
+      "sha256": "bc15a6a623dd1d5beaeed1497666332aa54bc4ccd15ff9658c487d79694ab77b"
+    },
+    {
+      "path": "data-raw/growthstandards/lenanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/lenanthro.txt",
+      "bytes": 100323,
+      "downloadedBytes": 0,
+      "sha256": "709f7a11881451daf7820f022d363d5bdb93746b5361d6bd9218af6ff838e0c2"
+    },
+    {
+      "path": "data-raw/growthstandards/wfhanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/wfhanthro.txt",
+      "bytes": 37158,
+      "downloadedBytes": 0,
+      "sha256": "0050d31041c2f7d4f8a34f27e8066fd73a24806835b9e4a0de1a7ee46d54d582"
+    },
+    {
+      "path": "data-raw/growthstandards/wflanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/wflanthro.txt",
+      "bytes": 43302,
+      "downloadedBytes": 0,
+      "sha256": "ad470cf41b147bd2a16026e57fd17968df7bf746b9f0bf2ff85df95239643778"
+    },
+    {
+      "path": "R/z-score-helper.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/R/z-score-helper.R",
+      "bytes": 4901,
+      "downloadedBytes": 0,
+      "sha256": "a5c9889721d1194552c9a07f84aeb01ad2cbf748082320fcdbbec17d96cebd67"
+    },
+    {
+      "path": "R/z-score-weight-for-lenhei.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/R/z-score-weight-for-lenhei.R",
+      "bytes": 4531,
+      "downloadedBytes": 0,
+      "sha256": "10bcca5384aaf51ffc43fd5286984ce81c129f2582f91f98f15d91fb8110d4cb"
+    },
+    {
+      "path": "R/z-score-length-for-age.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/R/z-score-length-for-age.R",
+      "bytes": 1181,
+      "downloadedBytes": 0,
+      "sha256": "97cab11a004fff494408d4b60b4ffa6c8d8a0b66217526c6f9181c4a7e49dd28"
+    },
+    {
+      "path": "R/z-score-weight-for-age.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/R/z-score-weight-for-age.R",
+      "bytes": 1024,
+      "downloadedBytes": 0,
+      "sha256": "61d358f6b254a2b8c1b0e82e8b61565381a99ff26ae38656ecc452cdbda6ac88"
+    },
+    {
+      "path": "R/z-score.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/R/z-score.R",
+      "bytes": 13050,
+      "downloadedBytes": 0,
+      "sha256": "4547b068083e276db3799679b9e488fcc8a8da89e4142ae9f45a7ba75354155c"
+    },
+    {
+      "path": "tests/testthat/test-zscore-weight-for-age.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/tests/testthat/test-zscore-weight-for-age.R",
+      "bytes": 2494,
+      "downloadedBytes": 0,
+      "sha256": "0d257221708e79463f8748a4740424c7f27d472cdf4b3975aeaacff3d4111768"
+    },
+    {
+      "path": "tests/testthat/test-zscore-length-for-age.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/tests/testthat/test-zscore-length-for-age.R",
+      "bytes": 2135,
+      "downloadedBytes": 0,
+      "sha256": "0c91c4dab7275d40145017be8949c1ca682b2953d28c497096fafa4e2b4eb1dc"
+    },
+    {
+      "path": "tests/testthat/test-zscores.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/tests/testthat/test-zscores.R",
+      "bytes": 7158,
+      "downloadedBytes": 0,
+      "sha256": "4f028790f47020a2fa5b90f6c4317503cbb3d1c7ff12acfd8a70a0bffac07f1e"
+    },
+    {
+      "path": "tests/testthat/test-zscore-weight-for-lenhei.R",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/tests/testthat/test-zscore-weight-for-lenhei.R",
+      "bytes": 1235,
+      "downloadedBytes": 0,
+      "sha256": "f83be4cde5054e81a3bd72360d43b522006429fcbdcf51e876d549e42db7bbf1"
+    },
+    {
+      "path": "LICENSE.md",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/LICENSE.md",
+      "bytes": 35141,
+      "downloadedBytes": 0,
+      "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2"
+    }
+  ],
+  "downloadedBytes": 0
+}
