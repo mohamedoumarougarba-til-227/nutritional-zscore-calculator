@@ -98,6 +98,14 @@
       "bytes": 35141,
       "downloadedBytes": 0,
       "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2"
+    },
+    {
+      "path": "data-raw/growthstandards/bmianthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/bmianthro.txt",
+      "bytes": 120786,
+      "downloadedBytes": 0,
+      "sha256": "78a4364e99303114fb2c458d28d64c6d10ac33832a5d5b2d437bc5cea1c93a0d",
+      "acquiredIn": ".local/audit/2026-10-18/preparation-imc/manifest.json"
     }
   ],
   "downloadedBytes": 0

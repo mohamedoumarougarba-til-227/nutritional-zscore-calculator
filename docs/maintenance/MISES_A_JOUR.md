@@ -1,5 +1,49 @@
 # Préparer et adopter une mise à jour
 
+## Complément de vérification — 19 octobre 2026, 4.0.0 inchangée
+
+[Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md) : confirmation d’import et reprise du clavier vérifiées dans les trois langues ; annulation/aperçu restituent le focus. Les courbes OMS 2007 arabes sont dépliées et inspectées à 320 px. Aucun runtime modifié ; la suite de 187 tests précédente reste le dernier passage complet, sans répétition inutile. Les nouveaux essais physiques et la revue métier ne sont pas acquis par ce contrôle PC.
+
+## Audit du moteur actuel — 19 octobre 2026, application 4.0.0 inchangée
+
+La commande `npm run audit:clinical` couvre maintenant le moteur combiné et les deux références OMS 2006/2007, avec échec si une preuve OMS 2007 manque ou est altérée. 187 tests réussis ; preuve clinique et essais physiques restent distincts. Aucun changement du runtime, des archives ou de la release. [Bilan et état Git](../../.local/audit/2026-10-19/audit-combine/rapport.md).
+
+## Références combinées — 4.0.0, 19 octobre 2026
+
+Intégration OMS 2007 à la saisie, au moteur, au modèle v4, à la validation/aux sauvegardes, aux aperçus, aux courbes, aux lots séparés par référence, aux CSV et aux PDF détaillés/compacts. Les anciens résultats restent immuables. Les nouvelles données, leur provenance et les licences sont incluses dans le paquet et l’inventaire signé : 46 ressources hors ligne, 20 scripts HTML.
+
+183 tests réussis, incluant 3 093 cas numériques de référence et 880 cas R supplémentaires avec âges en jours, jonction des dates, exclusions/non-applicables et imports atomiques. Quinze PDF fictifs trilingues, 30 pages rendues et inspectées ; individuel sur une page dans les trois langues. Transfert réel par fichier vers une origine vierge, reprise en copie et réexport contrôlés ; puis réouverture/recalcul OMS 2007 sans serveur. Bilan complet : `.local/audit/2026-10-19/integration-2007/rapport.md`. Ce bilan est technique, distinct de la revue médicale et d’essais physiques TECNO. Aucun déploiement ni nouveau commit.
+
+## Résumé descriptif des lots — interface 3.3.0, moteur inchangé 3.1.0
+
+Nouveau composant local `lot-analysis.js`, inclus et signé dans les ressources hors ligne. Résumé repliable sur toutes les pages du lot : fiches/identifiants, sexe/âge, résultats utilisables et exclusions par indicateur, catégories enregistrées avec dénominateurs, moyenne/minimum/maximum des Z affichés. Export CSV agrégé sans identité et inclusion du résumé dans l’impression. Aucun nouveau schéma de sauvegarde ni recalcul.
+
+175 tests réussis ; 26 contrôles ciblés après exclusion explicite des anciennes limites d’âge hors périmètre. Les tests de release vérifient désormais 41 ressources hors ligne et 18 scripts HTML, dont le nouveau composant et son refus d’installation en cas d’altération. Bilan : `.local/audit/2026-10-18/analyse-lots/rapport.md`.
+
+## Courbes en unités réelles — interface 3.2.0, moteur inchangé 3.1.0
+
+Courbes OMS poids/âge en kg, longueur-taille/âge en cm et IMC/âge, visibles dès une visite sauvegardée avec identifiant. Séparation des références à deux ans, repères pour âges estimés/imports, tableau accessible, absence de recalcul des anciennes archives. Composant existant étendu, aucune bibliothèque graphique ajoutée. Contrôle R de 54 810 ordonnées quotidiennes (deux sexes, trois indicateurs, cinq Z) ; 167 tests automatisés réussis sur la release finale, incluant les étiquettes, l’axe des mois et les anciennes limites calendaires. Bilan : `.local/audit/2026-10-18/courbes-reference/rapport.md`.
+
+## Centiles conservés — 3.1.0, moteur 3.1.0, 18 octobre 2026
+
+Les nouveaux calculs conservent le score avant arrondi et les centiles calculés entre −3 et +3, sans extrapoler les extrêmes ni modifier les anciens résultats. Affichage compact P, aide contextuelle, présence dans les aperçus/tableaux de suivi et exports CSV/PDF. Le PDF individuel conserve une page ; le PDF compact n’ajoute pas une entrée de légende pour chaque centile distinct. Les trois langues sont prises en charge.
+
+161 tests automatisés réussis ; 24 contrôles ciblés supplémentaires après correction des identifiants d’aide entre résultat et aperçu fermé. Conversion vérifiée contre 6 001 valeurs `pnorm` de R et 240 cas LMS avant arrondi. Un contrôle de transfert détecte désormais une incohérence score brut/arrondi avant le checksum ; un changement des seuls octets continue d’être refusé par checksum, avec transaction annulée dans les deux cas. Archives JSON/progressives et passage JSON via le lecteur 3.0 vérifiés. Bilan et limites : `.local/audit/2026-10-18/centiles/rapport.md`. Aucune dépendance, aucun fichier externe téléchargé, aucune publication.
+
+## IMC pour l’âge — 3.0.0, moteur 3.0.0, 18 octobre 2026
+
+Les nouveaux calculs ajoutent l’IMC brut et son Z-score pour l’âge à partir d’une cinquième table brute OMS vérifiée contre les données R figées. Les trois autres tables et leurs valeurs restent identiques. L’âge reste inférieur à cinq ans ; aucune extrapolation P/T ni extension aux références des plus grands. Les valeurs et intervalles IMC sont disponibles en individuel, lots, aperçus, courbes, CSV, PDF et impression, en français/anglais/arabe. Les suspensions pour œdèmes ou mesure debout avant neuf mois s’appliquent aussi à l’IMC.
+
+Schéma des nouveaux résultats : v3 ; les anciens résultats v1/v2 restent conservés et consultés sans recalcul. Une archive qui contient des résultats v3 nécessite un lecteur 3.0.0 ou ultérieur, y compris dans le conteneur JSON ancien format. L’interface et le guide de sauvegarde l’indiquent. 155 tests réussis, dont comparaison indépendante IMC/âge sur 6 161 cas et 1 491 suspensions nourrisson explicites ; génération et contrôle des neuf PDF de démonstration (15 pages). Pas de nouvelle dépendance ni nouveau téléchargement de fichier : la table préparée à l’étape précédente est réutilisée. Voir `.local/audit/2026-10-18/integration-imc/rapport.md` pour le paquet, les parcours navigateur et les limites.
+
+## Borne d’âge cohérente — 2.9.16, moteur 2.0.1, 18 octobre 2026
+
+La saisie par dates refuse désormais le jour du cinquième anniversaire, au lieu de comparer seulement un âge divisé par la durée moyenne d’un mois. À 1 826 jours saisis directement, la date de mesure est requise pour distinguer ce jour de la veille d’un anniversaire après deux années bissextiles. Les naissances le 29 février utilisent le 1er mars dans une année non bissextile. La saisie années/mois reste estimée et limitée à moins de 60 mois. La correction s’applique au calcul individuel, au lot et à la validation CSV.
+
+La vérification d’archive garde le domaine précédemment accepté : les anciens résultats restent lisibles, exportables et importables sans recalcul, avec leur moteur d’origine. Toute tentative de nouveau calcul utilise la règle actuelle. Les tables OMS, les formules et les catégories ne sont pas modifiées. Les 576 cas à 1 826 jours de l’oracle R sont testés avec une date de mesure explicite admissible ; les valeurs attendues et les preuves originales restent inchangées.
+
+Première étape du plan d’évolution : fiabilité du socle. 149 tests automatisés réussis et paquet hors ligne vérifié ; pas de nouvel essai physique. Les nouveaux indicateurs, le module après cinq ans, l’analyse descriptive des lots et l’aide clinique ne sont pas livrés par cette correction. Voir le bilan local `.local/audit/2026-10-18/fiabilite-age/rapport.md` pour les commandes, les tests et les limites de validation.
+
 ## Présentation de l’application — 2.9.15, 17 octobre 2026
 
 À la demande du propriétaire, retrait des mentions Prototype, Bêta, Version de développement et de la mention de relecture médicale à réaliser dans les textes de l’application, en français, anglais et arabe. Le pied de page utilise À propos ; les informations, l’aide, l’impression et les PDF décrivent les repères nutritionnels et leurs limites d’usage. Aucun calcul, schéma de sauvegarde ou droit d’accès modifié. Ce changement éditorial ne constitue pas une nouvelle validation médicale ni une publication. Les preuves historiques et les validations encore ouvertes dans le suivi sont conservées.
@@ -20,7 +64,7 @@ Lots : Reprendre un travail/Nouveau travail en haut ; informations import/âge e
 
 [Étude d’utilité pour le Niger](../projet/ETUDE_UTILITE_NIGER.md) et [audit du périmètre initial](../projet/AUDIT_PERIMETRE_INITIAL.md) ajoutés : intérêt plausible à démontrer au pilote ; promesses initiales absentes, choix remplacés et validations externes distingués. Aucun ajout de synchronisation, PB, triage national ou export DHIS2 sans spécification. Release 93c3672e788f1a5fed1fd4bee286428810d01dc6724e709f1f3a4d4a83a71d1c ; paquet neuf 43 fichiers / 2 094 362 octets, non publié. Objectif global actif et incomplet ; cible 3 Go/plafond 5 Go inchangés.
 
-Version actuelle de l’interface : 2.9.15. Version du moteur : 2.0.0, indépendante de la présentation. La référence des résultats précédents reste celle enregistrée lors de leur calcul.
+Version actuelle de l’interface : 4.0.0. Version du moteur combiné : 4.0.0 (noyau OMS 2006 3.1.0 conservé), indépendante de la présentation. La référence des résultats précédents reste celle enregistrée lors de leur calcul.
 
 ## Pour le propriétaire des fichiers et de l’hébergement
 

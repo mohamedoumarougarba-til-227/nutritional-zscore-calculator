@@ -6,7 +6,7 @@
 
 | Élément | Licence ou provenance constatée | Conservation et limite |
 | --- | --- | --- |
-| Tables LMS converties de WHO Anthro | Le [DESCRIPTION du commit figé](https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/DESCRIPTION) déclare GPL-3 ; le [texte de licence](https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/LICENSE.md) est conservé. | Notice publique : [LICENSE-anthro.txt](../../src/data/LICENSE-anthro.txt). Quatre TSV originaux et leurs empreintes sont conservés dans audit/. La portée des droits sur les tables converties et leur distribution avec l'application reste à clarifier. |
+| Tables LMS converties de WHO Anthro | Le [DESCRIPTION du commit figé](https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/DESCRIPTION) déclare GPL-3 ; le [texte de licence](https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/LICENSE.md) est conservé. | Notice publique : [LICENSE-anthro.txt](../../src/data/LICENSE-anthro.txt). Cinq TSV originaux et leurs empreintes sont conservés dans tools/reference/who/, dont la table IMC ajoutée en 3.0.0 ; les preuves historiques restent dans .local/audit/. La portée des droits sur les tables converties et leur distribution avec l'application reste à clarifier. |
 | jsPDF 4.2.1 | [Notice MIT et copyrights](../../src/vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt) de la version intégrée. | Fichier exact et notice inclus dans le paquet ; conserver les mentions lors de toute redistribution. |
 | AutoTable 5.0.8 | [Notice MIT et copyright](../../src/vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt) de la version intégrée. | Même contrôle de conservation ; ne pas présenter cette bibliothèque comme une création du projet. |
 | Amiri Regular et Bold | [SIL Open Font License 1.1](../../src/vendor/pdf/OFL.txt), avec copyright du projet Amiri. | Polices inchangées, notice et métadonnées conservées ; l'intégration de la police n'accorde pas un droit de revendiquer son nom ou ses auteurs. |
@@ -23,7 +23,7 @@ Documenter cette qualification, les éléments éventuellement couverts, les sou
 
 ## Contrôle reproductible
 
-Exécuter **npm run audit:licenses**. L'audit est local et en lecture seule : il compare les huit fichiers PDF/polices à leur provenance, la licence Anthro à l'original conservé, les données converties et les quatre TSV à leurs empreintes, puis vérifie que les ressources et notices distribuées figurent dans la liste publique. Il retourne séparément technicalPassed et legalReady ; ce dernier reste faux tant que les décisions de droits sont ouvertes.
+Exécuter **npm run audit:licenses**. L'audit est local et en lecture seule : il compare les huit fichiers PDF/polices à leur provenance, la licence Anthro à l'original conservé, les données converties et les cinq TSV à leurs empreintes, puis vérifie que les ressources et notices distribuées figurent dans la liste publique. Il retourne séparément technicalPassed et legalReady ; ce dernier reste faux tant que les décisions de droits sont ouvertes.
 
 La préparation et la vérification de paquet exécutent aussi ce contrôle avant de produire ou valider un paquet. Un succès technique ne constitue ni une autorisation de publication ni une revue juridique. Les preuves sont sous [audit droits et références](../../.local/audit/historique/2026-10-14/droits-references/rapport.md).
 
@@ -34,3 +34,8 @@ Pour une nouvelle version de bibliothèque ou de source, conserver l'ancienne, s
 Consigner le titulaire du code, les contributions autorisées, les conditions d'utilisation publique et les obligations tierces. Conserver une copie de développement privée avec sauvegarde ; le dossier reçu ne possède actuellement pas de dépôt Git. Ne pas confondre cette confidentialité avec l'invisibilité du JavaScript distribué.
 
 Vérifier séparément le compte d'hébergement : contrôle par le propriétaire, authentification forte, récupération, droits limités et absence de secret dans les fichiers publics. Aucun compte distant ni droit de publication n'a été configuré pendant cet audit. Les références de l'application restent en lecture seule pour les visiteurs.
+
+
+## Référence OMS 2007 — 19 octobre 2026
+
+Source WHO `anthroplus`, commit `7cfcdb39026e9a55de55732bc3cf14c82261bcf7`. Trois tables brutes épinglées et licence dans `tools/reference/who2007`, transformation standard dans `tools/scripts/build-who2007-data.py`, données/manifestes dans `src/data`. Le paquet distribue `LICENSE-anthroplus.txt`. La source déclare GPL version 3 ou ultérieure ; l’audit technique vérifie les octets et notices. Cela ne clôt pas la décision sur les obligations de redistribution et les droits du code assemblé, ni l’autorisation de publication.

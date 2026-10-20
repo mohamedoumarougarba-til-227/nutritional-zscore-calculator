@@ -1,6 +1,13 @@
 /** Public, local-first workspace: no administrator credentials and no remote mutation API. */
 class WorkspaceApp {
-    static version = '2.9.15';
+    static version = '4.0.0';
+    static resultIndicators(result) { return result?.schemaVersion===4?result.applicableIndicators:ClinicalEngine.resultIndicators(result); }
+    percentileHTML(value,result) {
+        if (![3,4].includes(result?.schemaVersion) || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
+        const numeric=typeof value.percentile==='number'&&Number.isFinite(value.percentile)&&value.percentile>0&&value.percentile<100&&!value.flagged;
+        const label=numeric?this.t('percentileLabel')+' : '+this.number(value.percentile,1):this.t('percentileExtreme');
+        return `<span class="centile" title="${this.esc(numeric?this.t('centileHelp'):label)}" aria-label="${this.esc(label)}"><bdi dir="ltr">P ${numeric?this.number(value.percentile,1):'—'}</bdi></span>`;
+    }
     constructor() {
         this.storage = new StorageManager(); this.history = new HistoryManager(this.storage);
         this.state = this.emptyWorkspace(); this.page = 'single'; this.historyPage = 0; this.search = '';
@@ -76,13 +83,14 @@ class WorkspaceApp {
     number(value, digits = 2) { return Number(value).toLocaleString(this.prefs.language, { minimumFractionDigits: digits, maximumFractionDigits: digits }); }
     async init() {
         try {
-            const paths=['data/interface-translations.json','data/who-manifest.json','data/who-official.json'];
+            const paths=['data/interface-translations.json','data/who-manifest.json','data/who-official.json','data/who-2007-manifest.json','data/who-2007.json'];
             const responses=await Promise.all(paths.map(path=>fetch(path)));
             const {texts,hashes}=await ReleaseGuard.verifyData(paths,responses);
             this.translations=JSON.parse(texts[0]);
             const manifest=JSON.parse(texts[1]),text=texts[2];
             if(hashes[2]!==manifest.sha256)throw new Error('referenceInvalid');
-            this.engine = new ClinicalEngine(JSON.parse(text)); this.manifest = manifest;
+            const olderManifest=JSON.parse(texts[3]);if(hashes[4]!==olderManifest.sha256)throw new Error('referenceInvalid');
+            this.engine = new GrowthEngine(JSON.parse(text),JSON.parse(texts[4])); this.manifest = manifest;this.olderManifest=olderManifest;
             await this.storage.initialize(); this.sessions = await this.history.catalog();
             if(ReleaseGuard.failed)throw new Error('releaseInvalid');
             this.applyPreferences(); this.render(); this.events();
@@ -143,16 +151,16 @@ class WorkspaceApp {
         const name=this.esc(this.t(label));
         return `<button type="${submit?'submit':'button'}" class="icon-button${primary?' primary':''}${showLabel?' action-with-label':''}"${action?` data-action="${action}"`:''} title="${name}" aria-label="${name}" ${disabled?'disabled':''} ${attrs}>${this.icon(icon)}${showLabel?`<span class="action-label" aria-hidden="true">${this.esc(this.t(labelKey))}</span>`:''}</button>`;
     }
-    infoButton(key, label, id) {
+    infoButton(key, label, id = 'info-' + key) {
         return `<button type="button" id="${id}" class="field-info" data-action="show-info" data-info="${key}" aria-expanded="false" aria-controls="info-popup" aria-label="${this.esc(this.t('helpAbout')+' '+this.t(label))}">${this.icon('info')}</button>`;
     }
     showInfo(key, opener) {
-        if(!['ageHint','weightHint','positionHint','csvHelp','appInfo','scoreHelp','batchContext'].includes(key))return;
+        if(!['ageHint','weightHint','positionHint','csvHelp','bmiHelp','centileHelp','appInfo','scoreHelp','batchContext'].includes(key))return;
         if(key!=='appInfo'){this.openInfo(key,opener);return;}
         this.closeInfo();this.closeChoice();
         const d=document.getElementById('header-dialog');d.dataset.opener=opener;
         d.classList.add('app-info-dialog');
-        const text=key==='appInfo'?['appUsageNotice','free','scopeText','privacyText'].map(k=>`<p>${this.esc(this.t(k))}</p>`).join(''):key==='scoreHelp'?['weightForAge','heightForAge','weightForHeight','resultsIntro'].map(k=>`<p>${this.esc(this.t(k))}</p>`).join(''):`<p>${this.esc(this.t(key))}</p>`;
+        const text=key==='appInfo'?['appUsageNotice','free','scopeText','privacyText'].map(k=>`<p>${this.esc(this.t(k))}</p>`).join(''):key==='scoreHelp'?['weightForAge','heightForAge','weightForHeight','bmiForAge','bmiHelp','resultsIntro'].map(k=>`<p>${this.esc(this.t(k))}</p>`).join(''):`<p>${this.esc(this.t(key))}</p>`;
         d.innerHTML=`<div class="dialog-top"><h2 id="header-dialog-title">${this.t('information')}</h2>${this.toolButton('close','close','close-header')}</div><div class="dialog-body">${text}</div>`;
         d.showModal();
     }
@@ -167,7 +175,7 @@ class WorkspaceApp {
         this.closeInfo();this.closeChoice();const button=document.getElementById(opener);if(!button)return;
         let popup=document.getElementById('info-popup');
         if(!popup){popup=document.createElement('div');popup.id='info-popup';popup.className='info-popup';popup.hidden=true;popup.setAttribute('popover','manual');popup.setAttribute('role','region');popup.setAttribute('aria-labelledby','info-popup-title');document.body.append(popup);}
-        const keys=key==='scoreHelp'?['weightForAge','heightForAge','weightForHeight','resultsIntro']:[key];
+        const keys=key==='scoreHelp'?['weightForAge','heightForAge','weightForHeight','bmiForAge','bmiHelp','resultsIntro']:[key];
         const messages=key==='batchContext'?this.batchContextNotes().map(n=>this.t(n.label).replace('{count}',this.number(n.count,0))+' '+this.t(n.key)):keys.map(k=>this.t(k));
         popup.innerHTML=`<div class="info-popup-top"><strong id="info-popup-title">${this.esc(this.t('information'))}</strong>${this.toolButton('close','close','close-info')}</div><div id="info-popup-text">${messages.map(text=>`<p>${this.esc(text)}</p>`).join('')}</div>`;
         popup.dir=document.documentElement.dir||'ltr';this.activeInfo={opener,description:button.getAttribute('aria-describedby')};button.setAttribute('aria-expanded','true');button.setAttribute('aria-describedby','info-popup-text');
@@ -343,56 +351,62 @@ class WorkspaceApp {
         return `<form id="${prefix}-form" novalidate><div class="form-grid">
             ${field('caseId', 'text', 'maxlength="100" autocomplete="off"')}${field('name', 'text', `maxlength="100" autocomplete="off" placeholder="${this.t('namePlaceholder')}"`)}
             <div class="field">${label('ageMode','ageHint')}<select id="${prefix}-ageMode" name="ageMode" aria-describedby="${prefix}-ageMode-hint">${['months','dates','days'].map(mode => `<option value="${mode}" ${data.ageMode === mode ? 'selected' : ''}>${this.t(mode)}</option>`).join('')}</select><p id="${prefix}-ageMode-hint" class="sr-only">${this.t('ageHint')}</p></div>
-            <div class="age-fields" data-age="months" ${data.ageMode !== 'months' ? 'hidden' : ''}>${field('ageYears','number','min="0" max="4" step="1" inputmode="numeric"')}${field('ageMonths','number','min="0" max="11" step="1" inputmode="numeric"')}</div>
+            <div class="age-fields" data-age="months" ${data.ageMode !== 'months' ? 'hidden' : ''}>${field('ageYears','number','min="0" max="19" step="1" inputmode="numeric"')}${field('ageMonths','number','min="0" max="11" step="1" inputmode="numeric"')}</div>
             <div class="age-fields" data-age="dates" ${data.ageMode !== 'dates' ? 'hidden' : ''}>${field('birthDate','date',`max="${ClinicalEngine.today()}"`)}</div>
-            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number','min="0" max="1826" step="1" inputmode="numeric"')}</div>
+            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number','min="0" max="6970" step="1" inputmode="numeric"')}</div>
             ${field('measurementDate','date',`max="${ClinicalEngine.today()}"`)}
-            ${field('weight','number','min="50" max="100000" step="1" inputmode="decimal"','weightHint')}${field('height','number','min="30" max="150" step="0.1" inputmode="decimal"')}
+            ${field('weight','number','min="50" max="300000" step="1" inputmode="decimal"','weightHint')}${field('height','number','min="30" max="250" step="0.1" inputmode="decimal"')}
             ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['n','no'],['y','yes']])}${select('position',[['','choose'],['L','lying'],['H','standing']],'positionHint')}
             </div><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
     }
     singleHTML() {
         return `<div class="workspace-grid"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('calculate','run','',{primary:true,submit:true,attrs:'form="single-form"',showLabel:true,labelKey:'calculateShort'})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div>${this.formHTML('single', this.state.draft)}</section>
-            <section class="card" id="results-card"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
+            <section class="card" id="results-card"><div class="card-top"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2>${this.infoButton('centileHelp','percentileLabel')}</div><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
     }
     resultsHTML(entry, stale = false, preview = false) {
         if (!entry?.result) return `<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
-        const { child, result } = entry, legacy = result.schemaVersion !== 2;
+        const { child, result } = entry, legacy = ![2,3,4].includes(result.schemaVersion);
         return `<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(legacy ? 'stored' : result.status))}</span></div>
           ${stale ? `<p class="notice warn">${this.t('stale')}</p>` : ''}${legacy ? `<p class="notice warn">${this.t('legacyResult')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}
-          ${['weightForAge','heightForAge','weightForHeight'].map(key => {
+          ${WorkspaceApp.resultIndicators(result).map(key => {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
             const category = legacy ? this.legacyCategory(v?.classification) : v?.classification;
-            const severe = /Severe|severe|obesity/.test(category || '');
-            return `<div class="indicator ${severe ? 'severe' : category !== 'withinReference' ? 'caution' : ''}"><div><div class="label">${this.t(key)}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="score">${hasValue ? this.number(v.zscore) : '—'}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
+            const severe = /Severe|severe|obesity|bmiBelow3|bmiAbove3/.test(category || '');
+            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score">${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
           }).join('')}
           ${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}
-          <div class="scale" aria-hidden="true"><span></span><span></span><span></span></div><div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'legacy-unverified')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>
+          ${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}<div class="scale" aria-hidden="true"><span></span><span></span><span></span></div><div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${[3,4].includes(result.schemaVersion)&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'legacy-unverified')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>
           ${preview ? '' : `<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true}):''}</div>`}`;
     }
     legacyCategory(value) { const categories={malnutrition_severe:'underweightSevere',malnutrition_moderate:'underweightModerate',stunting_severe:'stuntingSevere',stunting_moderate:'stuntingModerate',wasting_severe:'wastingSevere',wasting_moderate:'wastingModerate',normal:'withinReference',obesity:'obesity',overweight:'overweight'};return Object.hasOwn(categories,value)?categories[value]:'unknown'; }
+    lotModels(){
+        if(!this.engine?.older)return [LotAnalysis.build(this.state.batch,this.engine?.data.referenceVersion)];
+        const family=e=>e.result?.referenceFamily||(e.child.totalAgeMonths>=60?'WHO2007':'WHO2006');
+        return [['WHO2006',this.engine.data.referenceVersion],['WHO2007',this.engine.older.data.referenceVersion]].flatMap(([key,reference])=>{const entries=this.state.batch.filter(e=>family(e)===key);return entries.length?[LotAnalysis.build(entries,reference,{family:key})]:[];});
+    }
+    lotSummaryHTML(options={}){return this.lotModels().map(model=>LotAnalysis.html(model,this,options)).join('');}
     batchHTML() {
         const view=this.batchView(),disabled=!view.total;
         return `<div class="workspace-grid batch-workspace"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('addBatch','plus','',{primary:true,submit:true,showLabel:true,attrs:'form="batch-form"'})}</div></div>${this.formHTML('batch',this.state.batchDraft,true)}<section class="csv-tools" aria-labelledby="csv-tools-toggle"><div class="csv-tools-heading"><div class="csv-heading-label"><button type="button" class="csv-tools-toggle" id="csv-tools-toggle" data-action="toggle-csv" aria-expanded="${!!this.state.paste}" aria-controls="csv-tools-body csv-heading-actions"><span>${this.t('csvTools')}</span></button>${this.infoButton('csvHelp','csvTools','csv-help-button')}</div><div id="csv-heading-actions" class="toolbar compact-toolbar csv-heading-actions"${this.state.paste?'':' hidden'}><label class="icon-button action-with-label file-label" title="${this.esc(this.t('importCSV'))}">${this.icon('csv')}<span class="action-label">${this.t('importCSV')}</span><input class="file-input" type="file" id="csv-file" aria-label="${this.esc(this.t('importCSV'))}" accept=".csv,text/csv"></label>${this.toolButton('csvTemplate','csv','csv-template',{showLabel:true,labelKey:'csvTemplateShort'})}</div></div><div id="csv-tools-body" class="csv-tools-body"${this.state.paste?'':' hidden'}><div class="field"><label for="paste-data">${this.t('pasteLabel')}</label><textarea id="paste-data" rows="3">${this.esc(this.state.paste)}</textarea></div><button id="csv-parse-button" class="btn" data-action="parse-csv">${this.t('parseCSV')}</button></div></section></section>
-          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div></section></div><div id="batch-print" class="print-only"></div>`;
+          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
     }
     preparePrint() {
         const target=document.getElementById('batch-print');
-        if(target)target.innerHTML=this.page==='batch'?this.tableHTML(this.state.batch):'';
+        if(target)target.innerHTML=this.page==='batch'?this.lotSummaryHTML({open:true,exportButton:false})+this.tableHTML(this.state.batch):'';
     }
     tableHTML(entries, {compact=false} = {}) {
-        const indicators = ['weightForAge','heightForAge','weightForHeight'];
+        const indicators = ClinicalEngine.indicators.filter(key=>entries.some(e=>WorkspaceApp.resultIndicators(e.result).includes(key)));
         const columns = ['name','weight','height',...indicators];
         const number = (value,digits=2) => `<bdi class="score-number" dir="ltr">${this.number(value,digits)}</bdi>`;
         const note = key => `<div class="${compact&&key==='withinReference'?'sr-only':'item-sub'}">${this.esc(this.t(key))}</div>`;
         const cell = (key,value) => `<td role="cell"${indicators.includes(key)?' class="score"':''}><span class="cell-label" aria-hidden="true">${this.esc(this.t(key))}</span><div class="cell-value">${value}</div></td>`;
-        return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
-            const legacy=result&&result.schemaVersion!==2;
+        return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
+            const legacy=result&&![2,3,4].includes(result.schemaVersion);
             const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${!result?note('notCalculated'):''}${legacy?note('legacyResult'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
             return `<tr role="row">${cell('name',identity)}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
-                const value=result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
+                const value=key==='bmiForAge'&&![3,4].includes(result?.schemaVersion)?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
                 const category=legacy?this.legacyCategory(value?.classification):value?.classification;
-                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${note(hasValue?(category||'unknown'):'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
+                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||'unknown'):key==='bmiForAge'&&result&&![3,4].includes(result.schemaVersion)?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
             }).join('')}</tr>`;
         }).join('')}</tbody></table>`;
     }
@@ -457,8 +471,8 @@ class WorkspaceApp {
         return `<section class="card full quick-guide" aria-labelledby="quick-guide-title"><h2 id="quick-guide-title">${this.t('quickGuideTitle')}</h2>${['Measure','Resume','Transfer','Offline','Reports'].map(topic=>`<details><summary>${this.t('quickGuide'+topic)}</summary><p>${this.t('quickGuide'+topic+'Text')}</p></details>`).join('')}</section>`;
     }
     referencesHTML() {
-        const links = [['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt']];
-        return `<div class="reference-grid">${this.quickGuideHTML()}<section class="card full"><span class="eyebrow">OMS / WHO · 2006</span><h2>${this.t('references')}</h2><div class="source-links">${links.map(([k,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${this.t(k)} ↗</a>`).join('')}</div><p>${this.t('dataIntegrity')}</p><p class="meta">${this.esc(this.manifest.referenceVersion)}<br>SHA-256 : ${this.manifest.sha256}</p></section>${[['scope','scopeText'],['method','methodText'],['measurementHelp','measurementHelpText'],['privacyTitle','privacyText'],['validationTitle','validationText']].map(([title,text])=>`<section class="card"><h2>${this.t(title)}</h2><p>${this.t(text)}</p></section>`).join('')}<section class="card"><h2>${this.t('updateCurrent').replace('{version}',WorkspaceApp.version)}</h2><button class="btn" data-action="check-update" ${this.offlineRegistration?'':'disabled'}>${this.t('updateCheck')}</button></section></div>`;
+        const links = [['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt'],['sourceWHO2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],['sourceLicense2007','data/LICENSE-anthroplus.txt']];
+        return `<div class="reference-grid">${this.quickGuideHTML()}<section class="card full"><span class="eyebrow">OMS / WHO · 2006 / 2007</span><h2>${this.t('references')}</h2><div class="source-links">${links.map(([k,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${this.t(k)} ↗</a>`).join('')}</div><p>${this.t('referenceBoth')}</p><p class="meta">${this.esc(this.manifest.referenceVersion)}<br>SHA-256 : ${this.manifest.sha256}</p>${this.olderManifest?`<p class="meta">${this.esc(this.olderManifest.referenceVersion)}<br>SHA-256 : ${this.olderManifest.sha256}</p>`:''}</section>${[['scope','scopeText'],['method','methodText'],['measurementHelp','measurementHelpText'],['privacyTitle','privacyText'],['validationTitle','validationText']].map(([title,text])=>`<section class="card"><h2>${this.t(title)}</h2><p>${this.t(text)}</p></section>`).join('')}<section class="card"><h2>${this.t('updateCurrent').replace('{version}',WorkspaceApp.version)}</h2><button class="btn" data-action="check-update" ${this.offlineRegistration?'':'disabled'}>${this.t('updateCheck')}</button></section></div>`;
     }
     events() {
         this.choicePopup();
@@ -492,7 +506,7 @@ class WorkspaceApp {
             try {
                 if (event.target.id === 'single-form') { this.state.single = this.engine.calculate(this.state.draft); this.state.draft.visitId = this.state.single.child.visitId; this.state.stale = false; await this.saveImmediate('calculated'); this.render('results-title'); }
                 else if (event.target.id === 'batch-form') {
-                    const child = ClinicalEngine.normalize(this.state.batchDraft);
+                    const child = GrowthEngine.normalize(this.state.batchDraft);
                     if (this.state.batch.length >= 500) throw new Error('batchLimit');
                     this.state.batch.push({ child, result: null }); this.batchPage=Math.floor((this.state.batch.length-1)/8);this.state.batchDraft = this.emptyDraft(); await this.saveImmediate('automatic'); this.render('batch-caseId');
                 }
@@ -601,6 +615,7 @@ class WorkspaceApp {
         }
         else if(action==='parse-csv') await this.addCSV(this.state.paste);
         else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n\r\n','zscore-modele.csv','text/csv');
+        else if(action==='export-summary'){const models=this.lotModels(),model=models.find(m=>m.family===(button.dataset.family||'WHO2006'))||models[0];if(model)this.download(CSVManager.summary(model),'zscore-resume-lot-'+model.family+'-'+ClinicalEngine.today()+'.csv','text/csv');}
         else if(action==='csv-results'){ const entries=this.page==='batch'?this.state.batch:this.state.single?[this.state.single]:[]; this.download(CSVManager.results(entries),'zscore-resultats.csv','text/csv'); }
         else if(action==='print')window.print();
         else if(action==='export-pdf')await this.exportPDF(button.dataset.layout);
@@ -663,7 +678,7 @@ class WorkspaceApp {
         if(this.csvBusy||this.csvReading)return;
         this.readForms();
         let children;
-        try{children=CSVManager.parse(text);if(this.state.batch.length+children.length>500)throw new Error('batchLimit');}
+        try{children=CSVManager.parse(text,{extended:!!this.engine?.older});if(this.state.batch.length+children.length>500)throw new Error('batchLimit');}
         catch(error){this.toast(['batchLimit','csvTooLarge'].includes(error.message)?error.message:'csvInvalid',true);return;}
         const workspace=this.state,epoch=this.renderEpoch;
         const current=()=>this.state===workspace&&this.renderEpoch===epoch&&this.page==='batch';
@@ -724,12 +739,12 @@ class WorkspaceApp {
         }catch(error){if(prepared?.format==='stream')this.transfers().release(prepared);if(request!==this.importRequest)return;this.preparedImport=null;this.toast(error instanceof SyntaxError||error instanceof TypeError?'importInvalid':error.message,true);}
         finally{if(request===this.importRequest)this.transferStatus();}
     }
-    chartsHTML(entries){return GrowthChart.html(entries,this.engine.data.referenceVersion,this);}
+    chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older].filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(!engines.length)engines=[this.engine.young||this.engine];return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('');}
     async renderFollowup(){
         const child=this.state.single?.child,epoch=this.renderEpoch;if(!child?.caseId)return;
         const {entries,identityConflict}=await this.history.caseVisits(child.caseId,child.gender,child.birthDate);
         if(epoch!==this.renderEpoch || this.page!=='single' || this.state.single?.child.caseId!==child.caseId)return;
-        if(entries.length<2&&!identityConflict)return;
+        if(entries.length<1&&!identityConflict)return;
         const target=document.getElementById('single-results');if(target)target.insertAdjacentHTML('beforeend',`<section class="visits"><h3>${this.t('followup')}</h3><p class="hint">${this.t('followupHelp')}</p>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}<p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.t('measurementDate')} : ${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'legacy-unverified')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></section>`);
         if(target)target.querySelector('[data-action="view-case"]').insertAdjacentHTML('beforebegin',this.chartsHTML(entries));
     }

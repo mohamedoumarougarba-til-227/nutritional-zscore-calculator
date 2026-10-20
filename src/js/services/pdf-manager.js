@@ -26,7 +26,7 @@ class PDFManager {
         const number = (value, digits) => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : t('unknown');
         const legacyCategories={malnutrition_severe:'underweightSevere',malnutrition_moderate:'underweightModerate',stunting_severe:'stuntingSevere',stunting_moderate:'stuntingModerate',wasting_severe:'wastingSevere',wasting_moderate:'wastingModerate',normal:'withinReference',obesity:'obesity',overweight:'overweight'};
         const legacyCategory = value => Object.hasOwn(legacyCategories,value)?legacyCategories[value]:'unknown';
-        const indicators = ['weightForAge', 'heightForAge', 'weightForHeight'];
+        const indicators = ['weightForAge','heightForAge','weightForHeight','bmiForAge'].filter(key=>entries.some(e=>(e.result?.schemaVersion===4?e.result.applicableIndicators:['weightForAge','heightForAge','weightForHeight',...(e.result?.schemaVersion===3?['bmiForAge']:[])]).includes(key)));
         const provenances=[];
         const rows = entries.map((entry, i) => {
             if (!entry?.child || typeof entry.child !== 'object') throw new Error('pdfInvalid');
@@ -41,11 +41,14 @@ class PDFManager {
                 field('position', t(c.position === 'L' ? 'lying' : c.position === 'H' ? 'standing' : 'unknown')),
                 field('oedema', t(c.oedema === 'y' ? 'yes' : c.oedema === 'n' ? 'no' : 'unknown'))];
             if (typeof r?.correctedHeight === 'number') measures.push(field('adjustedHeight', number(r.correctedHeight, 1) + ' ' + t('unitCm')));
+            if ([3,4].includes(r?.schemaVersion) && typeof r.bmi==='number' && Number.isFinite(r.bmi)) measures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const notes = [];
             let provenance=null;
             if (!r) notes.push(t('pdfUncalculated'));
             else {
-                if (r.schemaVersion !== 2) notes.push(t('legacyResult'));
+                if (![2,3,4].includes(r.schemaVersion)) notes.push(t('legacyResult'));
+                if ([3,4].includes(r.schemaVersion)) notes.push(t('bmiReportHelp'));
+                if(r.schemaVersion===4&&r.referenceFamily==='WHO2007')notes.push(t('coverage2007'));
                 if (r.imported) notes.push(t('importedResult'));
                 notes.push(...(Array.isArray(r.warnings) ? r.warnings.map(t) : []));
                 const value=[this.clean(r.referenceVersion || 'legacy-unverified'),this.clean(r.engineVersion || t('unknown'))];
@@ -53,12 +56,18 @@ class PDFManager {
                 if(p<0){p=provenances.length;provenances.push(value);}provenance='R'+(p+1);
             }
             const scores = indicators.map(key => {
+                if(key==='bmiForAge'&&r&&![3,4].includes(r.schemaVersion))return t('indicatorNotStored');
                 const v = r?.[key], valid = typeof v?.zscore === 'number' && Number.isFinite(v.zscore);
                 const lines = [valid ? 'Z = ' + v.zscore.toFixed(2) : t('notCalculated')];
-                if (valid) lines.push(t(r.schemaVersion === 2 ? v.classification || 'unknown' : legacyCategory(v.classification)));
+                if (valid) lines.push(t([2,3,4].includes(r.schemaVersion) ? v.classification || 'unknown' : legacyCategory(v.classification)));
                 if (v?.flagged) lines.push(t('flagged'));
                 if (v?.error) lines.push(t(v.error));
                 return lines.join('\n');
+            });
+            const percentiles=indicators.map(key=>{
+                const v=r?.[key];
+                if(![3,4].includes(r?.schemaVersion)||r.percentileVersion!==1||!Number.isFinite(v?.zscore))return '';
+                return typeof v.percentile==='number'&&Number.isFinite(v.percentile)&&v.percentile>0&&v.percentile<100&&!v.flagged?'P '+v.percentile.toFixed(1):'P --';
             });
             const compactMeasures=[field('ageDays',number(c.ageDays,0)),field('weight',number(c.weight,0)),field('height',number(c.height,1)),
                 t(c.gender==='M'?'male':c.gender==='F'?'female':'unknown')+' | '+t(c.position==='L'?'lying':c.position==='H'?'standing':'unknown'),
@@ -66,11 +75,13 @@ class PDFManager {
             if(c.ageMode==='months')compactMeasures.push(field('ageYears',c.ageYears)+' | '+field('ageMonths',c.ageMonths),t('approximateAge'));
             if(c.ageMode==='dates')compactMeasures.push(field('birthDate',c.birthDate));
             if(typeof r?.correctedHeight==='number')compactMeasures.push(field('adjustedHeight',number(r.correctedHeight,1)+' '+t('unitCm')));
+            if([3,4].includes(r?.schemaVersion) && typeof r.bmi==='number' && Number.isFinite(r.bmi))compactMeasures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const heightPair=number(c.height,1)+(typeof r?.correctedHeight==='number'?' / '+number(r.correctedHeight,1):'');
             const briefMeasures=[number(c.weight,0)+' g | '+heightPair+' cm',number(c.ageDays,0)+' '+t('pdfDaysUnit')+' ('+t(c.ageMode||'unknown')+') | '+this.clean(c.gender||t('unknown'))+' | '+this.clean(c.position||t('unknown')),t('pdfOedema')+' : '+t(c.oedema==='y'?'yes':c.oedema==='n'?'no':'unknown')];
             if(c.ageMode==='months')briefMeasures.push(field('ageYears',c.ageYears)+' | '+field('ageMonths',c.ageMonths),t('approximateAge'));
             if(c.ageMode==='dates')briefMeasures.push(field('birthDate',c.birthDate));
-            return {index:i+1,identity,measures,compactMeasures,briefMeasures,briefIdentity:[this.clean(c.name||t('unknown')),this.clean(c.caseId||t('unknown'))],measurementDate:this.clean(c.measurementDate||t('unknown')),scores,notes,provenance,calculatedAt:this.clean(r?.calculatedAt||t('unknown'))};
+            if([3,4].includes(r?.schemaVersion) && typeof r.bmi==='number' && Number.isFinite(r.bmi))briefMeasures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
+            return {index:i+1,identity,measures,compactMeasures,briefMeasures,briefIdentity:[this.clean(c.name||t('unknown')),this.clean(c.caseId||t('unknown'))],measurementDate:this.clean(c.measurementDate||t('unknown')),scores,percentiles,notes,provenance,calculatedAt:this.clean(r?.calculatedAt||t('unknown'))};
         });
         return {language, t, indicators, rows, stale, provenances,keys:['pdfNumber','pdfIdentity','pdfMeasures',...indicators,'pdfNotes']};
     }
@@ -78,9 +89,15 @@ class PDFManager {
         const categories=[],notes=[];
         const code=(values,text,prefix)=>{if(!text)return '';let index=values.indexOf(text);if(index<0){index=values.length;values.push(text);}return prefix+(index+1);};
         const body=model.rows.map(row=>[String(row.index),row.briefIdentity.join('\n'),row.measurementDate,row.briefMeasures.join('\n'),
-            ...row.scores.map(score=>{const lines=score.split('\n'),numeric=lines[0].startsWith('Z = ');return (numeric?lines[0].slice(4):'--')+'\n'+code(categories,(numeric?lines.slice(1):lines).join('\n'),'C');}),
+            ...row.scores.map((score,i)=>{const lines=score.split('\n'),numeric=lines[0].startsWith('Z = ');return (numeric?lines[0].slice(4):'--')+'\n'+code(categories,(numeric?lines.slice(1):lines).join('\n'),'C')+(row.percentiles[i]?'\n'+row.percentiles[i]:'');}),
             [row.provenance||'',row.calculatedAt,code(notes,row.notes.join('\n'),'N')].filter(Boolean).join('\n')]);
         return {body,legend:[...categories.map((text,i)=>['C'+(i+1),text]),...notes.map((text,i)=>['N'+(i+1),text])]};
+    }
+    static scoreWithPercentile(row,index) {
+        const score=row.scores[index],p=row.percentiles[index];
+        if(!p)return score;
+        const newline=score.indexOf('\n');
+        return newline<0?score+' | '+p:score.slice(0,newline)+' | '+p+score.slice(newline);
     }
     static build(entries, options, { jsPDF, autoTable, fonts, now = new Date() }) {
         if (!jsPDF || !autoTable || !fonts?.[0] || !fonts?.[1]) throw new Error('pdfUnavailable');
@@ -120,6 +137,7 @@ class PDFManager {
         };
         header();let y=29;
         y=text(t('appUsageNotice'),y,10);
+        if(rows.some(r=>r.percentiles.some(Boolean)))y=text(t('percentileReportHelp'),y,9);
         if(model.stale) y=text(t('stale'),y,10,true);
         const base = {theme:'grid',margin:{top:29,bottom:compact?24:19,left:margin,right:margin},startY:y,
             styles:{font:'Amiri',fontStyle:'normal',fontSize:11,textColor:25,lineColor:210,lineWidth:.15,cellPadding:2,overflow:'linebreak',halign:rtl?'right':'left',valign:'top'},
@@ -138,10 +156,10 @@ class PDFManager {
                 let legendHead=[t('pdfCompactCode'),t('pdfCompactMeaning')],legend=reduced.legend;
                 if(rtl){legendHead.reverse();legend=legend.map(row=>[...row].reverse());}
                 autoTable(doc,{...base,startY:y,head:[legendHead],body:legend,styles:{...base.styles,fontSize:10,cellPadding:1.5}});y=doc.lastAutoTable.finalY+3;
-                widths=[8,42,25,62,21,21,21,73];
+                widths=model.indicators.length===4?[8,35,22,57,20,20,20,20,71]:model.indicators.length===2?[8,42,25,62,31.5,31.5,73]:[8,42,25,62,21,21,21,73];
                 head=['pdfNumber','pdfCompactIdentity','measurementDate','pdfMeasures',...model.indicators,'pdfNotes'].map(t);body=reduced.body;
             }else{
-                widths=[9,45,56,34,34,34,61];head=model.keys.map(t);body=rows.map(r=>[String(r.index),r.identity.join('\n'),r.compactMeasures.join('\n'),...r.scores,[r.provenance||'',r.calculatedAt,...r.notes].join('\n')]);
+                widths=model.indicators.length===4?[9,40,48,29,29,29,29,60]:model.indicators.length===2?[9,45,56,51,51,61]:[9,45,56,34,34,34,61];head=model.keys.map(t);body=rows.map(r=>[String(r.index),r.identity.join('\n'),r.compactMeasures.join('\n'),...r.scores.map((s,i)=>this.scoreWithPercentile(r,i)),[r.provenance||'',r.calculatedAt,...r.notes].join('\n')]);
             }
             if(rtl){head.reverse();body=body.map(r=>r.reverse());widths.reverse();}
             autoTable(doc,{...base,startY:y,styles:{...base.styles,fontSize:compact?9:10,cellPadding:compact?1:1.5},head:[head],body,columnStyles:Object.fromEntries(widths.map((cellWidth,i)=>[i,{cellWidth}]))});
@@ -149,12 +167,12 @@ class PDFManager {
             const row=rows[0],values=[...row.identity,...row.measures];
             autoTable(doc,{...base,head:[[t('pdfMeasures')]],body:values.map(v=>[v])});
             const scoreHead=[t('pdfIndicator'),t('pdfScore')];
-            let scoreBody=model.indicators.map((key,i)=>[t(key),row.scores[i]]);
+            let scoreBody=model.indicators.map((key,i)=>[t(key),this.scoreWithPercentile(row,i)]);
             if(rtl){scoreHead.reverse();scoreBody=scoreBody.map(r=>r.reverse());}
             autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+5,head:[scoreHead],body:scoreBody});
             const provenance=model.provenances[0];
-            const notes=[...row.notes,...(provenance?[t('referenceVersion')+' : '+provenance[0],t('engineVersion')+' : '+provenance[1],t('calculatedAt')+' : '+row.calculatedAt]:[])];
-            autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+5,head:[[t('pdfNotes')]],body:notes.map(n=>[n])});
+            const noteRows=[row.notes.join('\n'),...(provenance?[[t('referenceVersion')+' : '+provenance[0],t('engineVersion')+' : '+provenance[1],t('calculatedAt')+' : '+row.calculatedAt].join('\n')]:[])].filter(Boolean);
+            autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+4,head:[[t('pdfNotes')]],body:noteRows.map(n=>[n]),styles:{...base.styles,fontSize:9.5,cellPadding:1.2}});
         }
         const pages=doc.getNumberOfPages();
         for(let i=1;i<=pages;i++){

@@ -11,7 +11,7 @@ class TransferManager {
     }
     static encode(value){const line=JSON.stringify(value);if(new TextEncoder().encode(line).length>this.lineLimit)throw new Error('transferRecordTooLarge');return line;}
     static validator(){
-        const counts=Object.fromEntries(this.stores.map(s=>[s,0])),ids=Object.fromEntries(this.stores.map(s=>[s,new Set()])),children=new Set(),results=new Set();let phase=-1,recovery=0;
+        const counts=Object.fromEntries(this.stores.map(s=>[s,0])),ids=Object.fromEntries(this.stores.map(s=>[s,new Set()])),children=new Set(),results=new Set(),extendedAges=new Map();let phase=-1,recovery=0;
         const remember=(set,id)=>{set.add(id);if(set.size>2000000)throw new Error('transferTooComplex');};
         return {counts,children,results,get recovery(){return recovery;},accept(event){
             if(event.kind==='recovery'){
@@ -21,8 +21,8 @@ class TransferManager {
             if(event.kind!=='record'||index<phase||index<0||!record||typeof record!=='object'||Array.isArray(record))throw new Error('importInvalid');phase=index;
             const key=event.store==='settings'?record.key:record.id;
             if(typeof key!=='string'||!key||event.store!=='settings'&&key.length>200||ids[event.store].has(key)||++counts[event.store]>50000)throw new Error('importInvalid');ids[event.store].add(key);
-            if(event.store==='children'){HistoryManager.checkChild(record);remember(children,key);}
-            else if(event.store==='results'){HistoryManager.checkResult(record,ids.children);remember(results,key);}
+            if(event.store==='children'){HistoryManager.checkChild(record);if(record.ageDomainVersion===2)extendedAges.set(key,{ageDomainVersion:2,totalAgeMonths:record.totalAgeMonths});remember(children,key);}
+            else if(event.store==='results'){HistoryManager.checkResult(record,ids.children);HistoryManager.checkPair(extendedAges.get(record.childId)||{},record);remember(results,key);}
             else if(event.store==='sessions'){
                 if(typeof record.name!=='string'||!Number.isFinite(Date.parse(record.createdAt))||!Array.isArray(record.children)||!Array.isArray(record.results)||record.children.some(id=>!ids.children.has(id))||record.results.some(id=>!ids.results.has(id)))throw new Error('importInvalid');
                 const w=record.metadata?.workspace;if(w){HistoryManager.checkWorkspace(w);for(const entry of [...w.batch,...(w.single?[w.single]:[])]){remember(children,entry.child.id);if(entry.result)remember(results,entry.result.id);}}

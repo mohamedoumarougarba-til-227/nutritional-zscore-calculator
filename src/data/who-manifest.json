@@ -1,7 +1,7 @@
 {
   "file": "who-official.json",
-  "sha256": "4ce52083be714b20fe6df6eefa597cf67531dc31fe842a7befba42016a839701",
-  "bytes": 298833,
+  "sha256": "3f563c1dc59b6a5d7f7521f70536b101687af301d391b8181a54440baf008d40",
+  "bytes": 416241,
   "referenceVersion": "WHO-2006-anthro-b776d8a12b1c",
   "sources": [
     {
@@ -27,6 +27,12 @@
       "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/wfhanthro.txt",
       "sha256": "0050d31041c2f7d4f8a34f27e8066fd73a24806835b9e4a0de1a7ee46d54d582",
       "bytes": 37158
+    },
+    {
+      "file": "bmianthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/bmianthro.txt",
+      "sha256": "78a4364e99303114fb2c458d28d64c6d10ac33832a5d5b2d437bc5cea1c93a0d",
+      "bytes": 120786
     }
   ]
 }

@@ -82,6 +82,7 @@
 !/src/vendor/pdf/provenance.json
 !/tools/git-sync-allowlist.json
 !/tools/reference/who/LICENSE.md
+!/tools/reference/who/data-raw__growthstandards__bmianthro.txt
 !/tools/reference/who/data-raw__growthstandards__lenanthro.txt
 !/tools/reference/who/data-raw__growthstandards__weianthro.txt
 !/tools/reference/who/data-raw__growthstandards__wfhanthro.txt
@@ -97,3 +98,18 @@
 !/tools/scripts/public-headers.txt
 !/tools/scripts/serve.cjs
 !/tools/scripts/service-worker.template.js
+
+!/src/js/components/lot-analysis.js
+
+!/tools/reference/who2007/
+!/src/data/who-2007.json
+!/src/data/who-2007-manifest.json
+!/src/data/LICENSE-anthroplus.txt
+!/src/js/services/reference-2007.js
+!/src/js/services/growth-engine.js
+!/tools/scripts/build-who2007-data.py
+!/tools/reference/who2007/bfawho2007.txt
+!/tools/reference/who2007/downloads.json
+!/tools/reference/who2007/hfawho2007.txt
+!/tools/reference/who2007/LICENSE.md
+!/tools/reference/who2007/wfawho2007.txt

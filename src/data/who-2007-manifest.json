@@ -1,0 +1,36 @@
+{
+  "referenceVersion": "WHO-2007-anthroplus-7cfcdb39026e",
+  "sourceCommit": "7cfcdb39026e9a55de55732bc3cf14c82261bcf7",
+  "bytes": 24541,
+  "sha256": "712c3905dfad4f2f166a00411da94667f5067df0bd8d3b084478fe169bdd2945",
+  "sources": [
+    {
+      "path": "data-raw/growthstandards/wfawho2007.txt",
+      "localFile": "wfawho2007.txt",
+      "source": "https://raw.githubusercontent.com/WorldHealthOrganization/anthroplus/7cfcdb39026e9a55de55732bc3cf14c82261bcf7/data-raw/growthstandards/wfawho2007.txt",
+      "bytes": 3779,
+      "sha256": "9234dc640ba54001a9afd42ef15ab675b211a721c8f3c0a07c3431fd9cea0e1c"
+    },
+    {
+      "path": "data-raw/growthstandards/hfawho2007.txt",
+      "localFile": "hfawho2007.txt",
+      "source": "https://raw.githubusercontent.com/WorldHealthOrganization/anthroplus/7cfcdb39026e9a55de55732bc3cf14c82261bcf7/data-raw/growthstandards/hfawho2007.txt",
+      "bytes": 8775,
+      "sha256": "9ac02aa4908f8ec3c6ba2362a4c7e1356043408b2873548ca22eedc016c235ad"
+    },
+    {
+      "path": "data-raw/growthstandards/bfawho2007.txt",
+      "localFile": "bfawho2007.txt",
+      "source": "https://raw.githubusercontent.com/WorldHealthOrganization/anthroplus/7cfcdb39026e9a55de55732bc3cf14c82261bcf7/data-raw/growthstandards/bfawho2007.txt",
+      "bytes": 10475,
+      "sha256": "70ef3260df08e48ce560c28cff4e733db78fb952cbd881eba63c9d3a15f38a6a"
+    }
+  ],
+  "license": {
+    "path": "LICENSE.md",
+    "localFile": "LICENSE.md",
+    "source": "https://raw.githubusercontent.com/WorldHealthOrganization/anthroplus/7cfcdb39026e9a55de55732bc3cf14c82261bcf7/LICENSE.md",
+    "bytes": 34904,
+    "sha256": "585e25ef8f5946a52bf2aed68d5becfc38be94a8663aa01c1b31d88aa57f1de3"
+  }
+}

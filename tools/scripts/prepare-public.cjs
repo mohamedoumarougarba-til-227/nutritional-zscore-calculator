@@ -27,7 +27,7 @@ function publicPaths(release) {
     const paths = new Set(['index.html', 'manifest.json', 'sw.js', 'release-manifest.json']);
     for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) paths.add(safeAsset(match[1]));
     for (const icon of JSON.parse(fs.readFileSync(path.join(src, 'manifest.json'), 'utf8')).icons) paths.add(safeAsset(icon.src));
-    for (const file of ['data/interface-translations.json', 'data/who-manifest.json', 'data/who-official.json', 'data/LICENSE-anthro.txt',
+    for (const file of ['data/interface-translations.json', 'data/who-manifest.json', 'data/who-official.json','data/who-2007.json','data/who-2007-manifest.json','data/LICENSE-anthroplus.txt', 'data/LICENSE-anthro.txt',
         'vendor/pdf/Amiri-Regular.ttf', 'vendor/pdf/Amiri-Bold.ttf', 'vendor/pdf/OFL.txt', 'vendor/pdf/METADATA.pb', 'vendor/pdf/provenance.json',
         'vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt', 'vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt']) paths.add(file);
     for (const file of Object.keys(release.assets)) {

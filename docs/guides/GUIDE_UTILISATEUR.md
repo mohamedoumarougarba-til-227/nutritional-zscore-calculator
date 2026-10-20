@@ -1,5 +1,59 @@
 # Utiliser Z-score Niger
 
+## Domaines d’âge et références — version 4.0.0, 19 octobre 2026
+
+La référence est choisie automatiquement selon l’âge. Avant 60 mois moyens OMS, quatre indicateurs OMS 2006 sont disponibles. De 60 à moins de 229 mois, OMS 2007 fournit taille/âge et IMC/âge ; poids/âge reste disponible avant 121 mois. Le poids/taille n’est pas défini dans OMS 2007. Une absence liée au domaine est **non applicable**, pas une erreur de mesure ni une valeur normale ; elle ne rend pas à elle seule le résultat incomplet.
+
+Avec des dates ou des jours, un mois moyen représente 30,4375 jours. Une date au cinquième anniversaire peut donc rester légèrement sous 60 mois moyens : la référence OMS 2006 est alors utilisée, sans arrondi forcé. Avec années/mois, l’âge est estimé et conserve le nombre de mois saisi. Cette version combinée suit la méthode R OMS épinglée ; les anciennes versions et leurs résultats restent inchangés. La saisie accepte au maximum 19 ans et zéro mois accomplis, ou 6 970 jours ; la limite de calcul est strictement inférieure à 229 mois moyens.
+
+Pour OMS 2007, renseigner une taille debout. Une mesure couchée suspend taille/âge et IMC/âge ; aucune correction automatique de 0,7 cm n’est transposée à ces âges. Les œdèmes suspendent les indicateurs utilisant le poids. Des bornes de saisie jusqu’à 300 000 g et 250 cm permettent de traiter les plus grands ; elles ne sont pas des seuils médicaux et les valeurs inhabituelles restent signalées. Les plages P/T OMS 2006 ne sont pas étendues.
+
+Le suivi montre les courbes des références réellement présentes dans le dossier, avec leurs propres axes/domaines. Les trajectoires de Z ne relient pas des références différentes. Dans un lot mixte, chaque famille de référence possède son résumé et ses dénominateurs ; les CSV agrégés indiquent WHO2006 ou WHO2007 dans leur nom. Les tableaux et PDF mixtes conservent chaque source et indiquent les non-applicables.
+
+Les sauvegardes complètes/JSON gardent les résultats v4, les mesures, l’âge utilisé et les indicateurs applicables. Utiliser au moins la version 4.0.0 sur l’appareil destinataire. L’import est vérifié puis présenté avant confirmation, et la reprise crée une copie. Les anciens fichiers restent lisibles sans recalcul ; un ancien lecteur refuse les nouveaux résultats plutôt que les tronquer.
+
+Les sections 3.x suivantes décrivent les fonctions conservées ; les domaines et règles de cette section 4.0.0 prévalent pour la version actuelle.
+
+## Résumé descriptif des lots — interface 3.3.0
+
+Sous le tableau du lot, ouvrir **Résumé du lot**. Les chiffres portent sur toutes les fiches, même lorsque le tableau n’en affiche que huit. Fiches, identifiants distincts, identifiants répétés et fiches sans identifiant sont distingués : plusieurs visites du même enfant restent plusieurs fiches. Les effectifs par sexe et âge décrivent ces fiches ; aucune déduplication ni estimation du nombre de personnes uniques n’est effectuée.
+
+Chaque indicateur a son propre nombre de résultats utilisables. Les absences (calcul non effectué ou ancien format sans indicateur), suspensions, valeurs signalées et résultats non comparables sont séparés. Les âges inconnus/hors du domaine actuel avant cinq ans rendent également le résultat non comparable dans ce résumé. Le dénominateur affiché dans chaque catégorie est le nombre de résultats utilisables de cet indicateur. Un indicateur peut donc avoir sept résultats utilisables tandis qu’un autre en a neuf. Un dénominateur nul donne un tiret pour le pourcentage et la moyenne, jamais une proportion normale supposée.
+
+Les catégories sont celles enregistrées lors du calcul, avant arrondi ; la moyenne, le minimum et le maximum portent sur les Z-scores affichés et archivés. Les imports comparables sont inclus sans recalcul et sans certification du contenu médical. Les proportions ne représentent pas une prévalence dans la population du Niger : absence de plan d’enquête, de pondérations et d’inférence statistique.
+
+**Résumé CSV** exporte les agrégats, dénominateurs, proportions et référence, sans noms ni identifiants de dossier. Les clés de ce CSV sont stables en anglais pour faciliter son traitement informatique. Le CSV habituel garde les fiches individuelles. L’impression inclut le résumé ouvert et toutes les fiches ; les PDF dédiés gardent leurs rapports individuels/détaillés/compacts et ne reçoivent pas automatiquement ce résumé. La sauvegarde complète reste nécessaire pour reprendre le travail ; le CSV agrégé ne la remplace pas.
+
+## Courbes de référence — interface 3.2.0, 18 octobre 2026
+
+Renseigner le même identifiant local pour le même enfant et calculer ses visites datées. Dans **Mesures de ce dossier**, ouvrir **Courbes de croissance OMS · kg, cm, IMC**. Cette section est disponible dès une visite enregistrée. Elle situe le poids en kg, la longueur/taille harmonisée en cm et l’IMC sauvegardé sur cinq lignes de référence : −3, −2, 0, +2 et +3 Z, selon le sexe du dossier. L’axe des mois utilise 30,4375 jours par mois. Les courbes ne prolongent pas le calcul après cinq ans.
+
+Un carré indique un âge estimé en années/mois ; un rond indique un âge saisi en jours ou obtenu par dates. Un point creux signale un résultat importé. Les mesures de taille et d’IMC reprennent les valeurs archivées lors du calcul, sans modifier les anciennes versions. Les deux références de longueur couchée et taille debout sont séparées à 731 jours ; les points ne sont pas reliés comme une prédiction.
+
+Les valeurs sans date exploitable, hors domaine d’âge, signalées, suspendues ou associées à une autre référence ne sont pas tracées. Le tableau repliable sous les courbes les indique explicitement. Les anciens résultats sans IMC restent sans point IMC. Les tracés historiques de Z-scores restent disponibles dans leur section séparée. Ces graphiques sont dans le suivi web ; les PDF dédiés conservent les tableaux de scores, sans ces nouveaux graphiques.
+
+## Centiles — 3.1.0, 18 octobre 2026
+
+Les nouveaux calculs affichent aussi **P**, le centile dans la population de référence OMS pour chaque indicateur. P 10 signifie qu’environ 10 % des valeurs de cette référence sont inférieures. L’aide i près du titre des résultats explique cette lecture. Le centile utilise le score avant arrondi : deux Z-scores affichés avec les mêmes deux décimales peuvent avoir des centiles légèrement différents.
+
+Le centile est fourni entre −3 et +3. **P —** indique un Z-score hors de cet intervalle ; le Z-score reste affiché. Un indicateur suspendu garde sa raison de suspension. Les anciennes versions qui n’enregistraient pas de centile restent sans P ; elles ne sont pas recalculées automatiquement. PDF et CSV conservent les centiles présents dans les résultats, avec une légende pour les rapports. Le tableau de suivi historique les montre aussi ; ses graphiques restent des trajectoires de Z-scores.
+
+Exemple fictif masculin de 365 jours, 8 500 g, 75 cm couché, sans œdèmes : les centiles affichés sont **P 12,4 ; P 37,8 ; P 8,5 ; P 8,8**, dans l’ordre poids/âge, taille/âge, poids/longueur-taille et IMC/âge. Ces rangs décrivent la référence ; ils complètent les autres mesures et l’évaluation clinique.
+
+## Quatrième indicateur — 3.0.0, 18 octobre 2026
+
+Les nouveaux calculs fournissent aussi l’IMC brut (kg/m²) et le Z-score IMC pour l’âge. Aucun champ supplémentaire n’est nécessaire : le poids, la longueur/taille harmonisée, l’âge et le sexe déjà saisis suffisent. L’aide i près du résultat décrit le calcul. Les libellés IMC indiquent des intervalles de Z-score sans décider d’une prise en charge. Les règles adultes d’IMC ne s’appliquent pas ici.
+
+L’IMC/âge complète les trois indicateurs précédents ; il ne remplace pas un poids/taille indisponible, le périmètre brachial mesuré ni l’examen clinique. Le poids/taille reste non calculé hors de sa propre plage, même si l’IMC/âge est disponible. Les œdèmes et la mesure debout avant neuf mois suspendent aussi l’IMC. Les anciens résultats restent à trois indicateurs ; dans une liste mixte, la colonne IMC précise qu’il est absent de leur version enregistrée.
+
+Les PDF, CSV, sauvegardes et courbes historiques conservent le nouvel indicateur lorsqu’il a été calculé. Un transfert contenant de tels résultats nécessite la version 3.0.0 ou ultérieure sur l’appareil destinataire, y compris avec la copie JSON. Pour le cas fictif masculin de 365 jours, 8 500 g, 75 cm couché, sans œdèmes, l’IMC est 15,11 kg/m² et le Z-score IMC/âge −1,35. Les trois premiers scores restent −1,15 ; −0,31 ; −1,37.
+
+## Limite d’âge — 2.9.16, 18 octobre 2026
+
+Le calcul actuel concerne les enfants avant leur cinquième anniversaire. Avec les dates de naissance et de mesure, cette limite est vérifiée au calendrier, même pendant les années bissextiles. Pour une naissance le 29 février, l’anniversaire est fixé au 1er mars lorsque l’année n’est pas bissextile.
+
+En âge exact en jours, la date de mesure devient nécessaire à 1 826 jours : selon les années traversées, cet âge peut être la veille ou le jour des cinq ans. Le logiciel utilise cette date pour vérifier la limite sans enregistrer une date de naissance déduite. En années/mois, l’âge reste une estimation et doit être inférieur à cinq ans ; ne pas inventer de dates pour contourner un refus. La même règle s’applique au CSV. Les anciens calculs restent consultables et transférables avec leur version de moteur ; un nouveau calcul utilise les règles actuelles.
+
 ## Présentation de l’application — 2.9.15, 17 octobre 2026
 
 À la demande du propriétaire, retrait des mentions Prototype, Bêta, Version de développement et de la mention de relecture médicale à réaliser dans les textes de l’application, en français, anglais et arabe. Le pied de page utilise À propos ; les informations, l’aide, l’impression et les PDF décrivent les repères nutritionnels et leurs limites d’usage. Aucun calcul, schéma de sauvegarde ou droit d’accès modifié. Ce changement éditorial ne constitue pas une nouvelle validation médicale ni une publication. Les preuves historiques et les validations encore ouvertes dans le suivi sont conservées.

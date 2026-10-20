@@ -1,5 +1,9 @@
 # Préparation de l'accès public
 
+## Candidat actuel — 4.0.0, 19 octobre 2026
+
+[Bilan 4.0.0](../../.local/audit/2026-10-19/integration-2007/rapport.md) : paquet local vérifié de 49 fichiers/2 338 913 octets, release `30ae2c9ee544c2bda24da552e70cc46ea8ce35eba430134ec862cc2ca24dba53`. 187 tests et audit numérique combiné réussis ; aucune publication. Les notices/provenances sont techniquement contrôlées, `legalReady: false` ; protocoles/revue métier, essais physiques complémentaires, droits et compte d’hébergement restent à établir avant une autorisation sur ce paquet précis. Le dépôt GitHub relu est privé et le premier commit est signé ; cela ne crée ni hébergement, ni protection du compte hébergeur. Les bilans plus bas sont historiques.
+
 ## Présentation de l’application — 2.9.15, 17 octobre 2026
 
 À la demande du propriétaire, retrait des mentions Prototype, Bêta, Version de développement et de la mention de relecture médicale à réaliser dans les textes de l’application, en français, anglais et arabe. Le pied de page utilise À propos ; les informations, l’aide, l’impression et les PDF décrivent les repères nutritionnels et leurs limites d’usage. Aucun calcul, schéma de sauvegarde ou droit d’accès modifié. Ce changement éditorial ne constitue pas une nouvelle validation médicale ni une publication. Les preuves historiques et les validations encore ouvertes dans le suivi sont conservées.

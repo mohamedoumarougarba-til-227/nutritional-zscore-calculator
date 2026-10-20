@@ -10,9 +10,9 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-    <link rel="stylesheet" href="css/workspace.css" crossorigin="anonymous" integrity="sha256-GabNJMIk79q4hxT1t5tDtXudBJybS9yL21QFN7pOmC0=">
+    <link rel="stylesheet" href="css/workspace.css" crossorigin="anonymous" integrity="sha256-V6PRVfiYYFfbR+/ThrNqaxz92nRXYNQXswOnIFaC18Q=">
     <script src="js/workspace-bootstrap.js" crossorigin="anonymous" integrity="sha256-ODsxT/gjRh463wR2WQULYZ6kiKlAwTezqDC6QgkYN+0="></script>
-    <meta name="zscore-data-integrity" content="{&quot;data/interface-translations.json&quot;:&quot;aaeb04d9e74112937a9c29cf70bfde8e3165ef801fc811dc5f6a2a2d52b18837&quot;,&quot;data/who-manifest.json&quot;:&quot;0c707413e3a5a63d1ce9fe9a28d62d161fc49527ad6b9cfe7b3d8bda790da0b6&quot;,&quot;data/who-official.json&quot;:&quot;4ce52083be714b20fe6df6eefa597cf67531dc31fe842a7befba42016a839701&quot;,&quot;vendor/pdf/Amiri-Regular.ttf&quot;:&quot;ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7&quot;,&quot;vendor/pdf/Amiri-Bold.ttf&quot;:&quot;cfccb794268e7d573d857e6d6a67f89cf8a053e8ffd85dfa0c8ec1bb36fc4827&quot;}">
+    <meta name="zscore-data-integrity" content="{&quot;data/interface-translations.json&quot;:&quot;4185f7a448d0dea55e4c089ad4ae460ea4dd8ba50e5d8158ba9a56e5cc5328b6&quot;,&quot;data/who-manifest.json&quot;:&quot;9667ed4dca4e8d71d1b9ee52e463bad52192e0ebb881779277638e7288872fc7&quot;,&quot;data/who-official.json&quot;:&quot;3f563c1dc59b6a5d7f7521f70536b101687af301d391b8181a54440baf008d40&quot;,&quot;data/who-2007.json&quot;:&quot;712c3905dfad4f2f166a00411da94667f5067df0bd8d3b084478fe169bdd2945&quot;,&quot;data/who-2007-manifest.json&quot;:&quot;2830c14b23fdb9f73e0186e1242aeb570803ec46f35e802b47da338fadb53b78&quot;,&quot;data/LICENSE-anthroplus.txt&quot;:&quot;585e25ef8f5946a52bf2aed68d5becfc38be94a8663aa01c1b31d88aa57f1de3&quot;,&quot;vendor/pdf/Amiri-Regular.ttf&quot;:&quot;ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7&quot;,&quot;vendor/pdf/Amiri-Bold.ttf&quot;:&quot;cfccb794268e7d573d857e6d6a67f89cf8a053e8ffd85dfa0c8ec1bb36fc4827&quot;}">
 </head>
 <body>
     <div id="app-root"><div class="startup"><div class="brand-mark" aria-hidden="true">Z</div><h1>Z-score Niger</h1><p role="status">Chargement… / Loading… / جارٍ التحميل…</p></div></div>
@@ -27,14 +27,17 @@
     <script src="js/models/UserSettings.js" crossorigin="anonymous" integrity="sha256-R1fY6lylyKh+C32L4WzYDp2Kc2HuJQoaoJo/EDTNGZM="></script>
     <script src="js/services/storage-manager.js" crossorigin="anonymous" integrity="sha256-9lahbUFCW38u+HTsqXNswo6mxhFOGzrATPLQCbGAwfg="></script>
     <script src="js/services/export-manager.js" crossorigin="anonymous" integrity="sha256-OYRJT5K8sv6LvhcrJEST/l+yLwx5snEn/XmqL5Zj1xE="></script>
-    <script src="js/services/clinical-engine.js" crossorigin="anonymous" integrity="sha256-rJuexnOkJH7OyzQcYVTdhKw1BArYTdOUQseGk/lWYcQ="></script>
-    <script src="js/services/history-manager.js" crossorigin="anonymous" integrity="sha256-0gsCTYTQZfA58mIwVTGCVFe70tyNSvLRY00DyDXBfXs="></script>
-    <script src="js/services/transfer-manager.js" crossorigin="anonymous" integrity="sha256-tx5DIJC66gjSeUlA2Fgifl8LhpGnXAXoGoiDziU5j7w="></script>
-    <script src="js/services/csv-manager.js" crossorigin="anonymous" integrity="sha256-+8LWWOYr0mZ5PIW3WD+FUwCtMdcrA/TMVv7q2Hc9Wyw="></script>
-    <script src="js/components/growth-chart.js" crossorigin="anonymous" integrity="sha256-xDYbJPzD3dgkOIgrRHxR/gFdRtLZ02mFUTmb5qsTX00="></script>
+    <script src="js/services/clinical-engine.js" crossorigin="anonymous" integrity="sha256-MgA08ntLAZHvdn/iPKXztD00qN87IIylU8I8t9ADqxA="></script>
+    <script src="js/services/reference-2007.js" crossorigin="anonymous" integrity="sha256-0ANqddttv1zeZw1WwQlqn/Z0XHNcv91EAc0lC+9oRNE="></script>
+    <script src="js/services/growth-engine.js" crossorigin="anonymous" integrity="sha256-2WWU0onzPTN4Tn0aYj2hw8fkW9E5kSqu3HTp0ctyk3c="></script>
+    <script src="js/services/history-manager.js" crossorigin="anonymous" integrity="sha256-Q+zUMrS87aC6CZ48pk8pXXGRq3rrzJ2enVjfwSQzBJ0="></script>
+    <script src="js/services/transfer-manager.js" crossorigin="anonymous" integrity="sha256-NtYyJmPQBKJrtsWjEeQU8vXXf5H51ZrlBbXgz5v2rmw="></script>
+    <script src="js/services/csv-manager.js" crossorigin="anonymous" integrity="sha256-kozeWsKB0Erwjo95HOvnAKLP1f/xSor6imk/ZybZuUs="></script>
+    <script src="js/components/lot-analysis.js" crossorigin="anonymous" integrity="sha256-mFCK8t9bDdIAQyo5CDn+QV5/txeM1htE/vP+Yi18biM="></script>
+    <script src="js/components/growth-chart.js" crossorigin="anonymous" integrity="sha256-IatKZx8+acdQgcWqVz14q9IfaSlQJM2ccyb4HwxF4uA="></script>
     <script src="vendor/pdf/jspdf-4.2.1.umd.min.js" crossorigin="anonymous" integrity="sha256-5lUfzcMvCdaFOyxRJtGNAdlEfg2mGKQaEevu4PbCDVQ="></script>
     <script src="vendor/pdf/autotable-5.0.8.min.js" crossorigin="anonymous" integrity="sha256-pl3/LGqClrFq/yTmn3aDzX267UpOwmtQfWhA7ifVRkk="></script>
-    <script src="js/services/pdf-manager.js" crossorigin="anonymous" integrity="sha256-wxUdHJhHI6TWyr6qDaFx33TvqxwMg02S8VmElvLd8LE="></script>
-    <script src="js/workspace-app.js" crossorigin="anonymous" integrity="sha256-TRsebV5Q/EjHvm3E6fsgGE3BERRtbDwJtqwP8Bn6gcE="></script>
+    <script src="js/services/pdf-manager.js" crossorigin="anonymous" integrity="sha256-iNsihgq9xaKlnHNKVQtR7ix+EJy7eq1nuJZJdwT3NAg="></script>
+    <script src="js/workspace-app.js" crossorigin="anonymous" integrity="sha256-BDce0JifhZZUWcAmgK3DYfKPscqirSgjaidFmuOcqnw="></script>
 </body>
 </html>

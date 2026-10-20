@@ -1,8 +1,12 @@
 /** Independent implementation of the published WHO LMS method. Reference data are read-only. */
 class ClinicalEngine {
+    static version = '3.1.0';
+    static indicators = ['weightForAge', 'heightForAge', 'weightForHeight', 'bmiForAge'];
+    static resultIndicators(result) { return this.indicators.slice(0, [3,4].includes(result?.schemaVersion) ? 4 : 3); }
+    static applicable(family,age) { return family==='WHO2006'?this.indicators.slice():age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
     constructor(data) {
         if (data?.schemaVersion !== 1 || !data.referenceVersion) throw new Error('referenceInvalid');
-        for (const key of ['weightForAge', 'heightForAge', 'weightForLength', 'weightForHeight']) {
+        for (const key of ['weightForAge', 'heightForAge', 'weightForLength', 'weightForHeight', 'bmiForAge']) {
             for (const sex of ['M', 'F']) {
                 const rows = data.tables?.[key]?.[sex];
                 const expected = key.includes('Age') ? 1827 : key === 'weightForLength' ? 651 : 551;
@@ -32,7 +36,15 @@ class ClinicalEngine {
         return time / 86400000;
     }
 
-    static normalize(raw) {
+    static beforeFifthBirthday(birthDays, measurementDays) {
+        const anniversary = new Date(birthDays * 86400000);
+        // UTC calendar arithmetic, not an average month. Feb 29 rolls to March 1
+        // in a non-leap year, consistently for date and exact-day input modes.
+        anniversary.setUTCFullYear(anniversary.getUTCFullYear() + 5);
+        return measurementDays < anniversary.getTime() / 86400000;
+    }
+
+    static normalize(raw, { forArchive = false, extended = false } = {}) {
         const ageMode = raw.ageMode || 'months';
         if (raw.measurementDate !== undefined && raw.measurementDate !== '') {
             if (this.dateDays(raw.measurementDate) > this.dateDays(this.today())) throw new Error('dateFuture');
@@ -43,28 +55,37 @@ class ClinicalEngine {
             if (this.dateDays(raw.measurementDate) > this.dateDays(this.today())) throw new Error('dateFuture');
             ageMonths = ageDays / 30.4375;
         } else if (ageMode === 'days') {
-            ageDays = this.numeric(raw.ageDays, 0, 1826, 'ageInvalid');
+            ageDays = this.numeric(raw.ageDays, 0, extended ? 6970 : 1826, 'ageInvalid');
             if (!Number.isInteger(ageDays)) throw new Error('ageInvalid');
             ageMonths = ageDays / 30.4375;
         } else if (ageMode === 'months') {
-            const years = this.numeric(raw.ageYears, 0, 4, 'ageInvalid');
+            const years = this.numeric(raw.ageYears, 0, extended ? 19 : 4, 'ageInvalid');
             const months = this.numeric(raw.ageMonths, 0, 11, 'ageInvalid');
             if (!Number.isInteger(years) || !Number.isInteger(months)) throw new Error('ageInvalid');
             ageMonths = years * 12 + months;
             ageDays = Math.floor(ageMonths * 30.4375 + 0.5);
         } else throw new Error('ageInvalid');
-        if (ageMonths < 0 || ageMonths >= 60 || ageDays < 0) throw new Error('ageInvalid');
+        if (ageMonths < 0 || ageMonths >= (extended ? 229 : 60) || ageDays < 0) throw new Error('ageInvalid');
+        // Archive validation retains the previous accepted domain without
+        // recalculating a stored result. New calculations/CSV use the strict rule.
+        if (!extended && !forArchive && ageMode === 'dates' && !this.beforeFifthBirthday(this.dateDays(raw.birthDate), this.dateDays(raw.measurementDate))) throw new Error('ageInvalid');
+        if (!extended && !forArchive && ageMode === 'days' && ageDays === 1826) {
+            if (!raw.measurementDate) throw new Error('ageBoundaryDateRequired');
+            const measurementDays = this.dateDays(raw.measurementDate);
+            if (!this.beforeFifthBirthday(measurementDays - ageDays, measurementDays)) throw new Error('ageInvalid');
+        }
         if (!['M', 'F'].includes(raw.gender)) throw new Error('sexInvalid');
         if (!['L', 'H'].includes(raw.position)) throw new Error('positionInvalid');
         if (!['n', 'y'].includes(raw.oedema)) throw new Error('oedemaInvalid');
-        const weight = this.numeric(raw.weight, 50, 100000, 'weightInvalid');
-        const height = this.numeric(raw.height, 30, 150, 'heightInvalid');
+        const weight = this.numeric(raw.weight, 50, extended ? 300000 : 100000, 'weightInvalid');
+        const height = this.numeric(raw.height, 30, extended ? 250 : 150, 'heightInvalid');
         if (['name','caseId'].some(key => raw[key] !== undefined && typeof raw[key] !== 'string')) throw new Error('nameInvalid');
         if (raw.visitId !== undefined && (typeof raw.visitId !== 'string' || !raw.visitId || raw.visitId.length > 200)) throw new Error('importInvalid');
         const name = (raw.name || '').trim();
         const caseId = (raw.caseId || '').trim();
         if (name.length > 100 || caseId.length > 100) throw new Error('nameInvalid');
         const child = { ...raw, id: raw.id || 'child_' + crypto.randomUUID(), visitId: raw.visitId || 'visit_' + crypto.randomUUID(), name, caseId, ageMode, ageDays, totalAgeMonths: ageMonths, weight, height, createdAt: raw.createdAt || new Date().toISOString() };
+        if(extended)child.ageDomainVersion=2;
         if (ageMode !== 'months') {
             child.ageYears = Math.floor(ageMonths / 12);
             child.ageMonths = Math.floor(ageMonths % 12);
@@ -108,11 +129,34 @@ class ClinicalEngine {
     static category(key, z) {
         if (key === 'weightForAge') return z < -3 ? 'underweightSevere' : z < -2 ? 'underweightModerate' : 'withinReference';
         if (key === 'heightForAge') return z < -3 ? 'stuntingSevere' : z < -2 ? 'stuntingModerate' : 'withinReference';
+        if (key === 'bmiForAge') return z < -3 ? 'bmiBelow3' : z < -2 ? 'bmiBelow2' : z > 3 ? 'bmiAbove3' : z > 2 ? 'bmiAbove2' : z > 1 ? 'bmiAbove1' : 'bmiWithin';
         return z < -3 ? 'wastingSevere' : z < -2 ? 'wastingModerate' : z > 3 ? 'obesity' : z > 2 ? 'overweight' : z > 1 ? 'riskOverweight' : 'withinReference';
+    }
+
+    static percentile(z) {
+        if (typeof z !== 'number' || !Number.isFinite(z) || Math.abs(z) > 3) return null;
+        // Integrate exp(-t²/2) by its convergent power series on [-3,3].
+        // No external library, lookup approximation or extrapolated tail.
+        let term = z, sum = z;
+        for (let n = 1; n <= 80; n++) {
+            term *= -z * z * (2 * n - 1) / (2 * n * (2 * n + 1));
+            sum += term;
+            if (Math.abs(term) < 1e-16) break;
+        }
+        return 100 * (0.5 + sum / Math.sqrt(2 * Math.PI));
+    }
+
+    static percentileFields(z) {
+        const value = this.percentile(z);
+        return { zscoreRaw:z, percentile:value === null ? null : Math.round(value * 1e6) / 1e6, percentileStatus:value === null ? 'percentileExtreme' : 'percentileCalculated' };
     }
 
     calculate(raw) {
         const child = ClinicalEngine.normalize(raw);
+        return this.calculateNormalized(child);
+    }
+
+    calculateNormalized(child) {
         const warnings = [];
         if (child.ageMode === 'months') warnings.push('estimatedAge');
         let correctedHeight = child.height;
@@ -122,7 +166,8 @@ class ClinicalEngine {
         else if (child.ageDays >= 731 && child.position === 'L') { correctedHeight -= 0.7; warnings.push('heightAdjusted'); }
         if (child.oedema === 'y') warnings.push('oedemaWarning');
         const indicators = {};
-        for (const key of ['weightForAge', 'heightForAge', 'weightForHeight']) {
+        const bmi = child.weight / 1000 / Math.pow(correctedHeight / 100, 2);
+        for (const key of ClinicalEngine.indicators) {
             let error = null;
             if (child.oedema === 'y' && key !== 'heightForAge') error = 'oedemaWarning';
             if (incorrectInfantPosition && key !== 'weightForAge') error = 'infantPosition';
@@ -130,16 +175,16 @@ class ClinicalEngine {
                 if (error) throw new Error(error);
                 const tableKey = key === 'weightForHeight' ? (child.ageDays < 731 ? 'weightForLength' : 'weightForHeight') : key;
                 const axis = key === 'weightForHeight' ? correctedHeight : child.ageDays;
-                const value = key === 'heightForAge' ? correctedHeight : child.weight / 1000;
+                const value = key === 'heightForAge' ? correctedHeight : key === 'bmiForAge' ? bmi : child.weight / 1000;
                 const zRaw = ClinicalEngine.lms(value, this.params(tableKey, child.gender, axis), key !== 'heightForAge');
                 const rounded = Math.round(zRaw * 100) / 100;
                 const zscore = Object.is(rounded, -0) ? 0 : rounded;
                 const flagged = key === 'weightForAge' ? zscore < -6 || zscore > 5 : Math.abs(zscore) > (key === 'heightForAge' ? 6 : 5);
-                indicators[key] = { zscore, classification: ClinicalEngine.category(key, zRaw), flagged, reference: this.data.referenceVersion };
-            } catch (failure) { indicators[key] = { zscore: null, error: failure.message }; }
+                indicators[key] = { zscore, classification: ClinicalEngine.category(key, zRaw), flagged, reference: this.data.referenceVersion, ...ClinicalEngine.percentileFields(zRaw) };
+            } catch (failure) { indicators[key] = { zscore: null, error: failure.message, zscoreRaw:null, percentile:null, percentileStatus:'percentileUnavailable' }; }
         }
         const status = Object.values(indicators).some(v => v.zscore === null) ? 'incomplete' : Object.values(indicators).some(v => v.flagged) ? 'checkMeasures' : 'complete';
-        return { child, result: { id: 'result_' + crypto.randomUUID(), childId: child.id, childName: child.name, schemaVersion: 2, calculatedAt: new Date().toISOString(), referenceVersion: this.data.referenceVersion, engineVersion: '2.0.0', correctedHeight, status, warnings, ...indicators } };
+        return { child, result: { id: 'result_' + crypto.randomUUID(), childId: child.id, childName: child.name, schemaVersion: 3, percentileVersion:1, calculatedAt: new Date().toISOString(), referenceVersion: this.data.referenceVersion, engineVersion: ClinicalEngine.version, correctedHeight, bmi: indicators.bmiForAge.zscore === null ? null : bmi, status, warnings, ...indicators } };
     }
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = { ClinicalEngine };

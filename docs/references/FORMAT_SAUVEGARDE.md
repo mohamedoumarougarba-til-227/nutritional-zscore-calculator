@@ -1,10 +1,32 @@
+# Résultats v4 et domaine étendu — 19 octobre 2026
+
+Les conteneurs de sauvegarde existants ne changent pas de format : JSON v2 et transfert progressif v1. Leur contenu peut toutefois comporter des résultats v4 et des enfants `ageDomainVersion: 2`, qui nécessitent **un lecteur 4.0.0 ou ultérieur**. Les anciens lecteurs les refusent ; conserver le fichier complet, ne pas supprimer des champs pour forcer l’import.
+
+Chaque résultat v4 conserve `referenceFamily`, `referenceVersion`, `ageInMonths`, `applicableIndicators`, le moteur, les mesures harmonisées, le score brut/arrondi et le centile/statut. OMS 2006 dispose de quatre indicateurs ; OMS 2007 de trois avant 121 mois, puis deux. Les champs non applicables restent explicites (`notApplicable: true`, score nul, raison et centile indisponible) et ne sont pas comptés comme erreurs de mesure. Âge, famille, appariement avec l’enfant et liste des indicateurs sont validés avant écriture.
+
+Les schémas 1/2/3 restent conservés et lus sans recalcul. Les versions sont immuables ; les nouveaux identifiants et marqueurs d’import ne changent pas les valeurs d’origine. Les instantanés de travail, y compris les brouillons, restent dans les sessions. Un export CSV de rapport ou de résumé ne remplace jamais la sauvegarde complète.
+
+Les sections antérieures ci-dessous restent utiles pour les modèles précédents.
+
 # Sauvegardes locales
 
-Version de l'application 2.8.0 ; modules et formats de sauvegarde inchangés par rapport à 2.7.2. Aucun compte, service distant ou envoi de dossiers n'est requis. Les copies ne sont pas chiffrées ; les conserver sur un support sûr. Un contrôle d'intégrité ne certifie pas la provenance médicale d'un résultat importé. Guide de parcours : [GUIDE_UTILISATEUR.md](../guides/GUIDE_UTILISATEUR.md). État des preuves et limites : [ETAT_VALIDATION.md](../projet/ETAT_VALIDATION.md).
+Version de l'application 3.1.0. Les conteneurs JSON v2 et progressif v1 sont conservés ; les nouveaux résultats utilisent un schéma de résultat v3. Aucun compte, service distant ou envoi de dossiers n'est requis. Les copies ne sont pas chiffrées ; les conserver sur un support sûr. Un contrôle d'intégrité ne certifie pas la provenance médicale d'un résultat importé. Guide de parcours : [GUIDE_UTILISATEUR.md](../guides/GUIDE_UTILISATEUR.md). État des preuves et limites : [ETAT_VALIDATION.md](../projet/ETAT_VALIDATION.md).
+
+## Métadonnées de centile depuis 3.1.0
+
+`percentileVersion: 1` signale la présence de ces métadonnées dans un résultat v3. Chaque indicateur conserve `zscoreRaw` (score avant arrondi), `percentile` (nombre arrondi à six décimales ou nul) et `percentileStatus` : `percentileCalculated`, `percentileExtreme` ou `percentileUnavailable`. Un score hors de −3 à +3 conserve son score brut et un centile nul. Un indicateur suspendu conserve deux valeurs nulles et son erreur. Le contrôle d’import vérifie la cohérence avec le Z-score affiché, sa catégorie et le centile ; il ne recalcule pas les mesures du patient.
+
+Les résultats antérieurs sans `percentileVersion` restent valides et inchangés. Le lecteur 3.0.0 accepte le schéma v3 mais n’affiche pas ces centiles ; le passage JSON 3.1 → 3.0 → 3.1 a été vérifié sans perte de ces champs. L’affichage des centiles requiert 3.1.0. Les conteneurs et les limites précédentes restent applicables.
+
+## Compatibilité des résultats IMC/âge
+
+Un résultat v3 contient les trois indicateurs précédents, `bmiForAge` et `bmi` en kg/m². L’IMC brut est nul lorsque son calcul est suspendu ; l’indicateur conserve alors un score nul et la raison du refus. Les quatre indicateurs participent au statut global. Les anciens résultats v1/v2 sont acceptés et conservés sans ajouter d’indicateur ni recalculer leurs valeurs. Les nouvelles archives peuvent mélanger ces versions.
+
+**Tout fichier contenant des résultats v3 exige l’application 3.0.0 ou ultérieure**, même si le conteneur est nommé JSON « ancien format ». Les lecteurs précédents refusent ce schéma plutôt que de supprimer silencieusement l’IMC. La version de résultat et la version du conteneur sont deux notions différentes. Les anciens fichiers sans IMC restent pris en charge.
 
 ## Choisir une copie
 
-**Exporter la sauvegarde complète** produit un fichier `.zscore`, lu progressivement par les versions 2.5.0 et ultérieures. L'archive complète peut dépasser 50 MiB ; ce cas est vérifié automatiquement. **Copie JSON (ancien format)** conserve le format v2 pour les petits transferts avec un lecteur ancien, dans la limite de 50 MiB. Le format progressif garde les mêmes enregistrements avec moins de mise en forme ; ce gain de taille n'est pas une compression.
+**Exporter la sauvegarde complète** produit un fichier `.zscore`, avec le conteneur progressif introduit en 2.5.0 ; la présence de résultats IMC impose toutefois un lecteur 3.0.0 ou ultérieur. L'archive complète peut dépasser 50 MiB ; ce cas est vérifié automatiquement. **Copie JSON (ancien format)** conserve le conteneur v2 pour les petits transferts, dans la limite de 50 MiB et avec la même exigence de lecteur pour les résultats IMC. Le format progressif garde les mêmes enregistrements avec moins de mise en forme ; ce gain de taille n'est pas une compression.
 
 Ne pas renommer `.zscore` en JSON pour un ancien lecteur. Préparer un import, vérifier les effectifs affichés puis confirmer. Les identifiants de fiches, résultats et versions sont renouvelés ; les liens et identifiants de visites restent cohérents. Les scores ne sont pas recalculés, les résultats sont marqués importés et les préférences locales actuelles ne sont pas remplacées. Les doublons déjà importés sont signalés ; l'utilisateur peut choisir de conserver une nouvelle copie.
 

@@ -29,7 +29,7 @@ function renderIntegrity(html,assets){
         const clean=tag.replace(/\s+integrity="[^"]*"/g,'').replace(/>$/,m=>/\bcrossorigin=/.test(tag)?m:' crossorigin="anonymous"'+m);
         return clean.slice(0,-1)+' integrity="sha256-'+Buffer.from(assets[file],'hex').toString('base64')+'">';
     });
-    const pins=Object.fromEntries(['data/interface-translations.json','data/who-manifest.json','data/who-official.json',...require('../../src/js/services/pdf-manager.js').PDFManager.fontPaths].map(p=>[p,assets[p]]));
+    const pins=Object.fromEntries(['data/interface-translations.json','data/who-manifest.json','data/who-official.json','data/who-2007.json','data/who-2007-manifest.json','data/LICENSE-anthroplus.txt',...require('../../src/js/services/pdf-manager.js').PDFManager.fontPaths].map(p=>[p,assets[p]]));
     if(Object.values(pins).some(hash=>!hash))throw new Error('Missing initial data asset');
     const meta='<meta name="zscore-data-integrity" content="'+JSON.stringify(pins).replace(/"/g,'&quot;')+'">';
     if(/<meta name="zscore-data-integrity"[^>]*>/.test(html))return html.replace(/<meta name="zscore-data-integrity"[^>]*>/,meta);

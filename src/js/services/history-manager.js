@@ -194,39 +194,69 @@ class HistoryManager {
     }
     static checkChild(child) {
         if (!child || typeof child.id !== 'string' || !child.id || child.id.length > 200 || typeof child.name !== 'string' || child.name.length > 100) throw new Error('importInvalid');
-        for (const [key, min, max] of [['weight', 50, 100000], ['height', 30, 150]]) ClinicalEngine.numeric(child[key], min, max, 'importInvalid');
+        if(child.ageDomainVersion!==undefined&&child.ageDomainVersion!==2)throw new Error('importVersion');
+        const extended=child.ageDomainVersion===2;
+        for (const [key, min, max] of [['weight', 50, extended?300000:100000], ['height', 30, extended?250:150]]) ClinicalEngine.numeric(child[key], min, max, 'importInvalid');
         if (!['M', 'F'].includes(child.gender)) throw new Error('importInvalid');
-        if (child.ageMode) ClinicalEngine.normalize(child);
+        if (child.ageMode) {
+            const normalized=ClinicalEngine.normalize(child, { forArchive: true,extended });
+            if(extended&&(normalized.ageDays!==child.ageDays||normalized.totalAgeMonths!==child.totalAgeMonths))throw new Error('importInvalid');
+        }
         else {
             ClinicalEngine.numeric(child.ageYears, 0, 5, 'importInvalid');
             ClinicalEngine.numeric(child.ageMonths, 0, 11, 'importInvalid');
         }
+    }
+    static checkPair(child,result){
+        if(result?.schemaVersion!==4)return;
+        if(child.ageDomainVersion!==2||result.ageInMonths!==child.totalAgeMonths||result.referenceFamily!==(child.totalAgeMonths<60?'WHO2006':'WHO2007'))throw new Error('importInvalid');
     }
     static checkResult(result, children) {
         if (!result || typeof result.id !== 'string' || !result.id || result.id.length > 200 || !children.has(result.childId)) throw new Error('importInvalid');
         if (typeof result.calculatedAt !== 'string' || !Number.isFinite(Date.parse(result.calculatedAt))) throw new Error('importInvalid');
         for (const key of ['status','referenceVersion','engineVersion']) if (result[key] !== undefined && (typeof result[key] !== 'string' || result[key].length > 300)) throw new Error('importInvalid');
         if (result.warnings !== undefined && (!Array.isArray(result.warnings) || result.warnings.length > 50 || result.warnings.some(w => typeof w !== 'string' || w.length > 200))) throw new Error('importInvalid');
-        if (result.schemaVersion !== undefined && ![1,2].includes(result.schemaVersion)) throw new Error('importVersion');
-        for (const key of ['weightForAge', 'heightForAge', 'weightForHeight']) {
+        if (result.schemaVersion !== undefined && ![1,2,3,4].includes(result.schemaVersion)) throw new Error('importVersion');
+        if (result.percentileVersion !== undefined && result.percentileVersion !== 1) throw new Error('importVersion');
+        if (result.percentileVersion === 1 && ![3,4].includes(result.schemaVersion)) throw new Error('importInvalid');
+        const modern = [2,3,4].includes(result.schemaVersion);
+        const keys = ClinicalEngine.resultIndicators(result);
+        if(result.schemaVersion===4){
+            const age=result.ageInMonths,family=result.referenceFamily;
+            if(result.percentileVersion!==1||typeof age!=='number'||!Number.isFinite(age)||age<0||age>=229||family!==(age<60?'WHO2006':'WHO2007')||!result.referenceVersion?.startsWith(family==='WHO2006'?'WHO-2006-':'WHO-2007-'))throw new Error('importInvalid');
+            if(JSON.stringify(result.applicableIndicators)!==JSON.stringify(ClinicalEngine.applicable(family,age)))throw new Error('importInvalid');
+            for(const key of keys){const excluded=!result.applicableIndicators.includes(key),value=result[key];if(excluded?(value?.notApplicable!==true||value?.zscore!==null||value?.error!==(key==='weightForHeight'?'noWeightForHeight2007':'weightAgeLimit2007')):value?.notApplicable===true)throw new Error('importInvalid');}
+        }
+        if ([3,4].includes(result.schemaVersion) && (!Object.hasOwn(result,'bmi') || result.bmi !== null && (typeof result.bmi !== 'number' || !Number.isFinite(result.bmi) || result.bmi <= 0))) throw new Error('importInvalid');
+        for (const key of keys) {
             const v = result[key];
             if (v !== undefined && v !== null && (typeof v !== 'object' || Array.isArray(v))) throw new Error('importInvalid');
             if (v && v.zscore !== null && (typeof v.zscore !== 'number' || !Number.isFinite(v.zscore))) throw new Error('importInvalid');
             for (const field of ['classification','error','reference']) if (v?.[field] !== undefined && (typeof v[field] !== 'string' || v[field].length > 300)) throw new Error('importInvalid');
             if (v?.flagged !== undefined && typeof v.flagged !== 'boolean') throw new Error('importInvalid');
-            if (result.schemaVersion === 2 && !v) throw new Error('importInvalid');
-            if (result.schemaVersion === 2 && v.zscore !== null) {
-                const categories = {weightForAge:['underweightSevere','underweightModerate','withinReference'],heightForAge:['stuntingSevere','stuntingModerate','withinReference'],weightForHeight:['wastingSevere','wastingModerate','withinReference','riskOverweight','overweight','obesity']};
+            if (modern && !v) throw new Error('importInvalid');
+            if (modern && v.zscore !== null) {
+                const categories = {weightForAge:['underweightSevere','underweightModerate','withinReference'],heightForAge:['stuntingSevere','stuntingModerate','withinReference'],weightForHeight:['wastingSevere','wastingModerate','withinReference','riskOverweight','overweight','obesity'],bmiForAge:['bmiBelow3','bmiBelow2','bmiWithin','bmiAbove1','bmiAbove2','bmiAbove3']};
                 const flagged = key === 'weightForAge' ? v.zscore < -6 || v.zscore > 5 : Math.abs(v.zscore) > (key === 'heightForAge' ? 6 : 5);
                 if (!categories[key].includes(v.classification) || v.flagged !== flagged || v.reference !== result.referenceVersion) throw new Error('importInvalid');
             }
-            if (result.schemaVersion === 2 && v.zscore === null && !v.error) throw new Error('importInvalid');
+            if (modern && v.zscore === null && !v.error) throw new Error('importInvalid');
+            if (result.percentileVersion === 1) {
+                if (v.zscore === null) {
+                    if (v.zscoreRaw !== null || v.percentile !== null || v.percentileStatus !== 'percentileUnavailable') throw new Error('importInvalid');
+                } else {
+                    if (typeof v.zscoreRaw !== 'number' || !Number.isFinite(v.zscoreRaw) || Math.round(v.zscoreRaw * 100) / 100 !== v.zscore || ClinicalEngine.category(key,v.zscoreRaw) !== v.classification) throw new Error('importInvalid');
+                    const expected = ClinicalEngine.percentileFields(v.zscoreRaw);
+                    if (v.percentile !== expected.percentile || v.percentileStatus !== expected.percentileStatus) throw new Error('importInvalid');
+                }
+            }
         }
-        if (result.schemaVersion === 2) {
-            const indicators = ['weightForAge','heightForAge','weightForHeight'].map(k => result[k]);
+        if (modern) {
+            const indicators = (result.schemaVersion===4?result.applicableIndicators:keys).map(k => result[k]);
             const expectedStatus = indicators.some(v => v.zscore === null) ? 'incomplete' : indicators.some(v => v.flagged) ? 'checkMeasures' : 'complete';
             if (result.status !== expectedStatus || !result.referenceVersion || !result.engineVersion) throw new Error('importInvalid');
         }
+        if ([3,4].includes(result.schemaVersion) && (result.bmiForAge.zscore === null ? result.bmi !== null : result.bmi === null)) throw new Error('importInvalid');
     }
     static checkWorkspace(workspace) {
         if (!workspace || workspace.version !== 1 || !Array.isArray(workspace.batch) || workspace.batch.length > 5000) throw new Error('importInvalid');
@@ -240,6 +270,7 @@ class HistoryManager {
             if (!entry || typeof entry !== 'object' || !entry.child) throw new Error('importInvalid');
             HistoryManager.checkChild(entry.child);
             if (entry.result) HistoryManager.checkResult(entry.result, new Set([entry.child.id]));
+            HistoryManager.checkPair(entry.child,entry.result);
         }
     }
     async prepareImport(text) {
@@ -270,7 +301,8 @@ class HistoryManager {
         for (const child of records.children) HistoryManager.checkChild(child);
         const children = new Set(records.children.map(c => c.id));
         const results = new Set(records.results.map(r => r.id));
-        for (const result of records.results) HistoryManager.checkResult(result, children);
+        const childrenById=new Map(records.children.map(c=>[c.id,c]));
+        for (const result of records.results) {HistoryManager.checkResult(result, children);HistoryManager.checkPair(childrenById.get(result.childId),result);}
         for (const session of records.sessions) {
             if (typeof session.name !== 'string' || !Number.isFinite(Date.parse(session.createdAt))) throw new Error('importInvalid');
             if (!Array.isArray(session.children) || !Array.isArray(session.results) || session.children.some(id => !children.has(id)) || session.results.some(id => !results.has(id))) throw new Error('importInvalid');

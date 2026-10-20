@@ -38,5 +38,11 @@
   "assets/icons/icon-152.png",
   "assets/icons/icon-192.png",
   "assets/icons/icon-384.png",
-  "assets/icons/icon-512.png"
+  "assets/icons/icon-512.png",
+  "js/components/lot-analysis.js",
+  "data/who-2007.json",
+  "data/who-2007-manifest.json",
+  "data/LICENSE-anthroplus.txt",
+  "js/services/reference-2007.js",
+  "js/services/growth-engine.js"
 ]

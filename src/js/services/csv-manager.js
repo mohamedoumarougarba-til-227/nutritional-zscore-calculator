@@ -1,5 +1,8 @@
 class CSVManager {
-    static parse(text) {
+    static summary(model) {
+        return '\uFEFF'+LotAnalysis.csvRows(model).map(row=>row.map(CSVManager.cell).join(',')).join('\r\n');
+    }
+    static parse(text, {extended=false}={}) {
         text = String(text).replace(/^\uFEFF/, '');
         if (new TextEncoder().encode(text).length > 2_000_000) throw new Error('csvTooLarge');
         const delimiter = text.split(/\r?\n/, 1)[0].includes(';') ? ';' : ',';
@@ -32,7 +35,7 @@ class CSVManager {
         return rows.map(values => {
             if (values.length !== headers.length) throw new Error('csvInvalid');
             const raw = Object.fromEntries(headers.map((k, i) => [k, values[i].trim()]));
-            return ClinicalEngine.normalize(raw);
+            return ClinicalEngine.normalize(raw,{extended});
         });
     }
     static cell(value) {
@@ -41,9 +44,12 @@ class CSVManager {
     }
     static results(entries) {
         const keys = ['weightForAge', 'heightForAge', 'weightForHeight'];
-        const header = ['name', 'caseId', 'visitId', 'ageMode', 'ageDays', 'measurementDate', 'weight_g', 'height_cm', 'gender', 'position', 'oedema', ...keys, ...keys.map(k => k + '_flag'), 'status', 'reference', 'engineVersion', 'calculatedAt'];
+        const percentileKeys=[...keys,'bmiForAge'];
+        const header = ['name', 'caseId', 'visitId', 'ageMode', 'ageDays', 'measurementDate', 'weight_g', 'height_cm', 'gender', 'position', 'oedema', ...keys, ...keys.map(k => k + '_flag'), 'status', 'reference', 'engineVersion', 'calculatedAt', 'bmi_kg_m2', 'bmiForAge', 'bmiForAge_flag', 'bmiForAge_error',...percentileKeys.map(k=>k+'_zscore_raw'),...percentileKeys.map(k=>k+'_percentile'),...percentileKeys.map(k=>k+'_percentile_status'),'reference_family','age_in_months',...percentileKeys.map(k=>k+'_not_applicable')];
         const rows = entries.map(({child:c, result:r}) => [c.name, c.caseId, c.visitId, c.ageMode, c.ageDays, c.measurementDate, c.weight, c.height, c.gender, c.position, c.oedema,
-            ...keys.map(k => r?.[k]?.zscore), ...keys.map(k => r?.[k]?.flagged ? 1 : 0), r?.status || (r?'legacy':'not-calculated'), r?.referenceVersion || 'legacy-unverified', r?.engineVersion || '', r?.calculatedAt]);
+            ...keys.map(k => r?.[k]?.zscore), ...keys.map(k => r?.[k]?.flagged ? 1 : 0), r?.status || (r?'legacy':'not-calculated'), r?.referenceVersion || 'legacy-unverified', r?.engineVersion || '', r?.calculatedAt,
+            [3,4].includes(r?.schemaVersion)?r.bmi:'',[3,4].includes(r?.schemaVersion)?r.bmiForAge?.zscore:'',[3,4].includes(r?.schemaVersion)&&typeof r.bmiForAge?.zscore==='number'?(r.bmiForAge.flagged?1:0):'',[3,4].includes(r?.schemaVersion)?r.bmiForAge?.error:'',
+            ...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.zscoreRaw:''),...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.percentile:''),...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.percentileStatus:''),r?.referenceFamily||'',r?.ageInMonths??'',...percentileKeys.map(k=>r?.schemaVersion===4?(r[k]?.notApplicable?1:0):'')]);
         return '\uFEFF' + [header, ...rows].map(row => row.map(CSVManager.cell).join(',')).join('\r\n');
     }
 }

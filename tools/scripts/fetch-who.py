@@ -4,7 +4,7 @@ import datetime, hashlib, json, pathlib, urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PIN = 'b776d8a12b1c97369c748b561159fd2ec4f4db58'
 OUT = ROOT / '.local' / 'audit' / 'imports-who'
-FILES = ['data-raw/growthstandards/' + f for f in ('weianthro.txt', 'lenanthro.txt', 'wfhanthro.txt', 'wflanthro.txt')]
+FILES = ['data-raw/growthstandards/' + f for f in ('weianthro.txt', 'lenanthro.txt', 'wfhanthro.txt', 'wflanthro.txt', 'bmianthro.txt')]
 FILES += ['R/z-score-helper.R', 'R/z-score-weight-for-lenhei.R', 'R/z-score-length-for-age.R', 'R/z-score-weight-for-age.R', 'R/z-score.R', 'tests/testthat/test-zscore-weight-for-age.R', 'tests/testthat/test-zscore-length-for-age.R', 'tests/testthat/test-zscores.R', 'tests/testthat/test-zscore-weight-for-lenhei.R', 'LICENSE.md']
 OUT.mkdir(parents=True, exist_ok=True)
 manifest = []

@@ -1,8 +1,11 @@
 # Z-score Niger
 
-Application web gratuite et sans compte pour calculer trois indicateurs nutritionnels OMS, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
+Application web gratuite et sans compte pour calculer les indicateurs de croissance OMS selon l’âge, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
 
-Version de l’interface : 2.9.15. Le calcul et les sauvegardes sont exécutés dans le navigateur. Aucun serveur de données patients n’est configuré.
+Version de l’interface et du moteur combiné : **4.0.0**. OMS 2006 avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, avec poids/âge avant 121 mois. Les domaines propres à chaque indicateur sont respectés ; aucun poids/taille n’est extrapolé après cinq ans. Centiles entre −3 et +3 pour les nouveaux calculs.
+
+Les anciens résultats restent conservés sans recalcul. Les nouveaux résultats v4 et le domaine d’âge étendu nécessitent un lecteur 4.0.0 ou ultérieur, y compris en JSON. Le calcul, les sauvegardes, les courbes et les résumés de lots restent locaux ; aucun serveur de données patients n’est configuré. Les lots et les courbes distinguent les références OMS 2006/2007.
+
 
 ## Utilisation locale
 
@@ -11,6 +14,7 @@ Node.js 20 ou ultérieur. Les outils de lancement et de construction utilisent l
 - npm start : vérifie la release puis lance le serveur local (port 8000 par défaut ; variable PORT pour le modifier).
 - npm run check:release : vérifie les empreintes des ressources.
 - npm run build:release : régénère les manifestes et le worker après modification.
+- npm run audit:clinical : compare le moteur combiné aux preuves R OMS 2006/2007 conservées localement ; aucune validation médicale automatique.
 - npm run audit:licenses : vérifie la provenance et les notices requises.
 - npm run prepare:public : produit un nouveau paquet local, sans le publier.
 
@@ -21,7 +25,8 @@ Les bibliothèques PDF et polices nécessaires hors ligne sont intégrées à sr
 - src/ : uniquement l’application active.
 - [docs/](docs/README.md) : guides, références et maintenance ; suivi interne dans docs/projet, exclu de Git.
 - tools/scripts/ : outils de construction et de vérification.
-- tools/reference/who/ : provenance et quatre tables OMS brutes nécessaires à la construction.
+- tools/reference/who/ : provenance et cinq tables OMS brutes nécessaires à la construction.
+- tools/reference/who2007/ : provenance, licence et trois tables OMS 2007 pour les plus grands.
 - tools/tests/ : tests locaux, exclus de Git à la demande du propriétaire.
 - .local/ : audits historiques, journaux, paquets, pilote, documents et anciennes sources ; entièrement exclu de Git.
 

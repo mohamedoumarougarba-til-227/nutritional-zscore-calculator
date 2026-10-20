@@ -1,6 +1,6 @@
 # Administrer et mettre à jour Z-score Niger
 
-Guide du 14 octobre 2026. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Les anciens modules admin côté navigateur sont des démonstrations conservées dans les sources, exclues du cache actuel et du paquet public ; leurs identifiants ne doivent pas servir de protection.
+Guide actualisé le 19 octobre 2026. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Les anciens modules admin côté navigateur sont des démonstrations conservées dans les sources, exclues du cache actuel et du paquet public ; leurs identifiants ne doivent pas servir de protection.
 
 ## Environnement et propriété
 
@@ -13,6 +13,10 @@ La licence du code original n'a pas été établie. Conserver les licences tierc
 ## Vérifier les ressources tierces
 
 [DROITS_ET_LICENCES.md](../references/DROITS_ET_LICENCES.md) décrit provenance, mentions conservées et décisions ouvertes. **npm run audit:licenses** vérifie les fichiers exacts et leurs notices sans modifier le projet. Préparation et vérification du paquet font également ce contrôle. Son indicateur technicalPassed peut être vrai alors que legalReady reste faux : clarifier les droits de distribution et la titularité du code avant publication. Aucun changement automatique de licence n'est effectué.
+
+## Portée de l’audit du moteur 4.0.0
+
+`npm run audit:clinical` contrôle maintenant les deux références sur le moteur combiné actuel : 7 652 cas OMS 2006, 3 093 cas de noyau OMS 2007 et 880 entrées en jours. Une preuve OMS 2007 manquante/altérée ou une différence donne un statut technique en échec ; `clinicalReady: false` ne devient pas une validation professionnelle. Les oracles indépendants sont conservés localement, non téléchargés au lancement et exclus de la sélection Git actuelle. Cette commande nécessite donc le dossier local complet, comme les tests. [Preuves et commandes](../../.local/audit/2026-10-19/audit-combine/rapport.md).
 
 ## Préparer une version vérifiable
 
@@ -32,7 +36,7 @@ Les empreintes SHA-256/SRI contrôlent la cohérence des fichiers avec la page r
 
 ## Déploiement, mise à jour et retour arrière
 
-Après validations et feu vert de publication, distribuer les octets du paquet vérifié en une version complète. Désactiver toute transformation automatique des tools/scripts/CSS. Conserver l'ancienne version et l'adresse stable. Vérifier HTTPS, en-têtes, identité de release reçue et protection réelle des droits de publication.
+Après validations et feu vert de publication, distribuer les octets du paquet vérifié en une version complète. Désactiver toute transformation automatique des fichiers JavaScript/CSS. Conserver l'ancienne version et l'adresse stable. Vérifier HTTPS, en-têtes, identité de release reçue et protection réelle des droits de publication.
 
 Dans l'application, une version téléchargée attend l'adoption. **Sauvegarder et mettre à jour** conserve d'abord le travail, puis active la version ; les autres onglets doivent être sauvegardés et fermés. Une incohérence doit laisser l'ancienne version disponible. Une correction/retour arrière est préparée comme une autre version complète, sans effacer caches, journaux ou archives. Confirmer la version après adoption ; remettre des fichiers sur le serveur ne remplace pas automatiquement les sessions déjà ouvertes.
 
@@ -40,8 +44,10 @@ Ne pas changer d'adresse sans prévoir le déplacement volontaire des sauvegarde
 
 ## Sauvegardes et support
 
+Le sélecteur de fichiers et le retour de focus après confirmation/annulation sont vérifiés sur PC dans les trois langues ; les parcours physiques Android restent distincts. [Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md).
+
 Les dossiers restent dans le navigateur ; sauvegarder le code du serveur ne sauvegarde pas le travail des utilisateurs. Rappeler l'export complet sur support indépendant. Les fichiers sont en clair, sans synchronisation patient dans le cloud. Une copie locale et son original restent sur le même appareil ; les deux peuvent être perdus avec celui-ci.
 
 Demander un cas fictif reproductible, version, appareil/navigateur, date, message et étapes. Conserver les preuves ; ne pas collecter un historique réel par défaut. Avant un import ou une récupération, consulter l'aperçu et garder l'export original. Le même fichier importé peut être signalé ; des exports différents du même travail ne constituent pas nécessairement le même fichier.
 
-Les quotas réellement disponibles, fermeture forcée, redémarrage, import via sélecteur, transfert entre téléphones et lecteur d'écran Android restent à vérifier. Utiliser la [grille terrain](../projet/VALIDATION_TERRAIN.md), sans transformer un test automatisé réussi en validation physique.
+Les quotas réellement disponibles, fermeture forcée, redémarrage, import via sélecteur sur Android, transfert entre téléphones et lecteur d'écran Android restent à vérifier. Utiliser la [grille terrain](../projet/VALIDATION_TERRAIN.md), sans transformer un test automatisé réussi en validation physique.
