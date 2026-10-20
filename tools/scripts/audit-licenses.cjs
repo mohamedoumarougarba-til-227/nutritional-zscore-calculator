@@ -46,6 +46,13 @@ function auditLicenses(options={}){
     const gpl=read('COPYING');if(!gpl.equals(read('src/data/LICENSE-anthro.txt')))throw Error('Application GPL text differs');
     const own=read('src/data/LICENSE-TIL.txt');if(!own.includes(gpl)||!own.toString().includes('GNU GPL version 3.'))throw Error('Missing application GPL notice');
     const pack=require('./build-source-archive.cjs').sourceArchive(),dataPack=require('./build-who-source-package.cjs').sourcePackage();
+    // Build hosts may rewrite tracked configuration. Identify changed approved paths,
+    // without printing their content, before rejecting the corresponding-source archive.
+    const recordedPack=json('src/data/zscore-sources.json');
+    const recordedFiles=new Map(recordedPack.files.map(item=>[item.file,item.sha256]));
+    const changedSources=pack.manifest.files.filter(item=>recordedFiles.get(item.file)!==item.sha256).map(item=>item.file);
+    for(const file of recordedFiles.keys())if(!pack.manifest.files.some(item=>item.file===file))changedSources.push(file);
+    if(changedSources.length)throw Error('Changed pinned resource: src/data/zscore-sources.zip; corresponding source differs: '+changedSources.join(', '));
     for(const [file,b]of [['data/zscore-sources.zip',pack.zip],['data/zscore-sources.json',pack.metadata],['data/who-data-sources.zip',dataPack.zip],['data/who-data-sources.json',dataPack.metadata]])verify('src/'+file,{bytes:b.length,sha256:sha(b)});
     if(pack.manifest.files.some(x=>/^\.local\/|^(?:audit|node_modules)\//.test(x.file)||x.file==='src/vendor/pdf/jspdf-4.2.1.umd.min.js'))throw Error('Forbidden corresponding source');
     return {technicalPassed:true,licenseDistributionReady:true,legalReady:false,noticeFamilies:[

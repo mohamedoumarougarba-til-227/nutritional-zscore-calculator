@@ -56,13 +56,13 @@ const RELEASE = {
     "data/LICENSE-TIL.txt": "b1148b5fbd10dfdd1efd7625fdb0959887b1e302b1f8b9a015b59468a5a77f39",
     "data/who-data-sources.zip": "c1930fd2946173b2b712336206b52e5473276c7f8ed525cfeaa050323dd51ce5",
     "data/who-data-sources.json": "aad5dd2ea2fb822df4d13821700d3026795f29057aea439f9d99e6de4b7ad98b",
-    "data/zscore-sources.zip": "2fead15aa18e6b9353af1bf90fcbcc7311bff629a73ee4452cbf0ffce0954c30",
-    "data/zscore-sources.json": "5d81eccc35f0a9c278d7f52e42b855fc8821a11b0511ad3108273e4117297a2e",
+    "data/zscore-sources.zip": "a0e0ea398d1a9d8dde4361d24f42907756eb859737ac06a51e89c8d7c922c73d",
+    "data/zscore-sources.json": "f667bb3e001c1be644fbf6c9fc1c9fc2911352d4816a5f937961eee9d979a111",
     "vendor/pdf/NOTICE-report.txt": "62737eead55cce21047c84826116418612d79ee09ee686d25ae4279ba528b4e0",
     "vendor/pdf/report-provenance.json": "3772c55fc0cea5d50363d27dcad524f3aa0481c7831a514ff43cbed5e67c8652"
   },
   "workerTemplateSHA256": "7e6d76e432dcb20618d0ce00607945c9abd0a9a8d5dcd1cbd4f164d2380f35c7",
-  "id": "53c5410dbfe81a82c9c807681338e1c4a444505b43050c2002a4762bffa781a9"
+  "id": "784b954cf62ebcb86eed5caa88eba1fc1e3ce845983030409fbe8e6d7f4ca6ff"
 };
 /** Verified release cache. Earlier caches, journals and patient archives are never deleted. */
 const STATIC_CACHE_NAME = 'zscore-release-' + RELEASE.id + '-' + self.registration.scope;

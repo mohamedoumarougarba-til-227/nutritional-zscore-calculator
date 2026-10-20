@@ -3,8 +3,8 @@
   "version": "4.1.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3420638,
-  "sha256": "2fead15aa18e6b9353af1bf90fcbcc7311bff629a73ee4452cbf0ffce0954c30",
+  "bytes": 3421367,
+  "sha256": "a0e0ea398d1a9d8dde4361d24f42907756eb859737ac06a51e89c8d7c922c73d",
   "files": [
     {
       "file": ".gitattributes",
@@ -548,8 +548,8 @@
     },
     {
       "file": "tools/scripts/audit-licenses.cjs",
-      "bytes": 7671,
-      "sha256": "e4c444b411500d3cf83f65d1c6d3ef9ac5c0f9a55dd85021e13ec7863d81ec7b"
+      "bytes": 8400,
+      "sha256": "cad87fa45406df4091ddcdc8aa51d7560b4b804fde355dd4e06a38f2d6c0b306"
     },
     {
       "file": "tools/scripts/build-legal.cjs",
