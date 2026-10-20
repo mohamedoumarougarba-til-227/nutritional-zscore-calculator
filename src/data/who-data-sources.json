@@ -1,0 +1,94 @@
+{
+  "format": 1,
+  "file": "who-data-sources.zip",
+  "bytes": 961125,
+  "sha256": "c1930fd2946173b2b712336206b52e5473276c7f8ed525cfeaa050323dd51ce5",
+  "purpose": "Editable WHO reference data and upstream licences; no original application code or patient records",
+  "files": [
+    {
+      "file": "README.txt",
+      "bytes": 1121,
+      "sha256": "99ad36eb7f9653e62789b9ed9c9cee0c4022237386c02f8a51c1154c7a022271"
+    },
+    {
+      "file": "WHO2006/LICENSE.txt",
+      "bytes": 35141,
+      "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2"
+    },
+    {
+      "file": "WHO2006/converted/who-manifest.json",
+      "bytes": 1759,
+      "sha256": "31b73caed1a404d9626dc7536cb2b545bfe45ec421f48459b97e1d0c6d58cb44"
+    },
+    {
+      "file": "WHO2006/converted/who-official.json",
+      "bytes": 416241,
+      "sha256": "3f563c1dc59b6a5d7f7521f70536b101687af301d391b8181a54440baf008d40"
+    },
+    {
+      "file": "WHO2006/originals/bmianthro.txt",
+      "bytes": 120786,
+      "sha256": "78a4364e99303114fb2c458d28d64c6d10ac33832a5d5b2d437bc5cea1c93a0d"
+    },
+    {
+      "file": "WHO2006/originals/lenanthro.txt",
+      "bytes": 100323,
+      "sha256": "709f7a11881451daf7820f022d363d5bdb93746b5361d6bd9218af6ff838e0c2"
+    },
+    {
+      "file": "WHO2006/originals/weianthro.txt",
+      "bytes": 111813,
+      "sha256": "bc15a6a623dd1d5beaeed1497666332aa54bc4ccd15ff9658c487d79694ab77b"
+    },
+    {
+      "file": "WHO2006/originals/wfhanthro.txt",
+      "bytes": 37158,
+      "sha256": "0050d31041c2f7d4f8a34f27e8066fd73a24806835b9e4a0de1a7ee46d54d582"
+    },
+    {
+      "file": "WHO2006/originals/wflanthro.txt",
+      "bytes": 43302,
+      "sha256": "ad470cf41b147bd2a16026e57fd17968df7bf746b9f0bf2ff85df95239643778"
+    },
+    {
+      "file": "WHO2006/upstream-provenance.json",
+      "bytes": 5419,
+      "sha256": "428119006a5897f34cb67bc24f056021f8378e4aa67e889bda3440ee2e5c049e"
+    },
+    {
+      "file": "WHO2007/LICENSE.txt",
+      "bytes": 34904,
+      "sha256": "585e25ef8f5946a52bf2aed68d5becfc38be94a8663aa01c1b31d88aa57f1de3"
+    },
+    {
+      "file": "WHO2007/converted/who-2007-manifest.json",
+      "bytes": 1697,
+      "sha256": "2830c14b23fdb9f73e0186e1242aeb570803ec46f35e802b47da338fadb53b78"
+    },
+    {
+      "file": "WHO2007/converted/who-2007.json",
+      "bytes": 24541,
+      "sha256": "712c3905dfad4f2f166a00411da94667f5067df0bd8d3b084478fe169bdd2945"
+    },
+    {
+      "file": "WHO2007/originals/bfawho2007.txt",
+      "bytes": 10475,
+      "sha256": "70ef3260df08e48ce560c28cff4e733db78fb952cbd881eba63c9d3a15f38a6a"
+    },
+    {
+      "file": "WHO2007/originals/hfawho2007.txt",
+      "bytes": 8775,
+      "sha256": "9ac02aa4908f8ec3c6ba2362a4c7e1356043408b2873548ca22eedc016c235ad"
+    },
+    {
+      "file": "WHO2007/originals/wfawho2007.txt",
+      "bytes": 3779,
+      "sha256": "9234dc640ba54001a9afd42ef15ab675b211a721c8f3c0a07c3431fd9cea0e1c"
+    },
+    {
+      "file": "WHO2007/upstream-provenance.json",
+      "bytes": 1569,
+      "sha256": "233ae5585e961fdd26bb87a7e570374c9bf1bddceb4e2844ed32e4aac329819e"
+    }
+  ]
+}

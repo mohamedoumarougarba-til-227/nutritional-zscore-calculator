@@ -135,3 +135,11 @@ La version 2.3.1 corrige les lots et aperçus sur les écrans étroits ; les bou
 - Inventaire détaillé des droits tiers et des services prévus ; aucune GPL globale appliquée au code propre.
 - Préparation du build statique Vercel et des en-têtes de sécurité, sans installation de dépendances. Publication suspendue tant que les droits et conditions d’hébergement ne sont pas résolus.
 - Le moteur de calcul reste 4.0.0 ; aucun résultat existant recalculé et aucune donnée locale déplacée.
+
+## 4.1.0 — 21 octobre 2026
+
+- Choix explicite de la GPLv3 pour le code original TIL ; COPYING et notices conservés.
+- Sources correspondantes de l’application et tables OMS originales téléchargeables depuis les pages légales FR/EN/AR, également hors ligne.
+- Variante jsPDF dédiée aux rapports, sans modules MD5, ancien RGBColor, images ou HTML inutilisés ; sources lisibles, adaptations et script de reconstruction fournis.
+- Données OMS et moteurs inchangés ; aucune migration ni transmission de dossiers d’enfants.
+- Construction Vercel conditionnée à la cohérence des notices et sources. Hébergement et forfait à contrôler séparément.

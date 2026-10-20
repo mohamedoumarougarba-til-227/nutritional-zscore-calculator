@@ -1,0 +1,13 @@
+export { jsPDF } from './sources/src/jspdf.js';
+import './sources/src/modules/arabic.js';
+import './sources/src/modules/filters.js';
+import './sources/src/modules/setlanguage.js';
+import './sources/src/modules/split_text_to_size.js';
+import './sources/src/modules/standard_fonts_metrics.js';
+import './sources/src/modules/ttfsupport.js';
+import './sources/src/modules/utf8.js';
+import './sources/src/modules/vfs.js';
+import './sources/src/libs/bidiEngine.js';
+import './sources/src/libs/ttffont.js';
+import './sources/src/modules/annotations.js';
+import './sources/src/modules/cell.js';

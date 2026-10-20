@@ -2,7 +2,7 @@
 
 Application web gratuite et sans compte pour calculer les indicateurs de croissance OMS selon l’âge, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
 
-Version de l’interface et du moteur combiné : **4.0.0**. OMS 2006 avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, avec poids/âge avant 121 mois. Les domaines propres à chaque indicateur sont respectés ; aucun poids/taille n’est extrapolé après cinq ans. Centiles entre −3 et +3 pour les nouveaux calculs.
+Version de l’interface : **4.1.0** ; moteur combiné : **4.0.0**. OMS 2006 avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, avec poids/âge avant 121 mois. Les domaines propres à chaque indicateur sont respectés ; aucun poids/taille n’est extrapolé après cinq ans. Centiles entre −3 et +3 pour les nouveaux calculs.
 
 Les anciens résultats restent conservés sans recalcul. Les nouveaux résultats v4 et le domaine d’âge étendu nécessitent un lecteur 4.0.0 ou ultérieur, y compris en JSON. Le calcul, les sauvegardes, les courbes et les résumés de lots restent locaux ; aucun serveur de données patients n’est configuré. Les lots et les courbes distinguent les références OMS 2006/2007.
 
@@ -34,7 +34,7 @@ Les bibliothèques PDF et polices nécessaires hors ligne sont intégrées à sr
 
 [Guide utilisateur](docs/guides/GUIDE_UTILISATEUR.md) · [Guide administrateur](docs/guides/GUIDE_ADMINISTRATEUR.md) · [Sauvegardes](docs/references/FORMAT_SAUVEGARDE.md) · [Mises à jour](docs/maintenance/MISES_A_JOUR.md) · [Sélection Git](docs/maintenance/SYNCHRONISATION_GIT.md).
 
-Les sources des repères et leurs limites sont décrites dans les guides. Les droits de redistribution sont inventoriés dans [Droits et licences](docs/references/DROITS_ET_LICENCES.md) ; aucune nouvelle licence d’ensemble n’est attribuée ici.
+Les sources des repères et leurs limites sont décrites dans les guides. Les droits de redistribution sont inventoriés dans [Droits et licences](docs/references/DROITS_ET_LICENCES.md) ; le code original est sous GNU GPL version 3, avec conservation des licences tierces.
 
 La sélection Git exclut les tests et leurs preuves : npm test et npm run audit:clinical nécessitent le dossier local complet. La préparation Git ne publie ni ne synchronise automatiquement les fichiers.
 
@@ -42,4 +42,10 @@ La sélection Git exclut les tests et leurs preuves : npm test et npm run audit:
 
 Les pages `src/legal.html`, `src/legal-en.html` et `src/legal-ar.html` présentent l’éditeur TIL, la confidentialité, le stockage local, les conditions d’usage et les attributions. Elles sont générées depuis `tools/scripts/legal-content.cjs`, épinglées dans la release et disponibles hors ligne. Après modification de leur contenu, exécuter `node tools/scripts/build-release.cjs`.
 
-Voir [l’audit des droits tiers et services](docs/references/AUDIT_DROITS_DISTRIBUTION.md) avant publication. La préparation Vercel est présente, mais aucun projet distant n’est encore relié : le build de déploiement bloque tant que la distribution n’est pas juridiquement qualifiée. Le dépôt privé ne signifie pas que les ressources envoyées au navigateur sont techniquement invisibles.
+Voir [l’audit des droits tiers et services](docs/references/AUDIT_DROITS_DISTRIBUTION.md) avant publication. La préparation Vercel vérifie les notices et les sources GPL avant de construire le paquet. Les conditions du forfait et les réglages du compte restent un contrôle distinct. Le dépôt privé ne signifie pas que les ressources envoyées au navigateur sont techniquement invisibles.
+
+### Distribution GPL — 21 octobre 2026
+
+Voir [COPYING](COPYING), [NOTICE.md](NOTICE.md) et [Distribution GPL](docs/references/DISTRIBUTION_GPL.md). Les pages légales donnent accès à `data/zscore-sources.zip` (sources et instructions de reconstruction) et `data/who-data-sources.zip` (références originales). Aucun dossier d’enfant, secret ou audit local n’y figure. Le dépôt GitHub privé reste distinct de ces téléchargements.
+
+La variante PDF conserve les rapports FR/EN/AR et utilise les sources épinglées dans `tools/reference/pdf-report`. `node tools/scripts/build-pdf-report.cjs` permet sa reconstruction optionnelle avec esbuild 0.27.2 déjà installé, via `ZSCORE_ESBUILD_PATH` ; aucune dépendance n’est installée par ce script.

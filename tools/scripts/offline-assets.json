@@ -14,7 +14,7 @@
   "js/services/transfer-manager.js",
   "js/services/csv-manager.js",
   "js/services/pdf-manager.js",
-  "vendor/pdf/jspdf-4.2.1.umd.min.js",
+  "vendor/pdf/jspdf-4.2.1-til1.umd.min.js",
   "vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt",
   "vendor/pdf/autotable-5.0.8.min.js",
   "vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt",
@@ -48,5 +48,12 @@
   "css/legal.css",
   "legal.html",
   "legal-en.html",
-  "legal-ar.html"
+  "legal-ar.html",
+  "data/LICENSE-TIL.txt",
+  "data/who-data-sources.zip",
+  "data/who-data-sources.json",
+  "data/zscore-sources.zip",
+  "data/zscore-sources.json",
+  "vendor/pdf/NOTICE-report.txt",
+  "vendor/pdf/report-provenance.json"
 ]

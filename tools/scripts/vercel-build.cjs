@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path');
 const {preparePublic}=require('./prepare-public.cjs');
 const {auditLicenses}=require('./audit-licenses.cjs');
 function build({directory=path.resolve(__dirname,'../../dist'),requireRights=true}={}){
-    if(requireRights&&!auditLicenses().legalReady)throw new Error('Publication suspended: resolve WHO resource distribution rights before deployment. See docs/references/AUDIT_DROITS_DISTRIBUTION.md');
+    if(requireRights&&!auditLicenses().licenseDistributionReady)throw new Error('Publication suspended: complete GPL notices and corresponding sources before deployment. See docs/references/DISTRIBUTION_GPL.md');
     if(fs.existsSync(directory))throw new Error('Output already exists; nothing overwritten');
     const result=preparePublic();
     fs.cpSync(result.output,directory,{recursive:true,errorOnExist:true,force:false});

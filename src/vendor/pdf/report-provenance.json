@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "upstream": "jsPDF",
+  "version": "4.2.1",
+  "variant": "TIL report 1",
+  "upstreamCommit": "4562ce8aa35bd5ecd98cd5e262e3da2af96476f6",
+  "sourceManifestSHA256": "45f96e171e54095a3e9e98bf096d77669a673c22de1896faf13348b143a8e4fd",
+  "builder": {
+    "name": "esbuild",
+    "version": "0.27.2",
+    "target": "es2020"
+  },
+  "localInputs": {
+    "entry.js": "52a1f3f66455cad2de2970f254dec8f23b6de806c8d2f3fb5985c5a3dd34ec4d",
+    "color.js": "18d2140a0c9383dbd43822c2e4fe038eb2ef9550073332fcdb9fdb15b8ff46ef",
+    "security.js": "cf79c41421132d2afe8ccba73c04319830d36c72aa13b26decdb3bc12f7d6956"
+  },
+  "inputs": [
+    "color.js",
+    "entry.js",
+    "security.js",
+    "sources/fflate/esm/browser.js",
+    "sources/src/jspdf.js",
+    "sources/src/libs/AtobBtoa.js",
+    "sources/src/libs/FileSaver.js",
+    "sources/src/libs/bidiEngine.js",
+    "sources/src/libs/console.js",
+    "sources/src/libs/fflate.js",
+    "sources/src/libs/globalObject.js",
+    "sources/src/libs/pdfname.js",
+    "sources/src/libs/ttffont.js",
+    "sources/src/modules/annotations.js",
+    "sources/src/modules/arabic.js",
+    "sources/src/modules/cell.js",
+    "sources/src/modules/filters.js",
+    "sources/src/modules/setlanguage.js",
+    "sources/src/modules/split_text_to_size.js",
+    "sources/src/modules/standard_fonts_metrics.js",
+    "sources/src/modules/ttfsupport.js",
+    "sources/src/modules/utf8.js",
+    "sources/src/modules/vfs.js"
+  ],
+  "excluded": [
+    "Joseph Myers MD5",
+    "upstream RGBColor parser",
+    "PDF encryption implementation",
+    "HTML and image plugins"
+  ],
+  "selected": [
+    {
+      "path": "vendor/pdf/jspdf-4.2.1-til1.umd.min.js",
+      "bytes": 156987,
+      "sha256": "37dca36f46bbad14947aea4a65163ef21881ff86d32ad3a9a39e71cccbc050af"
+    },
+    {
+      "path": "vendor/pdf/NOTICE-report.txt",
+      "bytes": 9591,
+      "sha256": "62737eead55cce21047c84826116418612d79ee09ee686d25ae4279ba528b4e0"
+    }
+  ]
+}

@@ -41,6 +41,7 @@ const content = {
                 'Ces informations et l’usage du service relèvent du droit nigérien, sous réserve des dispositions impératives applicables. En cas de difficulté, contactez TIL pour rechercher une solution amiable avant de saisir la juridiction compétente. Aucune clause ne supprime un droit ou une responsabilité que la loi rend obligatoire.'
             ]],
             ['sources', 'Sources, attributions et licences', [
+                'Le code original de Z-score Niger est distribué sous GNU GPL version 3, sur décision de Tout Informatique Lazaret. Vous pouvez l’utiliser, l’étudier, le modifier et le redistribuer, y compris commercialement, en respectant cette licence. L’archive téléchargeable ci-dessous fournit les sources de la version diffusée et les instructions de reconstruction. Ces droits logiciels ne portent pas sur les dossiers des enfants ni sur les sauvegardes privées.',
                 'Références de croissance : standards OMS 2006 pour les moins de 5 ans et référence OMS 2007 pour les âges admis par chaque indicateur. Ces références de calcul sont distinctes des recommandations de prise en charge nutritionnelle et des protocoles nationaux.',
                 'Les tables LMS sont converties des dépôts officiels WHO Anthro (GPL version 3) et AnthroPlus (GPL version 3 ou ultérieure). Les tables converties, leurs manifestes et les empreintes des sources figurent dans le paquet. Les notices complètes et les sources officielles sont accessibles ci-dessous.',
                 'Les rapports utilisent jsPDF 4.2.1 et AutoTable 5.0.8 sous licence MIT, et les polices Amiri sous SIL Open Font License 1.1. Leurs auteurs et notices sont conservés. Les licences du logiciel n’accordent aucun droit sur les dossiers des enfants ni sur les marques tierces.'
@@ -79,6 +80,7 @@ const content = {
                 'This information and service use are governed by Nigerien law, subject to applicable mandatory provisions. Contact TIL to seek an amicable solution before referring a dispute to the competent court. No clause removes a right or liability that is mandatory by law.'
             ]],
             ['sources', 'Sources, credits and licences', [
+                'The original Z-score Niger code is distributed under GNU GPL version 3 by decision of Tout Informatique Lazaret. You may use, study, modify and redistribute it, including commercially, under that licence. The download below provides the corresponding sources of the distributed version and build instructions. These software rights do not apply to children’s records or private backups.',
                 'Growth references: WHO 2006 standards for children under 5 and the WHO 2007 reference for ages covered by each indicator. Calculation references are separate from nutrition care recommendations and national protocols.',
                 'LMS tables are converted from the official WHO Anthro (GPL version 3) and AnthroPlus (GPL version 3 or later) repositories. Converted tables, manifests and source hashes are in the package. Full notices and official sources are linked below.',
                 'Reports use jsPDF 4.2.1 and AutoTable 5.0.8 under the MIT licence, and Amiri fonts under SIL Open Font License 1.1. Authors and notices are retained. Software licences grant no rights over children’s records or third-party trademarks.'
@@ -117,6 +119,7 @@ const content = {
                 'تخضع هذه المعلومات واستخدام الخدمة لقانون النيجر مع مراعاة الأحكام الإلزامية المعمول بها. تواصل مع TIL للبحث عن تسوية ودية قبل اللجوء إلى المحكمة المختصة. لا يلغي أي شرط حقاً أو مسؤولية يفرضهما القانون.'
             ]],
             ['sources', 'المصادر والإسناد والتراخيص', [
+                'يوزع الكود الأصلي لتطبيق Z-score Niger بموجب GNU GPL الإصدار 3 بقرار من Tout Informatique Lazaret. يجوز استخدامه ودراسته وتعديله وإعادة توزيعه، بما في ذلك تجارياً، مع احترام الترخيص. يوفر الأرشيف أدناه مصادر النسخة الموزعة وتعليمات بنائها. لا تشمل هذه الحقوق البرمجية ملفات الأطفال أو النسخ الاحتياطية الخاصة.',
                 'مراجع النمو: معايير منظمة الصحة العالمية 2006 للأطفال دون الخامسة ومرجع 2007 للأعمار التي يغطيها كل مؤشر. تختلف مراجع الحساب عن توصيات الرعاية التغذوية والبروتوكولات الوطنية.',
                 'حوّلت جداول LMS من مستودعي WHO Anthro الرسمي بترخيص GPL الإصدار 3 وAnthroPlus بترخيص GPL الإصدار 3 أو أحدث. تتضمن الحزمة الجداول المحولة وبياناتها الوصفية وبصمات المصادر. الروابط أدناه توفر الإشعارات الكاملة والمصادر الرسمية.',
                 'تستخدم التقارير jsPDF 4.2.1 وAutoTable 5.0.8 بترخيص MIT وخطوط Amiri بترخيص SIL Open Font License 1.1 مع حفظ أسماء المؤلفين والإشعارات. لا تمنح تراخيص البرمجيات حقوقاً على ملفات الأطفال أو العلامات التجارية للغير.'

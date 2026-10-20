@@ -1,6 +1,6 @@
 /** Public, local-first workspace: no administrator credentials and no remote mutation API. */
 class WorkspaceApp {
-    static version = '4.0.1';
+    static version = '4.1.0';
     static resultIndicators(result) { return result?.schemaVersion===4?result.applicableIndicators:ClinicalEngine.resultIndicators(result); }
     percentileHTML(value,result) {
         if (![3,4].includes(result?.schemaVersion) || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';

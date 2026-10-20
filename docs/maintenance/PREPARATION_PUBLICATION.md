@@ -1,5 +1,7 @@
 # Préparation de l'accès public
 
+> Actualisation du 21 octobre 2026 : le choix GPLv3 et la fourniture des sources remplacent la suspension liée au modèle propriétaire. Voir [Distribution GPL](../references/DISTRIBUTION_GPL.md). Le build Vercel contrôle désormais `licenseDistributionReady`, sans assimiler cette réussite technique à une validation clinique ou à la compatibilité du forfait. Les constats datés ci-dessous restent historiques.
+
 ## Candidat actuel — 4.0.0, 19 octobre 2026
 
 [Bilan 4.0.0](../../.local/audit/2026-10-19/integration-2007/rapport.md) : paquet local vérifié de 49 fichiers/2 338 913 octets, release `30ae2c9ee544c2bda24da552e70cc46ea8ce35eba430134ec862cc2ca24dba53`. 187 tests et audit numérique combiné réussis ; aucune publication. Les notices/provenances sont techniquement contrôlées, `legalReady: false` ; protocoles/revue métier, essais physiques complémentaires, droits et compte d’hébergement restent à établir avant une autorisation sur ce paquet précis. Le dépôt GitHub relu est privé et le premier commit est signé ; cela ne crée ni hébergement, ni protection du compte hébergeur. Les bilans plus bas sont historiques.

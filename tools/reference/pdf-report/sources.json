@@ -1,0 +1,166 @@
+{
+  "jspdfCommit": "4562ce8aa35bd5ecd98cd5e262e3da2af96476f6",
+  "jspdfVersion": "4.2.1",
+  "fflateVersion": "0.8.2",
+  "entries": [
+    "src/jspdf.js",
+    "src/modules/arabic.js",
+    "src/modules/filters.js",
+    "src/modules/setlanguage.js",
+    "src/modules/split_text_to_size.js",
+    "src/modules/standard_fonts_metrics.js",
+    "src/modules/ttfsupport.js",
+    "src/modules/utf8.js",
+    "src/modules/vfs.js",
+    "src/libs/bidiEngine.js",
+    "src/libs/ttffont.js",
+    "src/modules/annotations.js",
+    "src/modules/cell.js"
+  ],
+  "excludedModules": [
+    "src/libs/pdfsecurity.js",
+    "src/libs/rgbcolor.js"
+  ],
+  "files": [
+    {
+      "path": "src/jspdf.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/jspdf.js",
+      "bytes": 181746,
+      "sha256": "3434312514aa563281738622e28899432835fbf742f0e9fccce2e1722c3058f8"
+    },
+    {
+      "path": "src/modules/arabic.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/arabic.js",
+      "bytes": 13100,
+      "sha256": "20c53d28d75973a87129064ba7174e6b2943057d2e768ff8e24fd66dba3756e9"
+    },
+    {
+      "path": "src/modules/filters.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/filters.js",
+      "bytes": 4822,
+      "sha256": "537d4c38416f9d2efca65a7996b341fc82d093b0286d79316fae6417308a8e4f"
+    },
+    {
+      "path": "src/modules/setlanguage.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/setlanguage.js",
+      "bytes": 6765,
+      "sha256": "2e867161f8689b65dc6c533791bd7c3b8c461fb3351cdd905b020d2630267d30"
+    },
+    {
+      "path": "src/modules/split_text_to_size.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/split_text_to_size.js",
+      "bytes": 12587,
+      "sha256": "c225e69b35a9857b3e269c903f6a55f0c87757b9f35b56af9da8f7144e555ee7"
+    },
+    {
+      "path": "src/modules/standard_fonts_metrics.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/standard_fonts_metrics.js",
+      "bytes": 24583,
+      "sha256": "6b32f16a20cfe4a73de8430b885b3203222b2705b0441d88ec48ea8ec03be03a"
+    },
+    {
+      "path": "src/modules/ttfsupport.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/ttfsupport.js",
+      "bytes": 1970,
+      "sha256": "80db0988581ef7e6a508eb126aaa34919438c70a119a65625f1832b622bac77d"
+    },
+    {
+      "path": "src/modules/utf8.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/utf8.js",
+      "bytes": 11370,
+      "sha256": "01c68ecdcf49dbee21e091dc41f57476bad72d91886d7894298136c3a6435acb"
+    },
+    {
+      "path": "src/modules/vfs.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/vfs.js",
+      "bytes": 1740,
+      "sha256": "6a1b0325d0e625631267b893a7f7013fd9ac470221ff94f2fa476595ed176d09"
+    },
+    {
+      "path": "src/libs/bidiEngine.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/bidiEngine.js",
+      "bytes": 38099,
+      "sha256": "18bdc699e171f45cd0f822780df1f3260c23ff9cad4bea157e4b5069489bf866"
+    },
+    {
+      "path": "src/libs/ttffont.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/ttffont.js",
+      "bytes": 63567,
+      "sha256": "e1f6c408efef81bd66dabb9e5d9897a01cb74aeb60f9f4cd4bc3582d5469e6e5"
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/LICENSE",
+      "bytes": 1142,
+      "sha256": "dc388ec35ff463288cdde3588a36fd4ed12a45deff053243b37309acc9ef583b"
+    },
+    {
+      "path": "package.json",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/package.json",
+      "bytes": 4513,
+      "sha256": "856536611c0103535ec8c995c31299fdcc8e67cf052e8a61abe8ab02eebfac4d"
+    },
+    {
+      "path": "src/libs/FileSaver.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/FileSaver.js",
+      "bytes": 5564,
+      "sha256": "90f84f49f622b9be90d1fa2935b265d365a87c22b6212bc7307fdaa000d89fb9"
+    },
+    {
+      "path": "src/libs/globalObject.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/globalObject.js",
+      "bytes": 204,
+      "sha256": "f415ca58e4d1a5ed3f49a3373e6985e25073485e03982845e055d3bbb0ba4b22"
+    },
+    {
+      "path": "src/libs/AtobBtoa.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/AtobBtoa.js",
+      "bytes": 177,
+      "sha256": "ee5e782256c56c70b141655efad186fea39694d34151121e7fb0cab1ec7a7fb0"
+    },
+    {
+      "path": "src/libs/console.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/console.js",
+      "bytes": 814,
+      "sha256": "28d8fa7e5007ec0ee1fc942d5997124e3630378068ae57df1162af325e69d046"
+    },
+    {
+      "path": "src/libs/pdfname.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/pdfname.js",
+      "bytes": 1463,
+      "sha256": "de233630ca6d154dde6066d20e9d2130122e3fb28b48a5a9191a604aa97e179d"
+    },
+    {
+      "path": "src/libs/fflate.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/libs/fflate.js",
+      "bytes": 83,
+      "sha256": "d4957c1138635b8493bbed047bb2a64b23234411dd5935d170125504a50a7f9c"
+    },
+    {
+      "path": "fflate/esm/browser.js",
+      "url": "https://registry.npmjs.org/fflate/-/fflate-0.8.2.tgz",
+      "tarIntegrity": "sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==",
+      "bytes": 89198,
+      "sha256": "8cc1f687e0159e977addb6b85e274dbd11e622cf151f4fcb7b85d49622ea43e7"
+    },
+    {
+      "path": "fflate/LICENSE",
+      "url": "https://registry.npmjs.org/fflate/-/fflate-0.8.2.tgz",
+      "tarIntegrity": "sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==",
+      "bytes": 1069,
+      "sha256": "805f6cb28bb8b6d3a0badd83c93bccd9671fa01a3b4b92b7042b0743325ac243"
+    },
+    {
+      "path": "src/modules/annotations.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/annotations.js",
+      "bytes": 12301,
+      "sha256": "de191d879cd8b7b16e6009eb7d589d42a901d38c05b6c571513a43889776cc27"
+    },
+    {
+      "path": "src/modules/cell.js",
+      "url": "https://raw.githubusercontent.com/parallax/jsPDF/4562ce8aa35bd5ecd98cd5e262e3da2af96476f6/src/modules/cell.js",
+      "bytes": 20260,
+      "sha256": "f728ffadfcfb1f3fee3c8f9747821b156a73841ff5ae2dfc3db0d527ab55d190"
+    }
+  ]
+}

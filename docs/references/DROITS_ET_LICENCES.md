@@ -1,5 +1,7 @@
 # Propriété du code et ressources tierces
 
+> Actualisation du 21 octobre 2026 : le titulaire a choisi la GPLv3 pour le code original. Les conclusions ci-dessous sur une distribution propriétaire sont historiques et remplacées par [Distribution GPL](DISTRIBUTION_GPL.md). Sources téléchargeables, notices conservées et variante PDF dédiée sont mises en œuvre en 4.1.0.
+
 État du 14 octobre 2026. Objectif : accès gratuit au calculateur, sans compte utilisateur, avec maîtrise des mises à jour par son propriétaire. Ce document inventorie les ressources et les décisions encore nécessaires ; il n'attribue aucune nouvelle licence au code du projet.
 
 ## Ce qui est vérifié
