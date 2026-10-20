@@ -410,7 +410,8 @@
     "referenceChartHelpOlder": "Courbes de la référence OMS 2007 pour le sexe du dossier. Taille/âge et IMC/âge de 60 à moins de 229 mois ; poids/âge de 60 à moins de 121 mois. Points issus des mesures et résultats archivés, sans recalcul ni prédiction.",
     "referenceBoth": "Références OMS 2006 et OMS 2007 vérifiées (SHA-256)",
     "sourceWHO2007": "Référence de croissance OMS 2007 (5–19 ans)",
-    "sourceLicense2007": "Licence des données OMS 2007"
+    "sourceLicense2007": "Licence des données OMS 2007",
+    "legalNoticeLink": "Mentions et confidentialité"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -823,7 +824,8 @@
     "referenceChartHelpOlder": "WHO 2007 reference curves for the child’s sex. Height-for-age and BMI-for-age from 60 to under 229 months; weight-for-age from 60 to under 121 months. Points use archived measurements and results, without recalculation or prediction.",
     "referenceBoth": "WHO 2006 and WHO 2007 references verified (SHA-256)",
     "sourceWHO2007": "WHO 2007 growth reference (5–19 years)",
-    "sourceLicense2007": "WHO 2007 data licence"
+    "sourceLicense2007": "WHO 2007 data licence",
+    "legalNoticeLink": "Legal and privacy"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1236,6 +1238,7 @@
     "referenceChartHelpOlder": "منحنيات مرجع 2007 حسب جنس الطفل. الطول ومؤشر كتلة الجسم للعمر من 60 إلى أقل من 229 شهراً؛ والوزن للعمر قبل 121 شهراً. النقاط من القياسات والنتائج المحفوظة دون إعادة حساب أو تنبؤ.",
     "referenceBoth": "تم التحقق من مرجعي 2006 و2007 بواسطة SHA-256",
     "sourceWHO2007": "مرجع النمو 2007 للأعمار من خمس إلى 19 سنة",
-    "sourceLicense2007": "ترخيص بيانات مرجع 2007"
+    "sourceLicense2007": "ترخيص بيانات مرجع 2007",
+    "legalNoticeLink": "المعلومات القانونية والخصوصية"
   }
 }

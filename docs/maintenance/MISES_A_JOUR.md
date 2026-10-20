@@ -127,3 +127,11 @@ Le fonctionnement s’appuie sur le [cycle de vie documenté des service workers
 La version 2.3.0 ajoute les scripts PDF et les polices locales. Les 16 scripts et le CSS portent SRI ; les polices sont aussi épinglées par la page et vérifiées avant génération du rapport. Adoption 2.2.1 → 2.3.0, export de 500 dossiers en trois langues et export arabe après rechargement sans serveur vérifiés. Les anciens caches restent conservés. Preuves : `audit/2026-10-13/pdf-pagine/rapport.md`.
 
 La version 2.3.1 corrige les lots et aperçus sur les écrans étroits ; les boutons d'un aperçu restent accessibles pendant le défilement de son contenu. Adoption depuis 2.3.0, sauvegarde avant mise à jour, reprise en copie de 500 mesures après arrêt confirmé du serveur, export complet et conservation à l'identique des 65 sessions du précédent export vérifiés. Aucun ancien cache supprimé. Les essais intermédiaires locaux ont aussi leurs identifiants de release distincts ; seule la release finale `5a211f902acdb72103741bce75ec3917e16823e8560933431fdfa038b926de6c` est le résultat retenu. Preuves : `audit/2026-10-13/lots-lisibles/rapport.md`.
+
+## 4.0.1 — 20 octobre 2026
+
+- Informations légales, confidentialité, stockage local et conditions d’usage en FR/EN/AR, accessibles depuis le pied de page et disponibles hors ligne.
+- Identité publique Tout Informatique Lazaret et notices des ressources conservées.
+- Inventaire détaillé des droits tiers et des services prévus ; aucune GPL globale appliquée au code propre.
+- Préparation du build statique Vercel et des en-têtes de sécurité, sans installation de dépendances. Publication suspendue tant que les droits et conditions d’hébergement ne sont pas résolus.
+- Le moteur de calcul reste 4.0.0 ; aucun résultat existant recalculé et aucune donnée locale déplacée.

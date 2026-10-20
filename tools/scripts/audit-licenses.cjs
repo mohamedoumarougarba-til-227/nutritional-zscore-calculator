@@ -40,7 +40,7 @@ function auditLicenses(options={}){
         {component:'jsPDF 4.2.1',declaredLicense:'MIT',notice:'src/vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt'},
         {component:'AutoTable 5.0.8',declaredLicense:'MIT',notice:'src/vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt'},
         {component:'Amiri Regular/Bold',declaredLicense:'OFL-1.1',notice:'src/vendor/pdf/OFL.txt'}
-    ],inventory,remaining:['Establish original code ownership and distribution terms','Resolve scope and source obligations for Anthro-derived resources before public distribution','Verify hosting owner access and give explicit publication approval']};
+    ],inventory,distributionReview:{date:'2026-10-20',preferredModel:'proprietary-if-compatible',wholePackageExclusive:false,report:'docs/references/AUDIT_DROITS_DISTRIBUTION.md',issues:['WHO-derived table distribution scope unresolved','jsPDF embedded MD5 notice lacks a particular licence declaration','Vercel Hobby commercial-use restriction; model-training preference unverified']},remaining:['Record original code ownership and distribution terms; do not relicense third-party resources','Resolve scope and source obligations for Anthro-derived resources before public distribution','Clarify embedded jsPDF licence notice before asserting fully cleared rights','Use hosting terms and plan compatible with intended commercial use; verify model-training preference']};
 }
 if(require.main===module){try{console.log(JSON.stringify(auditLicenses(),null,2));}catch(error){console.error(error.message);process.exitCode=1;}}
 module.exports={auditLicenses};

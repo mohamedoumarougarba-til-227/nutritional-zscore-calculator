@@ -91,3 +91,11 @@ Les choix facultatifs du carnet d'évolutions ne doivent pas retarder les valida
 Contrôler la version publique et les octets/pins, HTTPS et les en-têtes ; vérifier que les anciens chemins admin/tables historiques et les chemins audit sont absents. Une URL inconnue ne doit pas exposer un fichier de travail. Vérifier séparément qu'un visiteur ne peut pas publier ou modifier les références ; la lecture du code navigateur n'est pas un droit d'écriture sur l'hébergement.
 
 Avec des dossiers fictifs, installer hors ligne, fermer/rouvrir sans réseau, sauvegarder, exporter, importer sur un second appareil ayant déjà du travail, puis vérifier sa conservation. Tester une adoption de version et un retour à une version préparée, sans suppression de cache ou de données. Documenter URL, release, date, appareil, anomalies et correctifs. Une réponse HTTP locale ne prouve pas cette validation publique.
+
+## Préparation Vercel et mentions — 20 octobre 2026
+
+Les informations légales, de confidentialité, de stockage local, les conditions d’usage et attributions sont préparées en français, anglais et arabe (`src/legal*.html`) et intégrées au paquet hors ligne. Identité publique de Tout Informatique Lazaret reprise des pages TIL, contact `contact@tilbadge.com`. Aucun cookie publicitaire ni outil de mesure d’audience ajouté.
+
+`vercel.json` définit une construction Node sans installation npm, une sortie `dist` limitée au paquet vérifié et les en-têtes CSP, anti-cadrage et confidentialité. La commande `node tools/scripts/vercel-build.cjs` refuse la publication tant que `legalReady` est faux. Voir [audit de distribution](../references/AUDIT_DROITS_DISTRIBUTION.md). Ce refus est attendu et ne doit pas être supprimé pour contourner la décision sur les droits.
+
+Cible prévue : équipe `mohameds-projects-0af41c6a`, dépôt privé `mohamedoumarougarba-til-227/nutritional-zscore-calculator`, branche `main`. Aucun lien Git Vercel actif n’est encore créé. Après résolution des droits, du forfait commercial et des préférences d’entraînement : créer le projet avec cette configuration, relier le dépôt et vérifier un déploiement issu du SHA poussé. Les futurs push sur `main` pourront alors déclencher la production via l’intégration Git native, sans secret de déploiement ajouté au dépôt.

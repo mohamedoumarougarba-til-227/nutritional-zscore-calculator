@@ -44,5 +44,9 @@
   "data/who-2007-manifest.json",
   "data/LICENSE-anthroplus.txt",
   "js/services/reference-2007.js",
-  "js/services/growth-engine.js"
+  "js/services/growth-engine.js",
+  "css/legal.css",
+  "legal.html",
+  "legal-en.html",
+  "legal-ar.html"
 ]

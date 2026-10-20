@@ -39,3 +39,7 @@ Vérifier séparément le compte d'hébergement : contrôle par le propriétaire
 ## Référence OMS 2007 — 19 octobre 2026
 
 Source WHO `anthroplus`, commit `7cfcdb39026e9a55de55732bc3cf14c82261bcf7`. Trois tables brutes épinglées et licence dans `tools/reference/who2007`, transformation standard dans `tools/scripts/build-who2007-data.py`, données/manifestes dans `src/data`. Le paquet distribue `LICENSE-anthroplus.txt`. La source déclare GPL version 3 ou ultérieure ; l’audit technique vérifie les octets et notices. Cela ne clôt pas la décision sur les obligations de redistribution et les droits du code assemblé, ni l’autorisation de publication.
+
+## Revue du 20 octobre 2026
+
+Voir [audit de distribution propriétaire](AUDIT_DROITS_DISTRIBUTION.md) : inventaire des ressources réelles, notices embarquées, GitHub privé et conditions Vercel. La préférence du propriétaire est de garder le code propre propriétaire si les composants le permettent ; aucune GPL globale n’a été appliquée. La qualification des tables OMS et une notice interne de jsPDF restent à résoudre. Le dépôt privé existe et la version 4.0.0 a été synchronisée avec un commit signé ; les constats antérieurs d’absence de Git sont historiques. Aucun projet Vercel ni abonnement payant n’a été créé.

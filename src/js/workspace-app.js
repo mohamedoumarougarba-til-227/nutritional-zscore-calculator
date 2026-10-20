@@ -1,6 +1,6 @@
 /** Public, local-first workspace: no administrator credentials and no remote mutation API. */
 class WorkspaceApp {
-    static version = '4.0.0';
+    static version = '4.0.1';
     static resultIndicators(result) { return result?.schemaVersion===4?result.applicableIndicators:ClinicalEngine.resultIndicators(result); }
     percentileHTML(value,result) {
         if (![3,4].includes(result?.schemaVersion) || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
@@ -333,7 +333,7 @@ class WorkspaceApp {
               <div id="update-notice">${this.updateHTML()}</div>
               <div id="page-content">${this.page === 'single' ? this.singleHTML() : this.page === 'batch' ? this.batchHTML() : this.page === 'history' ? this.historyHTML() : this.referencesHTML()}</div>
               ${this.history.recoveryErrors.length ? `<div class="notice warn" role="alert">${this.t('recoveryDamaged')}</div>` : ''}
-              <footer class="compact-footer"><span>v${WorkspaceApp.version}</span><span data-offline-status>${this.t(this.offlineState)}</span><span class="about-label">${this.t('aboutShort')}</span>${this.toolButton('information','info','show-info',{attrs:'id="app-info-button" data-info="appInfo"'})}</footer>
+              <footer class="compact-footer"><a class="legal-footer-link" href="${this.prefs.language==='ar'?'legal-ar.html':this.prefs.language==='en'?'legal-en.html':'legal.html'}" target="_blank" rel="noopener noreferrer">${this.t('legalNoticeLink')}</a><span>v${WorkspaceApp.version}</span><span data-offline-status>${this.t(this.offlineState)}</span><span class="about-label">${this.t('aboutShort')}</span>${this.toolButton('information','info','show-info',{attrs:'id="app-info-button" data-info="appInfo"'})}</footer>
             </main></div>`;
         this.updateConnection(); this.updateSaveStatus(); this.updateToast();
         if (this.page === 'history') this.renderHistoryList();

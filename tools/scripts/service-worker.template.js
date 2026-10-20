@@ -29,7 +29,8 @@ self.addEventListener('fetch', event => {
     if(request.method!=='GET'||url.origin!==self.location.origin||!url.href.startsWith(self.registration.scope))return;
     event.respondWith((async()=>{
         const cache=await caches.open(STATIC_CACHE_NAME),canonical=url.origin+url.pathname;
-        const target=request.mode==='navigate'?new URL('index.html',self.registration.scope).href:canonical;
+        // A pinned document (legal pages, notices) keeps its own content, also offline.
+        const target=request.mode==='navigate'&&!hashes.has(canonical)?new URL('index.html',self.registration.scope).href:canonical;
         if(hashes.has(target)){
             const cached=await cache.match(target);if(cached)return cached;
             try{const response=await verifiedResponse(target);await cache.put(target,response.clone());return response;}

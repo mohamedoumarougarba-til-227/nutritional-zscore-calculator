@@ -37,3 +37,9 @@ Les bibliothèques PDF et polices nécessaires hors ligne sont intégrées à sr
 Les sources des repères et leurs limites sont décrites dans les guides. Les droits de redistribution sont inventoriés dans [Droits et licences](docs/references/DROITS_ET_LICENCES.md) ; aucune nouvelle licence d’ensemble n’est attribuée ici.
 
 La sélection Git exclut les tests et leurs preuves : npm test et npm run audit:clinical nécessitent le dossier local complet. La préparation Git ne publie ni ne synchronise automatiquement les fichiers.
+
+### Mentions et distribution — 20 octobre 2026
+
+Les pages `src/legal.html`, `src/legal-en.html` et `src/legal-ar.html` présentent l’éditeur TIL, la confidentialité, le stockage local, les conditions d’usage et les attributions. Elles sont générées depuis `tools/scripts/legal-content.cjs`, épinglées dans la release et disponibles hors ligne. Après modification de leur contenu, exécuter `node tools/scripts/build-release.cjs`.
+
+Voir [l’audit des droits tiers et services](docs/references/AUDIT_DROITS_DISTRIBUTION.md) avant publication. La préparation Vercel est présente, mais aucun projet distant n’est encore relié : le build de déploiement bloque tant que la distribution n’est pas juridiquement qualifiée. Le dépôt privé ne signifie pas que les ressources envoyées au navigateur sont techniquement invisibles.

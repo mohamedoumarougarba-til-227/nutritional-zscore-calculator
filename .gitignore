@@ -113,3 +113,14 @@
 !/tools/reference/who2007/hfawho2007.txt
 !/tools/reference/who2007/LICENSE.md
 !/tools/reference/who2007/wfawho2007.txt
+
+# Informations legales et preparation Vercel
+!/docs/references/AUDIT_DROITS_DISTRIBUTION.md
+!/src/css/legal.css
+!/src/legal.html
+!/src/legal-en.html
+!/src/legal-ar.html
+!/tools/scripts/build-legal.cjs
+!/tools/scripts/legal-content.cjs
+!/tools/scripts/vercel-build.cjs
+!/vercel.json
