@@ -1,6 +1,6 @@
 # Préparation du premier commit
 
-Mise à jour du 19 octobre 2026. Le premier commit `f86b2c9` est présent sur `main`. Les évolutions 2.9.16 à 4.0.0 sont locales, non committées et non poussées. Le contrôle de la sélection reste nécessaire avant un prochain commit.
+Mise à jour du 21 octobre 2026. Les évolutions jusqu’à 4.1.0 sont synchronisées sur `main`, notamment la distribution GPLv3 au commit signé `33c9f77`. Le contrôle de la sélection reste nécessaire avant chaque prochain commit.
 
 ## Politique d’inclusion
 
@@ -8,7 +8,7 @@ La liste exacte se trouve dans tools/git-sync-allowlist.json. .gitignore exclut 
 
 Les bibliothèques PDF et polices dans src/vendor/pdf sont nécessaires à l’export hors ligne ; elles sont conservées avec leurs notices. node_modules n’est jamais inclus. package.json et package-lock.json sont des descriptions nécessaires à l’environnement reproductible, et non des dépendances installées. La dépendance fake-indexeddb reste déclarée pour les tests locaux mais son installation n’est pas envoyée.
 
-Sept fichiers sous tools/reference/who sont inclus : downloads.json (métadonnées de provenance), licence et cinq tables OMS brutes, dont bmianthro.txt ajouté pour l’IMC/âge en 3.0.0. tools/scripts/audit-licenses.cjs et la préparation du paquet en dépendent. L’inventaire compte désormais 85 fichiers. Aucun autre fichier d’audit ou de test n’est autorisé.
+Les références OMS 2006/2007, licences, données originales et sources de la variante PDF sont incluses : tools/scripts/audit-licenses.cjs et la préparation du paquet en dépendent. L’inventaire à jour est tools/git-sync-allowlist.json. Aucun autre fichier d’audit ou de test n’est autorisé.
 
 ## Restent sur cet ordinateur
 
@@ -23,3 +23,13 @@ Les commandes npm test et npm run audit:clinical ainsi que les liens vers les pr
 Aucun commit, aucun push, aucune installation, aucune modification des sources applicatives n’est autorisé automatiquement par ce document.
 
 La version 4.0.0 ajoute les données, sources/licence OMS 2007 et les modules de combinaison. Les deux constructeurs de données utilisent Python standard ; le lancement et la release n’installent aucune dépendance. Les preuves/tests locaux restent exclus selon la politique actuelle.
+
+## Liaison Vercel
+
+Le projet `zscore-niger` (`prj_NDSyq5yfLyYBhmzHXPpTkjm3DzjG`), dans l’équipe `mohameds-projects-0af41c6a`, est relié au dépôt privé `mohamedoumarougarba-til-227/nutritional-zscore-calculator`. Le titulaire a autorisé ce dépôt dans l’application GitHub Vercel. La branche de production est `main` ; les push sur cette branche utilisent l’intégration Git native, sans jeton ajouté au dépôt.
+
+Construction : Node 24.x, commande `node tools/scripts/vercel-build.cjs`, installation npm désactivée, sortie `dist`. Le build vérifie les sources/notices GPL et la cohérence du paquet avant distribution. Une modification de documentation incluse dans les sources exige aussi `node tools/scripts/build-release.cjs`, car elle change l’archive correspondante et son empreinte.
+
+L’alias prévu est `https://zscore-niger.vercel.app`. La protection par authentification Vercel est conservée. Une liaison Git réussie ne prouve pas à elle seule le déploiement automatique : contrôler un déploiement dont la source est `git`, le SHA exact du commit poussé, l’état `READY`, puis les ressources réellement servies. Les preuves de ce contrôle restent sous `.local/audit/`, hors dépôt.
+
+Les réglages `gitProviderOptions.createDeployments` et `disableRepositoryDispatchEvents` concernent les événements/statuts GitHub ; ils ne doivent pas être confondus avec une validation du déclenchement des builds Vercel.
