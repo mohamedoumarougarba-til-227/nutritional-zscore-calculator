@@ -33,3 +33,5 @@ Construction : Node 24.x, commande `node tools/scripts/vercel-build.cjs`, instal
 L’alias prévu est `https://zscore-niger.vercel.app`. La protection par authentification Vercel est conservée. Une liaison Git réussie ne prouve pas à elle seule le déploiement automatique : contrôler un déploiement dont la source est `git`, le SHA exact du commit poussé, l’état `READY`, puis les ressources réellement servies. Les preuves de ce contrôle restent sous `.local/audit/`, hors dépôt.
 
 Les réglages `gitProviderOptions.createDeployments` et `disableRepositoryDispatchEvents` concernent les événements/statuts GitHub ; ils ne doivent pas être confondus avec une validation du déclenchement des builds Vercel.
+
+Vercel réécrit `vercel.json` avant le build. La copie de référence `tools/reference/vercel-config.json` conserve les octets revus pour l’archive des sources. Hors environnement Vercel, toute différence entre les deux fichiers bloque la construction : les modifier ensemble lors d’un changement d’hébergement. Les autres fichiers restent vérifiés sans exception.

@@ -8,7 +8,7 @@ const archived=new Set(['src/vendor/pdf/jspdf-4.2.1.umd.min.js']);
 function canonicalHTML(text){return text.replace(/\s+integrity="[^"]*"/g,'').replace(/\s*<meta name="zscore-data-integrity"[^>]*>/g,'');}
 function sourceArchive(){
     const allowlist=JSON.parse(fs.readFileSync(path.join(root,'tools/git-sync-allowlist.json'))).files;
-    const required=['COPYING','NOTICE.md','src/index.html','src/data/LICENSE-TIL.txt','tools/scripts/build-release.cjs','tools/scripts/build-legal.cjs','tools/scripts/build-source-archive.cjs','tools/scripts/build-who-source-package.cjs','tools/scripts/build-pdf-report.cjs','tools/reference/pdf-report/sources.json'];
+    const required=['COPYING','NOTICE.md','src/index.html','src/data/LICENSE-TIL.txt','tools/scripts/build-release.cjs','tools/scripts/build-legal.cjs','tools/scripts/build-source-archive.cjs','tools/scripts/build-who-source-package.cjs','tools/scripts/build-pdf-report.cjs','tools/reference/pdf-report/sources.json','tools/reference/vercel-config.json'];
     for(const file of required)if(!allowlist.includes(file))throw Error('Missing corresponding source: '+file);
     const files={};
     for(const file of allowlist){
@@ -16,6 +16,13 @@ function sourceArchive(){
         if(!/^[\w./-]+$/.test(file)||file.split('/').includes('..')||/^(?:\.local|audit|node_modules)\//.test(file)||/\.(?:sqlite|db|zscore|log|env)$/i.test(file))throw Error('Forbidden source archive entry');
         let target=root;for(const part of file.split('/')){target=path.join(target,part);if(fs.lstatSync(target).isSymbolicLink())throw Error('Symbolic source archive entry');}
         let b=fs.readFileSync(target);if(file==='src/index.html')b=Buffer.from(canonicalHTML(b.toString('utf8')));
+        if(file==='vercel.json'){
+            // Vercel rewrites its root configuration before invoking the build.
+            // Distribute the reviewed configuration, not that generated platform copy.
+            const original=fs.readFileSync(path.join(root,'tools/reference/vercel-config.json'));
+            if(process.env.VERCEL!=='1'&&!b.equals(original))throw Error('Hosting configuration changed: update tools/reference/vercel-config.json with vercel.json');
+            b=original;
+        }
         if(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bgh[pousr]_[A-Za-z0-9]{30,}|\bAKIA[A-Z0-9]{16}\b/.test(b.toString('utf8')))throw Error('Potential secret in source archive: '+file);
         files[file]=b;
     }

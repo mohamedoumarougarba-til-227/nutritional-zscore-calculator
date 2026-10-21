@@ -3,8 +3,8 @@
   "version": "4.1.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3421367,
-  "sha256": "a0e0ea398d1a9d8dde4361d24f42907756eb859737ac06a51e89c8d7c922c73d",
+  "bytes": 3423344,
+  "sha256": "2b88cd8b16beb91e50d2856e63ba54b1ebfe4b9a421c536c520b299c0f06648d",
   "files": [
     {
       "file": ".gitattributes",
@@ -13,8 +13,8 @@
     },
     {
       "file": ".gitignore",
-      "bytes": 6187,
-      "sha256": "bc4e807db047182abb5b9089ee01350516454d6dfa0e41b9edf2732fec4fc886"
+      "bytes": 6225,
+      "sha256": "3512ecb6539bd3ef61d259c8ecbe65fa3ea6e6d33f7aed041e530bb1a794840b"
     },
     {
       "file": "COPYING",
@@ -63,8 +63,8 @@
     },
     {
       "file": "docs/maintenance/SYNCHRONISATION_GIT.md",
-      "bytes": 4864,
-      "sha256": "5405532ad7760c2bf66f7d2d3bbd88cb1af523af31299c6f55b5250d5ced2149"
+      "bytes": 5241,
+      "sha256": "4cd7f7aa7a3a668053dc0b1de67f449e26b21f45b1da54b90acfadfdf81a013a"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",
@@ -348,8 +348,8 @@
     },
     {
       "file": "tools/git-sync-allowlist.json",
-      "bytes": 5937,
-      "sha256": "73f339c54dc6a1485033a9048a8bf684794111da5f63479f92f964102ef9e3ce"
+      "bytes": 5979,
+      "sha256": "b1aa32243942a955aa506770c7172652b310ac38e8f8ada9a628eafa439159cd"
     },
     {
       "file": "tools/reference/pdf-report/color.js",
@@ -487,6 +487,11 @@
       "sha256": "6a1b0325d0e625631267b893a7f7013fd9ac470221ff94f2fa476595ed176d09"
     },
     {
+      "file": "tools/reference/vercel-config.json",
+      "bytes": 837,
+      "sha256": "586a80149de6f664e815aacc77286fc365e85fe1ebcafd70ead02abbff7995d7"
+    },
+    {
       "file": "tools/reference/who/LICENSE.md",
       "bytes": 35141,
       "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2"
@@ -568,8 +573,8 @@
     },
     {
       "file": "tools/scripts/build-source-archive.cjs",
-      "bytes": 4955,
-      "sha256": "8c446f50ae13dea247ed3a916940480fe55696f3724fcbb89cf5b8d4f9c53e69"
+      "bytes": 5494,
+      "sha256": "5b2b99af1cfd4db10b71e719aa0332d7fdb74550d46618b07b2a9420e9e48381"
     },
     {
       "file": "tools/scripts/build-who-data.py",

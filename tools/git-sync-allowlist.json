@@ -107,6 +107,7 @@
     "tools/reference/pdf-report/sources/src/modules/ttfsupport.js",
     "tools/reference/pdf-report/sources/src/modules/utf8.js",
     "tools/reference/pdf-report/sources/src/modules/vfs.js",
+    "tools/reference/vercel-config.json",
     "tools/reference/who/LICENSE.md",
     "tools/reference/who/data-raw__growthstandards__bmianthro.txt",
     "tools/reference/who/data-raw__growthstandards__lenanthro.txt",

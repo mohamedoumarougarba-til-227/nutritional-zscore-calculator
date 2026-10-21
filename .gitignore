@@ -182,3 +182,5 @@
 !/tools/reference/pdf-report/sources/fflate/esm/browser.js
 
 !/docs/references/DISTRIBUTION_GPL.md
+
+!/tools/reference/vercel-config.json
