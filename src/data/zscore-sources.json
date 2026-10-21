@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.0.0",
+  "version": "5.1.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3311725,
-  "sha256": "fe1047970ae6af7a86c9fbfc3017e5f8587b5562d5deef13c477a1eb9fdbb7c3",
+  "bytes": 3321545,
+  "sha256": "224722dd83ffa44fef03d9bb5d8f8054c0e8a288a4129e2e5faec84e8d9be9d9",
   "files": [
     {
       "file": ".gitattributes",
@@ -29,7 +29,7 @@
     {
       "file": "README.md",
       "bytes": 5190,
-      "sha256": "1a0951e0cc5325105d2b236061cc5e849a7ad54d21c90fa3c5354c2884b8c8bb"
+      "sha256": "9975956c1e9289e5209e6f84f4010cb9e5a4cef092fa1fd3674ff9ec04abbec9"
     },
     {
       "file": "SOURCE-README.txt",
@@ -48,8 +48,8 @@
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 6853,
-      "sha256": "597e19f818dc202a40b2421753efe5e8820683efe66a4fd5486ae30c85baca83"
+      "bytes": 7881,
+      "sha256": "445b2db4f4fab0f502fafeb87946dede3c53f1e1accdd4ad365b68e6d7f3fd5d"
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
@@ -158,8 +158,8 @@
     },
     {
       "file": "src/css/workspace.css",
-      "bytes": 39758,
-      "sha256": "684ff7f722e0ed029658039624289ca4043ecb13a8adb633c985adf4618f39b7"
+      "bytes": 44591,
+      "sha256": "c2ea93c0c832957b682947dc6cdd8cc57cbecb36dbdf6586393ce3ef5123d449"
     },
     {
       "file": "src/data/LICENSE-TIL.txt",
@@ -178,8 +178,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 121476,
-      "sha256": "7fbda35d3ab8485f54d5a05a12f152c3483e65f86b6af4a08cacef24ddc5914e"
+      "bytes": 122539,
+      "sha256": "50bf95a28d9cd0bbb875e2d2347fdbea57b1785c114f5a1d238ea52a3b51d2e7"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -208,8 +208,8 @@
     },
     {
       "file": "src/js/components/growth-chart.js",
-      "bytes": 13657,
-      "sha256": "d9b03c83fe5ed937311d1a10c8babb39af99dd208cc3a6c5f11412815e50cedd"
+      "bytes": 14002,
+      "sha256": "851edccbbc37e971d2d76b251ff596e5e310eb0e639309634e80b0ef21a06a8e"
     },
     {
       "file": "src/js/components/lot-analysis.js",
@@ -273,8 +273,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 101971,
-      "sha256": "4ee5dea60598b31d6905cb62b526869eb53d672f24ce5de08f1aab16d45d7a72"
+      "bytes": 104522,
+      "sha256": "5c2620dc715f12b32cbdc74a90532a0ad8b30e4b9b2de83d5db70413ed7bf087"
     },
     {
       "file": "src/js/workspace-bootstrap.js",

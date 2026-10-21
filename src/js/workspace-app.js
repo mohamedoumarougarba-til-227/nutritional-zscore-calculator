@@ -3,7 +3,7 @@ const NutritionUI=typeof module!=='undefined'&&module.exports?require('./service
 const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 class WorkspaceApp {
-    static version = '5.0.0';
+    static version = '5.1.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
@@ -14,7 +14,7 @@ class WorkspaceApp {
     constructor() {
         this.storage = new StorageManager(); this.history = new HistoryManager(this.storage);
         this.state = this.emptyWorkspace(); this.page = 'single'; this.historyPage = 0; this.search = '';
-        this.batchPage = 0;
+        this.batchPage = 0; this.singleEditing = false;
         this.sessions = []; this.preparedImport = null; this.saving = Promise.resolve();
         this.saveState = 'ready'; this.translations = null; this.engine = null; this.offlineState = 'offlineLoading';
         let prefs = {};
@@ -131,6 +131,7 @@ class WorkspaceApp {
             menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
             check: '<path d="m5 12 4 4L19 6"/>',
             close: '<path d="m6 6 12 12M6 18 18 6"/>',
+            edit: '<path d="m16 3 5 5-12 12-6 1 1-6L16 3Z"/><path d="m13 6 5 5"/>',
             save: '<path d="M5 3h12l4 4v14H3V3h2Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/>',
             run: '<path d="m8 4 12 8-12 8V4Z"/>',
             plus: '<path d="M12 4v16M4 12h16"/>',
@@ -341,7 +342,7 @@ class WorkspaceApp {
         this.updateConnection(); this.updateSaveStatus(); this.updateToast();
         if (this.page === 'history') this.renderHistoryList();
         if (this.page === 'history') this.refreshCapacity();
-        if (this.page === 'single' && this.state.single?.child?.caseId) this.renderFollowup().catch(error=>console.warn('Follow-up read failed',error));
+        if (this.page === 'single' && this.state.single?.result) this.renderFollowup().catch(error=>console.warn('Follow-up read failed',error));
         this.enhanceSelects();
         this.updateCSVControls();
         if(focusId)document.getElementById(focusId)?.focus();
@@ -363,23 +364,27 @@ class WorkspaceApp {
             </div><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t('clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
     }
     singleHTML() {
-        return `<div class="workspace-grid"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('calculate','run','',{primary:true,submit:true,attrs:'form="single-form"',showLabel:true,labelKey:'calculateShort'})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div>${this.formHTML('single', this.state.draft)}</section>
-            <section class="card" id="results-card"><div class="card-top"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2>${this.infoButton('centileHelp','percentileLabel')}</div><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
+        const hasResult=!!this.state.single?.result, dashboard=hasResult&&!this.singleEditing;
+        return `<div class="workspace-grid single-workspace${dashboard?' results-view':''}"><section class="card" id="measure-card"${dashboard?' hidden':''}><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('calculate','run','',{primary:true,submit:true,attrs:'form="single-form"',showLabel:true,labelKey:'calculateShort'})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div>${this.formHTML('single', this.state.draft)}</section>
+            <section class="card" id="results-card"><div class="card-top"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2><div class="dashboard-controls">${hasResult?`<button id="single-view-toggle" class="btn" data-action="${dashboard?'edit-measures':'show-results'}" aria-controls="measure-card" aria-expanded="${!dashboard}">${this.icon(dashboard?'edit':'chart')}<span>${this.t(dashboard?'editMeasures':'showResults')}</span></button>`:''}${dashboard?this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'}):''}${this.infoButton('centileHelp','percentileLabel')}</div></div><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
     }
     resultsHTML(entry, stale = false, preview = false) {
         if (!entry?.result) return `<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
         const { child, result } = entry;
-        return `<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(result.status))}</span></div>
-          ${stale ? `<p class="notice warn">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}
-          ${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${WorkspaceApp.resultIndicators(result).map(key => {
+        const status=`<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(result.status))}</span></div>`;
+        const notices=`${stale ? `<p class="notice warn" role="status">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}`;
+        const indicators=WorkspaceApp.resultIndicators(result).map(key => {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
             const category = v?.classification;
             const severe = /Severe|severe|obesity|bmiBelow3|bmiAbove3/.test(category || '');
             return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score">${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
-          }).join('')}
-          ${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}
-          ${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}<div class="scale" aria-hidden="true"><span></span><span></span><span></span></div><div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>
-          ${preview ? '' : `<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true}):''}</div>`}`;
+          }).join('');
+        const warnings=`${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}`;
+        const measures=`<div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>`;
+        if(preview)return `${status}${notices}${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${indicators}${warnings}${measures}`;
+        const value=v=>this.esc(v??this.t('unknown'));
+        const pairs=[['measurementDate',this.calendarDate(child.measurementDate)],['ageDays',child.ageDays],['weight',this.number(child.weight,0)],['height',this.number(child.height,1)],['gender',this.t(child.gender==='M'?'male':'female')],['muac',result.nutrition?.muacMm==null?this.t('unknown'):this.number(result.nutrition.muacMm,1)+' mm']];
+        return `<div class="dashboard-toolbar">${status}<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true}):''}</div></div>${notices}<div class="result-overview"><section class="result-clinical" aria-label="${this.esc(this.t('growthResults'))}">${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3><div class="indicator-grid">${indicators}</div>${warnings}</section><section class="result-record"><h3>${this.t('measurementSummary')}</h3>${child.caseId?`<p class="record-id"><bdi>${value(child.caseId)}</bdi></p>`:''}<dl class="measurement-snapshot">${pairs.map(([key,v])=>`<div><dt>${this.t(key)}</dt><dd>${value(v)}</dd></div>`).join('')}</dl><details class="calculation-details"><summary>${this.t('calculationDetails')}</summary>${measures}</details><div data-single-visits>${child.caseId?'':`<p class="hint">${this.t('caseWithoutId')}</p>`}</div></section></div><section class="dashboard-charts" aria-label="${this.esc(this.t('chartsDashboard'))}"><h3>${this.t('chartsDashboard')}</h3><div data-single-charts></div></section>`;
     }
     nutritionHTML(child,result) {
         const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
@@ -509,7 +514,7 @@ class WorkspaceApp {
         document.getElementById('app-root').addEventListener('submit', async event => {
             event.preventDefault(); this.readForms();
             try {
-                if (event.target.id === 'single-form') { this.state.single = this.engine.calculate(this.state.draft); this.state.draft.visitId = this.state.single.child.visitId; this.state.stale = false; await this.saveImmediate('calculated'); this.render('results-title'); }
+                if (event.target.id === 'single-form') { this.state.single = this.engine.calculate(this.state.draft); this.state.draft.visitId = this.state.single.child.visitId; this.state.stale = false; await this.saveImmediate('calculated'); this.singleEditing=false; this.render('results-title'); }
                 else if (event.target.id === 'batch-form') {
                     const child = GrowthEngine.normalize(this.state.batchDraft);
                     if (this.state.batch.length >= 500) throw new Error('batchLimit');
@@ -604,11 +609,12 @@ class WorkspaceApp {
         else if(action==='stage-detail-page'){const page=Number(button.dataset.page);if(Number.isInteger(page)&&page>=0){this.stagePreviewPage=page;this.renderStagePreview();this.focusPagination('stage-detail-page');}}
         else if(action==='stage-back'&&this.preparedImport)this.showImportPreview(this.preparedImport,this.importOverview.name,this.importOverview.duplicate);
         else if(action==='page'){ this.page=button.dataset.page; if(this.page==='history')this.sessions=await this.history.catalog(); this.render(); document.getElementById('main').focus({preventScroll:true}); }
+        else if(action==='edit-measures'||action==='show-results'){ this.singleEditing=action==='edit-measures'; this.render(this.singleEditing?'single-caseId':'results-title'); }
         else if(action==='save'){ await this.saveImmediate('manual',true); this.toast('manualSaved'); if(this.page==='history'){this.sessions=await this.history.catalog();this.renderHistoryList();await this.refreshCapacity();} }
-        else if(action==='new'){ await this.saveImmediate('beforeNew'); this.state=this.emptyWorkspace();this.state.mode=this.page==='batch'?'batch':'single';this.batchPage=0; this.saveState='ready'; this.render(this.page==='batch'?'batch-caseId':'single-caseId'); }
+        else if(action==='new'){ await this.saveImmediate('beforeNew'); this.state=this.emptyWorkspace();this.singleEditing=false;this.state.mode=this.page==='batch'?'batch':'single';this.batchPage=0; this.saveState='ready'; this.render(this.page==='batch'?'batch-caseId':'single-caseId'); }
         else if(action==='new-visit'){
             const child = this.state.single?.child;if(!child?.caseId)return;
-            await this.saveImmediate('beforeNew');this.state=this.emptyWorkspace();
+            await this.saveImmediate('beforeNew');this.state=this.emptyWorkspace();this.singleEditing=false;
             Object.assign(this.state.draft,{caseId:child.caseId,name:child.name,gender:child.gender,birthDate:child.birthDate || '',ageMode:child.birthDate?'dates':child.ageMode || 'months'});
             this.page='single';await this.saveImmediate('automatic');this.render('single-caseId');
         }
@@ -770,7 +776,7 @@ class WorkspaceApp {
         delete workspace.draft.id;delete workspace.batchDraft.id;
         // Save the restored copy before changing any live fields.
         await this.history.save(workspace,'restoreCopy',true);
-        this.state=workspace;this.batchPage=0;this.checkpoint(false);this.page=workspace.mode==='batch'?'batch':'single';document.getElementById('workspace-dialog').close();this.render('main');this.toast('restored');
+        this.state=workspace;this.singleEditing=!!workspace.stale;this.batchPage=0;this.checkpoint(false);this.page=workspace.mode==='batch'?'batch':'single';document.getElementById('workspace-dialog').close();this.render('main');this.toast('restored');
     }
     async previewImport(file,{decrypted=false}={}){
         if(this.transferBusy||this.cryptoBusy&&!decrypted){this.toast('transferPreparing');return;}
@@ -793,12 +799,13 @@ class WorkspaceApp {
     }
     chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older].filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(!engines.length)engines=[this.engine.young||this.engine];return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('');}
     async renderFollowup(){
-        const child=this.state.single?.child,epoch=this.renderEpoch;if(!child?.caseId)return;
-        const {entries,identityConflict}=await this.history.caseVisits(child.caseId,child.gender,child.birthDate);
-        if(epoch!==this.renderEpoch || this.page!=='single' || this.state.single?.child.caseId!==child.caseId)return;
-        if(entries.length<1&&!identityConflict)return;
-        const target=document.getElementById('single-results');if(target)target.insertAdjacentHTML('beforeend',`<section class="visits"><h3>${this.t('followup')}</h3><p class="hint">${this.t('followupHelp')}</p>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}<p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.t('measurementDate')} : ${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'unknown')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></section>`);
-        if(target)target.querySelector('[data-action="view-case"]').insertAdjacentHTML('beforebegin',this.chartsHTML(entries));
+        const entry=this.state.single,child=entry?.child,epoch=this.renderEpoch;if(!entry?.result)return;
+        const {entries,identityConflict}=child.caseId?await this.history.caseVisits(child.caseId,child.gender,child.birthDate):{entries:[entry],identityConflict:false};
+        if(epoch!==this.renderEpoch || this.page!=='single' || this.state.single!==entry)return;
+        const target=document.getElementById('single-results');if(!target)return;
+        const visits=target.querySelector('[data-single-visits]'),charts=target.querySelector('[data-single-charts]');
+        if(visits&&child.caseId)visits.innerHTML=`<details class="visit-history"><summary>${this.t('followup')} (${this.number(entries.length,0)})</summary><p class="hint">${this.t('followupHelp')}</p><p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'unknown')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></details>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}`;
+        if(charts)charts.innerHTML=this.chartsHTML(entries.length?entries:[entry]);
     }
     updateConnection(){const badge=document.getElementById('connection');if(badge)badge.innerHTML=`<span class="dot" aria-hidden="true"></span>${this.t(navigator.onLine?'online':'offline')}`;}
     updateOfflineStatus(){document.querySelectorAll('[data-offline-status]').forEach(el=>{el.textContent=this.t(this.offlineState);});}

@@ -2,7 +2,7 @@
 
 Application web gratuite et sans compte pour calculer les indicateurs de croissance OMS selon l’âge, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
 
-Version de l’interface : **5.0.0** ; moteur combiné : **4.1.0**. OMS 2006 avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, avec poids/âge avant 121 mois. Les domaines propres à chaque indicateur sont respectés ; aucun poids/taille n’est extrapolé après cinq ans. Centiles entre −3 et +3 pour les nouveaux calculs.
+Version de l’interface : **5.1.0** ; moteur combiné : **4.1.0**. OMS 2006 avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, avec poids/âge avant 121 mois. Les domaines propres à chaque indicateur sont respectés ; aucun poids/taille n’est extrapolé après cinq ans. Centiles entre −3 et +3 pour les nouveaux calculs.
 
 Le calcul, les sauvegardes, les courbes et les résumés de lots restent locaux ; aucun serveur de dossiers patients n’est configuré. Un seul format de sauvegarde complète est pris en charge : `.zscore`, avec protection facultative `.zscore.enc`. L’application comprend PB et aide à l’orientation OMS 6–59 mois, observations cliniques explicites et export agrégé préparatoire DHIS2 sans envoi automatique. Les recommandations proposées restent distinctes des décisions et prescriptions du soignant.
 

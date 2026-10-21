@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.0.0
+# Guide utilisateur — Z-score Niger 5.1.0
 
 ## Démarrer
 
@@ -11,6 +11,12 @@ L’application calcule localement, sans compte ni transmission des dossiers. Ut
 Saisir identifiant et pseudonyme facultatifs, âge, date de mesure, poids **en grammes**, longueur/taille **en cm**, sexe, position et œdèmes bilatéraux. Les œdèmes doivent être renseignés explicitement : aucune absence n’est présumée. Les dates connues sont préférables à l’âge estimé. Le mois moyen OMS compte 30,4375 jours. Le calcul sélectionne OMS 2006 avant 60 mois moyens, OMS 2007 de 60 à moins de 229 mois.
 
 Cliquer **Calculer**. **Sauvegarder** conserve une version explicite ; la sauvegarde automatique protège aussi le travail commencé. L’état à droite du titre distingue prêt, en cours, enregistré et échec. Une mesure changée après calcul rend le résultat à recalculer. Les actions PDF, CSV et impression utilisent les valeurs enregistrées, avec leur référence et date de calcul.
+
+### Tableau de bord après calcul
+
+Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et visites du dossier à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats.
+
+Les groupes de courbes se déplient à la demande. Les graphiques se répartissent sur trois colonnes lorsque la largeur suffit, deux ou une sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les mesures techniques, références et visites restent consultables dans leurs sections dépliables. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
 
 ### Lire les indicateurs
 

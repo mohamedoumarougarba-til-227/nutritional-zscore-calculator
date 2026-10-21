@@ -498,7 +498,13 @@
     "orientationNutritionAssessmentShort": "Bilan nutritionnel",
     "orientationCompleteAssessmentShort": "Bilan à compléter",
     "orientationAgeSpecificShort": "Avis adapté à l’âge",
-    "orientationOutpatientReviewShort": "Revue ambulatoire"
+    "orientationOutpatientReviewShort": "Revue ambulatoire",
+    "editMeasures": "Modifier les mesures",
+    "showResults": "Afficher les résultats",
+    "measurementSummary": "Mesures calculées",
+    "calculationDetails": "Détails du calcul et références",
+    "caseWithoutId": "Ajoutez un identifiant de dossier pour regrouper les visites de cet enfant.",
+    "chartsDashboard": "Courbes et évolution"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -999,7 +1005,13 @@
     "orientationNutritionAssessmentShort": "Nutrition assessment",
     "orientationCompleteAssessmentShort": "Complete assessment",
     "orientationAgeSpecificShort": "Age-specific review",
-    "orientationOutpatientReviewShort": "Outpatient review"
+    "orientationOutpatientReviewShort": "Outpatient review",
+    "editMeasures": "Edit measurements",
+    "showResults": "Show results",
+    "measurementSummary": "Calculated measurements",
+    "calculationDetails": "Calculation details and references",
+    "caseWithoutId": "Add a case identifier to group this child’s visits.",
+    "chartsDashboard": "Growth charts and trends"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1500,6 +1512,12 @@
     "orientationNutritionAssessmentShort": "تقييم تغذوي",
     "orientationCompleteAssessmentShort": "استكمال التقييم",
     "orientationAgeSpecificShort": "تقييم مناسب للعمر",
-    "orientationOutpatientReviewShort": "مراجعة للرعاية الخارجية"
+    "orientationOutpatientReviewShort": "مراجعة للرعاية الخارجية",
+    "editMeasures": "تعديل القياسات",
+    "showResults": "عرض النتائج",
+    "measurementSummary": "القياسات المحسوبة",
+    "calculationDetails": "تفاصيل الحساب والمراجع",
+    "caseWithoutId": "أضف معرّف ملف لتجميع زيارات هذا الطفل.",
+    "chartsDashboard": "منحنيات النمو والتطور"
   }
 }
