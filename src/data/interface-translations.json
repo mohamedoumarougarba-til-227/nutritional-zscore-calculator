@@ -504,7 +504,12 @@
     "measurementSummary": "Mesures calculées",
     "calculationDetails": "Détails du calcul et références",
     "caseWithoutId": "Ajoutez un identifiant de dossier pour regrouper les visites de cet enfant.",
-    "chartsDashboard": "Courbes et évolution"
+    "chartsDashboard": "Courbes et évolution",
+    "settings": "Réglages",
+    "settingsHelp": "Ces préférences sont conservées dans ce navigateur et ne modifient pas vos dossiers.",
+    "exportActions": "Exporter",
+    "newVisitShort": "Nouvelle visite",
+    "viewVersionsShort": "Voir les versions"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -1011,7 +1016,12 @@
     "measurementSummary": "Calculated measurements",
     "calculationDetails": "Calculation details and references",
     "caseWithoutId": "Add a case identifier to group this child’s visits.",
-    "chartsDashboard": "Growth charts and trends"
+    "chartsDashboard": "Growth charts and trends",
+    "settings": "Settings",
+    "settingsHelp": "These preferences are saved in this browser and do not change your records.",
+    "exportActions": "Export",
+    "newVisitShort": "New visit",
+    "viewVersionsShort": "View versions"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1518,6 +1528,11 @@
     "measurementSummary": "القياسات المحسوبة",
     "calculationDetails": "تفاصيل الحساب والمراجع",
     "caseWithoutId": "أضف معرّف ملف لتجميع زيارات هذا الطفل.",
-    "chartsDashboard": "منحنيات النمو والتطور"
+    "chartsDashboard": "منحنيات النمو والتطور",
+    "settings": "الإعدادات",
+    "settingsHelp": "تُحفظ هذه التفضيلات في هذا المتصفح ولا تغيّر ملفات الأطفال.",
+    "exportActions": "تصدير",
+    "newVisitShort": "زيارة جديدة",
+    "viewVersionsShort": "عرض النسخ"
   }
 }

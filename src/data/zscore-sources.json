@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.1.1",
+  "version": "5.2.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3321659,
-  "sha256": "e63bfd488c3459ff650eae57a99a296247a17801f50871c392f0b6ade12d9500",
+  "bytes": 3329243,
+  "sha256": "9b447680674aacc29eece1dd311512432d9d73f70fe4defb7aa12b99c4fb87bf",
   "files": [
     {
       "file": ".gitattributes",
@@ -29,7 +29,7 @@
     {
       "file": "README.md",
       "bytes": 5190,
-      "sha256": "8eec8e7278f7a758dadce0a55ee9690b62f724d54c273864326481d178b5a904"
+      "sha256": "b5af504dd1c85ce1dce073d753f4395c9d4731efd29c625963423710a5c27df0"
     },
     {
       "file": "SOURCE-README.txt",
@@ -48,8 +48,8 @@
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 8071,
-      "sha256": "a934d8539917b30d9ddc8110c839d486fc8603e04a89b124d943c4e7d9433641"
+      "bytes": 8467,
+      "sha256": "58c85ea10828dbb92186e32ec1e4325e33e7660fe50cfeaac7dac9d906311a2f"
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
@@ -158,8 +158,8 @@
     },
     {
       "file": "src/css/workspace.css",
-      "bytes": 44703,
-      "sha256": "93e21d918f4a8479ce8f7440f7f9d8a5d6f8c2245f9428d5a2a39cb8e67679fa"
+      "bytes": 49847,
+      "sha256": "12ce7c4ddac1187dacd476749541a399778b0e336786019adcaed199ebe7caec"
     },
     {
       "file": "src/data/LICENSE-TIL.txt",
@@ -178,8 +178,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 122539,
-      "sha256": "50bf95a28d9cd0bbb875e2d2347fdbea57b1785c114f5a1d238ea52a3b51d2e7"
+      "bytes": 123329,
+      "sha256": "2fdd69ea5680be725fa9b2c6edb3c599864f518c9f4d935ab0d5a895380f7f6c"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -273,8 +273,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 104522,
-      "sha256": "21b9f2b84ae72533d8146fa2d20d94bcae6349357111a3e1dfa3ac47f87b498c"
+      "bytes": 105776,
+      "sha256": "591cf031938de67f56c54f412c1ea1e1b93ded2f2e5a2c9cb1434d1d3ee08b6e"
     },
     {
       "file": "src/js/workspace-bootstrap.js",

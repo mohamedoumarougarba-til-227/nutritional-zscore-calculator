@@ -1,8 +1,8 @@
-# Guide utilisateur — Z-score Niger 5.1.1
+# Guide utilisateur — Z-score Niger 5.2.0
 
 ## Démarrer
 
-Ouvrir l’application par HTTPS ou avec le serveur local. Choisir français, anglais ou arabe et le thème. Cliquer sur le logo Z pour ouvrir/rétracter le menu sur ordinateur. Le mode hors ligne est disponible après le chargement complet signalé en bas. Conserver la même adresse et le même profil de navigateur pour retrouver les dossiers.
+Ouvrir l’application par HTTPS ou avec le serveur local. Dans **Réglages**, choisir français, anglais ou arabe et le thème. Cliquer sur le logo Z pour ouvrir/rétracter le menu sur ordinateur. Le bandeau supérieur et le menu de gauche restent visibles pendant le défilement ; sur une fenêtre basse, le menu possède son propre défilement. Le mode hors ligne est disponible après le chargement complet signalé en bas. Conserver la même adresse et le même profil de navigateur pour retrouver les dossiers.
 
 L’application calcule localement, sans compte ni transmission des dossiers. Utiliser un identifiant ou pseudonyme. Le stockage dans le navigateur n’est pas chiffré et peut être effacé par le navigateur ou une personne ayant accès au profil. Faire des copies sur un support protégé.
 
@@ -14,9 +14,9 @@ Cliquer **Calculer**. **Sauvegarder** conserve une version explicite ; la sauveg
 
 ### Tableau de bord après calcul
 
-Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et visites du dossier à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats.
+Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et références à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats.
 
-Les groupes de courbes se déplient à la demande. Les trois courbes de croissance se répartissent sur trois colonnes lorsque la largeur suffit. Les quatre graphiques d’évolution des Z-scores tiennent sur une seule ligne lorsque l’espace le permet ; leur largeur s’adapte à la fenêtre et ils passent sur plusieurs lignes sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les mesures techniques, références et visites restent consultables dans leurs sections dépliables. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
+Les groupes de courbes se déplient à la demande. Les trois courbes de croissance se répartissent sur trois colonnes lorsque la largeur suffit. Les quatre graphiques d’évolution des Z-scores tiennent sur une seule ligne lorsque l’espace le permet ; leur largeur s’adapte à la fenêtre et ils passent sur plusieurs lignes sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les détails du calcul et références sont ouverts par défaut. **Voir les versions**, près de « Mesures calculées », ouvre les sauvegardes filtrées sur ce dossier. Les courbes restent repliées par défaut. Les actions des résultats sont regroupées ; lorsque la largeur manque, PDF et CSV sont accessibles dans **Exporter**. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
 
 ### Lire les indicateurs
 

@@ -3,7 +3,7 @@ const NutritionUI=typeof module!=='undefined'&&module.exports?require('./service
 const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 class WorkspaceApp {
-    static version = '5.1.1';
+    static version = '5.2.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
@@ -124,6 +124,8 @@ class WorkspaceApp {
             return `<svg class="ui-icon" data-format="${name}" viewBox="0 0 32 36" aria-hidden="true" focusable="false"><path d="M7 1h13l7 7v26H7Z" fill="#fff" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 1v8h7" fill="none" stroke="${color}" stroke-width="1.8"/><rect x="1" y="17" width="30" height="14" rx="2" fill="${color}"/><text x="16" y="27.5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="10" fill="#fff">${name.toUpperCase()}</text></svg>`;
         }
         const paths = {
+            settings: '<path d="M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1 1-3Z"/><circle cx="12" cy="12" r="3"/>',
+            export: '<path d="M12 3v12m-4-4 4 4 4-4M4 15v6h16v-6"/>',
             language: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z"/>',
             light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
             dark: '<path d="M20.5 13.5A9 9 0 0 1 10.5 3a9 9 0 1 0 10 10.5Z"/>',
@@ -220,7 +222,7 @@ class WorkspaceApp {
         const d = document.getElementById('header-dialog');
         d.classList.remove('app-info-dialog');
         const names = {fr:'Français',en:'English',ar:'العربية'};
-        const options = kind === 'menu' ? ['single','batch','history','references'] : kind === 'language' ? ['fr','en','ar'] : ['system','light','dark'];
+        const options = kind === 'menu' ? ['single','batch','history','references','settings'] : kind === 'language' ? ['fr','en','ar'] : ['system','light','dark'];
         const current = kind === 'menu' ? this.page : this.prefs[kind];
         d.dataset.opener = kind + '-button';
         d.innerHTML = `<div class="dialog-top"><h2 id="header-dialog-title">${this.t(kind)}</h2><button class="icon-button" data-action="close-header" aria-label="${this.esc(this.t('close'))}">${this.icon('close')}</button></div><div class="dialog-body header-options">${options.map(value => `<button class="header-choice" data-action="${kind === 'menu' ? 'header-page' : 'set-preference'}" data-kind="${kind}" data-value="${value}" ${kind === 'menu' ? (current === value ? 'aria-current="page"' : '') : `aria-pressed="${current === value}"`}>${kind === 'theme' ? this.icon(value) : ''}<span class="choice-label"${kind === 'language' ? ` lang="${value}" dir="auto"` : ''}>${kind === 'language' ? names[value] : this.t(value)}</span>${current === value ? this.icon('check') : ''}</button>`).join('')}</div>`;
@@ -326,19 +328,15 @@ class WorkspaceApp {
         this.renderEpoch = (this.renderEpoch || 0) + 1;
         document.getElementById('app-root').innerHTML = `
             <a class="skip" href="#main">${this.t('skip')}</a>
-            <header class="topbar"><div class="brand-group"><button id="sidebar-button" class="brand-mark brand-toggle" data-action="toggle-sidebar" aria-controls="main-nav" aria-expanded="${!this.prefs.navCollapsed}" title="${this.esc(this.t(this.prefs.navCollapsed?'expandMenu':'collapseMenu'))}" aria-label="${this.esc(this.t(this.prefs.navCollapsed?'expandMenu':'collapseMenu'))}">Z</button><a class="brand" href="#" data-action="page" data-page="single"><span class="brand-mark mobile-brand-mark" aria-hidden="true">Z</span><span class="brand-title">${this.t('brand')}</span></a></div>
-            <div class="preferences"><span id="connection" class="badge connection-badge"></span>
-              <button id="language-button" class="icon-button preference-button" data-action="header-panel" data-kind="language" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-label="${this.esc(this.t('language') + ' : ' + {fr:'Français',en:'English',ar:'العربية'}[this.prefs.language])}" title="${this.esc(this.t('language'))}">${this.icon('language')}<span class="preference-text">${this.t('language')}</span></button>
-              <button id="theme-button" class="icon-button preference-button" data-action="header-panel" data-kind="theme" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-label="${this.esc(this.t('theme') + ' : ' + this.t(this.prefs.theme))}" title="${this.esc(this.t('theme'))}">${this.icon(this.prefs.theme)}<span class="preference-text">${this.t('theme')}</span></button>
-              <button id="menu-button" class="icon-button mobile-menu-button" data-action="header-panel" data-kind="menu" aria-haspopup="dialog" aria-controls="header-dialog" aria-expanded="false" aria-label="${this.esc(this.t('menu'))}" title="${this.esc(this.t('menu'))}">${this.icon('menu')}</button></div></header>
-            <div class="shell"><aside class="sidebar"><nav id="main-nav" class="nav" aria-label="${this.t('brand')}">${['single','batch','history','references'].map(p => `<button data-action="page" data-page="${p}" title="${this.esc(this.t(p))}" aria-label="${this.esc(this.t(p))}" ${this.page === p ? 'aria-current="page"' : ''}>${this.icon(p)}<span class="nav-text">${this.t(p)}</span></button>`).join('')}</nav></aside>
+            <header class="topbar workspace-topbar"><div class="brand-group"><button id="sidebar-button" class="brand-mark brand-toggle" data-action="toggle-sidebar" aria-controls="main-nav" aria-expanded="${!this.prefs.navCollapsed}" title="${this.esc(this.t(this.prefs.navCollapsed?'expandMenu':'collapseMenu'))}" aria-label="${this.esc(this.t('brand')+' · '+this.t(this.prefs.navCollapsed?'expandMenu':'collapseMenu'))}">Z</button><button id="menu-button" class="brand-mark mobile-menu-button" data-action="header-panel" data-kind="menu" aria-haspopup="dialog" aria-controls="header-dialog" aria-expanded="false" aria-label="${this.esc(this.t('brand')+' · '+this.t('menu'))}">Z</button><div class="workspace-context"><div class="page-title-group"><h1>${this.t(this.page)}</h1>${['single','batch'].includes(this.page)?'<span class="save-state" data-save-state aria-live="polite"></span>':''}</div><span id="connection" class="connection-badge" role="status"></span></div></div><div class="workspace-heading-actions">${['single','batch'].includes(this.page)?`${this.toolButton('resumeWork','history','page',{showLabel:true,attrs:'data-page="history"'})}${this.toolButton('newWork','new','new',{showLabel:true})}`:''}</div></header>
+            <div class="shell"><aside class="sidebar"><nav id="main-nav" class="nav" aria-label="${this.t('brand')}">${['single','batch','history','references','settings'].map(p => `<button data-action="page" data-page="${p}" title="${this.esc(this.t(p))}" aria-label="${this.esc(this.t(p))}" ${this.page === p ? 'aria-current="page"' : ''}>${this.icon(p)}<span class="nav-text">${this.t(p)}</span></button>`).join('')}</nav></aside>
             <main id="main" tabindex="-1"><div class="print-header"><h2>${this.t('brand')}</h2><p>${this.t('appUsageNotice')}</p></div>
-              <div class="workspace-heading"><div class="page-title-group"><h1>${this.t(this.page)}</h1>${['single','batch'].includes(this.page)?'<span class="save-state" data-save-state aria-live="polite"></span>':''}</div><div class="workspace-heading-actions">${['single','batch'].includes(this.page)?`${this.sessions.length?`<button class="resume-short" aria-label="${this.esc(this.t('resumeWork'))}" data-action="page" data-page="history" title="${this.esc(this.t('recoveryHelp'))}">${this.icon('history')}<span>${this.t('resumeWork')}</span></button>`:''}${this.toolButton('newWork','new','new',{showLabel:true})}`:''}</div></div>
               <div id="update-notice">${this.updateHTML()}</div>
-              <div id="page-content">${this.page === 'single' ? this.singleHTML() : this.page === 'batch' ? this.batchHTML() : this.page === 'history' ? this.historyHTML() : this.referencesHTML()}</div>
+              <div id="page-content">${this.page === 'single' ? this.singleHTML() : this.page === 'batch' ? this.batchHTML() : this.page === 'history' ? this.historyHTML() : this.page === 'settings' ? this.settingsHTML() : this.referencesHTML()}</div>
               ${this.history.recoveryErrors.length ? `<div class="notice warn" role="alert">${this.t('recoveryDamaged')}</div>` : ''}
               <footer class="compact-footer"><a class="legal-footer-link" href="${this.prefs.language==='ar'?'legal-ar.html':this.prefs.language==='en'?'legal-en.html':'legal.html'}" target="_blank" rel="noopener noreferrer">${this.t('legalNoticeLink')}</a><span>v${WorkspaceApp.version}</span><span data-offline-status>${this.t(this.offlineState)}</span><span class="about-label">${this.t('aboutShort')}</span>${this.toolButton('information','info','show-info',{attrs:'id="app-info-button" data-info="appInfo"'})}</footer>
             </main></div>`;
+        this.observeHeader();
         this.updateConnection(); this.updateSaveStatus(); this.updateToast();
         if (this.page === 'history') this.renderHistoryList();
         if (this.page === 'history') this.refreshCapacity();
@@ -346,6 +344,27 @@ class WorkspaceApp {
         this.enhanceSelects();
         this.updateCSVControls();
         if(focusId)document.getElementById(focusId)?.focus();
+    }
+    observeHeader() {
+        this.headerObserver?.disconnect();
+        const header=document.querySelector('.workspace-topbar');
+        if(!header)return;
+        const measure=()=>document.documentElement.style.setProperty('--workspace-header-height',Math.ceil(header.getBoundingClientRect().height)+'px');
+        measure();
+        if(typeof ResizeObserver==='function'){this.headerObserver=new ResizeObserver(measure);this.headerObserver.observe(header);}
+    }
+    settingsHTML() {
+        const names={fr:'Français',en:'English',ar:'العربية'};
+        return `<section class="card settings-card" aria-label="${this.esc(this.t('settings'))}"><p class="hint">${this.t('settingsHelp')}</p><div class="settings-grid">${['language','theme'].map(kind=>`<div class="setting-row"><label id="${kind}-label" for="${kind}-button">${this.t(kind)}</label><button id="${kind}-button" class="choice-trigger" data-action="header-panel" data-kind="${kind}" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-labelledby="${kind}-label ${kind}-value">${this.icon(kind==='language'?'language':this.prefs.theme)}<span class="choice-value" id="${kind}-value"${kind==='language'?' dir="auto"':''}>${this.esc(kind==='language'?names[this.prefs.language]:this.t(this.prefs.theme))}</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>`).join('')}</div></section>`;
+    }
+    resultHeadingHTML(entry) {
+        const child=entry?.child;
+        return `<div class="results-heading-group"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2>${child?`<div class="result-status"><strong><bdi>${this.esc(child.name || child.caseId || this.t('unknown'))}</bdi></strong>${entry.result.status!=='complete'?`<span class="badge">${this.esc(this.t(entry.result.status))}</span>`:''}</div>`:''}</div>`;
+    }
+    resultActionsHTML(child) {
+        const exports=()=>`${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}`;
+        const editing=!!this.singleEditing;
+        return `<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}<div class="exports-inline">${exports()}</div><details class="export-menu"><summary class="btn">${this.icon('export')}<span>${this.t('exportActions')}</span></summary><div class="export-options">${exports()}</div></details>${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true,labelKey:'newVisitShort'}):''}<button id="single-view-toggle" class="icon-button action-with-label" data-action="${editing?'show-results':'edit-measures'}" aria-controls="measure-card" aria-expanded="${editing}" title="${this.esc(this.t(editing?'showResults':'editMeasures'))}" aria-label="${this.esc(this.t(editing?'showResults':'editMeasures'))}">${this.icon(editing?'chart':'edit')}<span class="action-label" aria-hidden="true">${this.t(editing?'showResults':'editMeasures')}</span></button>${!editing?this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'}):''}${this.infoButton('centileHelp','percentileLabel')}</div>`;
     }
     formHTML(prefix, data, batch = false) {
         const labelKey=key=>({caseId:'caseShort',name:'nameShort',oedema:'oedemaShort',ageMode:'ageShort'}[key]||key);
@@ -366,10 +385,10 @@ class WorkspaceApp {
     singleHTML() {
         const hasResult=!!this.state.single?.result, dashboard=hasResult&&!this.singleEditing;
         return `<div class="workspace-grid single-workspace${dashboard?' results-view':''}"><section class="card" id="measure-card"${dashboard?' hidden':''}><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('calculate','run','',{primary:true,submit:true,attrs:'form="single-form"',showLabel:true,labelKey:'calculateShort'})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div>${this.formHTML('single', this.state.draft)}</section>
-            <section class="card" id="results-card"><div class="card-top"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2><div class="dashboard-controls">${hasResult?`<button id="single-view-toggle" class="btn" data-action="${dashboard?'edit-measures':'show-results'}" aria-controls="measure-card" aria-expanded="${!dashboard}">${this.icon(dashboard?'edit':'chart')}<span>${this.t(dashboard?'editMeasures':'showResults')}</span></button>`:''}${dashboard?this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'}):''}${this.infoButton('centileHelp','percentileLabel')}</div></div><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
+            <section class="card" id="results-card"><div id="single-results">${this.resultsHTML(this.state.single, this.state.stale)}</div></section></div>`;
     }
     resultsHTML(entry, stale = false, preview = false) {
-        if (!entry?.result) return `<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
+        if (!entry?.result) return `${this.resultHeadingHTML()}<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
         const { child, result } = entry;
         const status=`<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(result.status))}</span></div>`;
         const notices=`${stale ? `<p class="notice warn" role="status">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}`;
@@ -384,7 +403,7 @@ class WorkspaceApp {
         if(preview)return `${status}${notices}${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${indicators}${warnings}${measures}`;
         const value=v=>this.esc(v??this.t('unknown'));
         const pairs=[['measurementDate',this.calendarDate(child.measurementDate)],['ageDays',child.ageDays],['weight',this.number(child.weight,0)],['height',this.number(child.height,1)],['gender',this.t(child.gender==='M'?'male':'female')],['muac',result.nutrition?.muacMm==null?this.t('unknown'):this.number(result.nutrition.muacMm,1)+' mm']];
-        return `<div class="dashboard-toolbar">${status}<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true}):''}</div></div>${notices}<div class="result-overview"><section class="result-clinical" aria-label="${this.esc(this.t('growthResults'))}">${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3><div class="indicator-grid">${indicators}</div>${warnings}</section><section class="result-record"><h3>${this.t('measurementSummary')}</h3>${child.caseId?`<p class="record-id"><bdi>${value(child.caseId)}</bdi></p>`:''}<dl class="measurement-snapshot">${pairs.map(([key,v])=>`<div><dt>${this.t(key)}</dt><dd>${value(v)}</dd></div>`).join('')}</dl><details class="calculation-details"><summary>${this.t('calculationDetails')}</summary>${measures}</details><div data-single-visits>${child.caseId?'':`<p class="hint">${this.t('caseWithoutId')}</p>`}</div></section></div><section class="dashboard-charts" aria-label="${this.esc(this.t('chartsDashboard'))}"><h3>${this.t('chartsDashboard')}</h3><div data-single-charts></div></section>`;
+        return `<div class="dashboard-toolbar">${this.resultHeadingHTML(entry)}${this.resultActionsHTML(child)}</div>${notices}<div class="result-overview"><section class="result-clinical" aria-label="${this.esc(this.t('growthResults'))}">${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3><div class="indicator-grid">${indicators}</div>${warnings}</section><section class="result-record"><div class="record-heading"><h3>${this.t('measurementSummary')}</h3>${child.caseId?`<button class="btn" data-action="view-case" data-case-id="${value(child.caseId)}" title="${this.esc(this.t('viewCaseVersions'))}">${this.icon('history')}<span>${this.t('viewVersionsShort')}</span></button>`:''}</div><dl class="measurement-snapshot">${pairs.map(([key,v])=>`<div><dt>${this.t(key)}</dt><dd>${value(v)}</dd></div>`).join('')}</dl><details class="calculation-details" open><summary>${this.t('calculationDetails')}</summary>${measures}</details><div data-single-visits>${child.caseId?'':`<p class="hint">${this.t('caseWithoutId')}</p>`}</div></section></div><section class="dashboard-charts" aria-label="${this.esc(this.t('chartsDashboard'))}"><h3>${this.t('chartsDashboard')}</h3><div data-single-charts></div></section>`;
     }
     nutritionHTML(child,result) {
         const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
@@ -486,8 +505,8 @@ class WorkspaceApp {
     }
     events() {
         this.choicePopup();
-        document.addEventListener('keydown',event=>{if(this.activeInfo&&event.key==='Escape'){event.preventDefault();this.closeInfo(true);return;}this.choiceKey(event);});
-        document.addEventListener('pointerdown',event=>{if(this.activeChoice&&!document.getElementById('choice-popup')?.contains(event.target)&&!document.getElementById(this.activeChoice.buttonId)?.contains(event.target))this.closeChoice();if(this.activeInfo&&!document.getElementById('info-popup')?.contains(event.target)&&!document.getElementById(this.activeInfo.opener)?.contains(event.target))this.closeInfo();});
+        document.addEventListener('keydown',event=>{if(event.key==='Escape'){const menu=document.querySelector('.export-menu[open]');if(menu){event.preventDefault();menu.removeAttribute('open');menu.querySelector('summary')?.focus();return;}}if(this.activeInfo&&event.key==='Escape'){event.preventDefault();this.closeInfo(true);return;}this.choiceKey(event);});
+        document.addEventListener('pointerdown',event=>{const menu=document.querySelector('.export-menu[open]');if(menu&&!menu.contains(event.target))menu.removeAttribute('open');if(this.activeChoice&&!document.getElementById('choice-popup')?.contains(event.target)&&!document.getElementById(this.activeChoice.buttonId)?.contains(event.target))this.closeChoice();if(this.activeInfo&&!document.getElementById('info-popup')?.contains(event.target)&&!document.getElementById(this.activeInfo.opener)?.contains(event.target))this.closeInfo();});
         window.addEventListener('resize',()=>{this.closeChoice();this.closeInfo();});
         window.addEventListener('scroll',event=>{if(this.activeChoice&&!document.getElementById('choice-popup')?.contains(event.target))this.closeChoice();if(this.activeInfo&&!document.getElementById('info-popup')?.contains(event.target))this.closeInfo();},true);
         window.addEventListener('beforeprint',()=>this.preparePrint());
@@ -578,6 +597,7 @@ class WorkspaceApp {
     toast(key,error=false) { this.toastKey=key;this.toastIsError=error;this.updateToast();clearTimeout(this.toastTimer);this.toastTimer=setTimeout(()=>{this.toastKey=null;this.updateToast();},6500); }
     async action(action,button) {
         this.readForms();
+        button.closest?.('.export-menu')?.removeAttribute('open');
         if(action==='toggle-sidebar'){this.prefs.navCollapsed=!this.prefs.navCollapsed;this.persistPreferences();this.applyPreferences();this.render('sidebar-button');}
         else if(action==='open-select')this.openChoice(button.id,'field',button.dataset.select);
         else if(action==='choice-value')this.chooseValue(button.dataset.value);
@@ -593,7 +613,7 @@ class WorkspaceApp {
         else if(action==='close-header')document.getElementById('header-dialog').close();
         else if(action==='set-preference')this.setPreference(button.dataset.kind,button.dataset.value);
         else if(action==='header-page'){
-            if(!['single','batch','history','references'].includes(button.dataset.value))return;
+            if(!['single','batch','history','references','settings'].includes(button.dataset.value))return;
             const d=document.getElementById('header-dialog');d.dataset.opener='';d.close();
             this.page=button.dataset.value;if(this.page==='history')this.sessions=await this.history.catalog();this.render('main');
         }
@@ -804,7 +824,7 @@ class WorkspaceApp {
         if(epoch!==this.renderEpoch || this.page!=='single' || this.state.single!==entry)return;
         const target=document.getElementById('single-results');if(!target)return;
         const visits=target.querySelector('[data-single-visits]'),charts=target.querySelector('[data-single-charts]');
-        if(visits&&child.caseId)visits.innerHTML=`<details class="visit-history"><summary>${this.t('followup')} (${this.number(entries.length,0)})</summary><p class="hint">${this.t('followupHelp')}</p><p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'unknown')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></details>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}`;
+        if(visits&&child.caseId)visits.innerHTML=identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:'';
         if(charts)charts.innerHTML=this.chartsHTML(entries.length?entries:[entry]);
     }
     updateConnection(){const badge=document.getElementById('connection');if(badge)badge.innerHTML=`<span class="dot" aria-hidden="true"></span>${this.t(navigator.onLine?'online':'offline')}`;}

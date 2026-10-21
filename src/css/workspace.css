@@ -245,3 +245,45 @@ main{padding:12px 16px;max-width:none;min-width:0;width:100%}
 @container result-dashboard (max-width:439px){.dashboard-toolbar .result-status{flex-basis:100%}.dashboard-toolbar .result-toolbar{justify-content:flex-start}}
 .dashboard-controls .action-with-label{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px}
 @media screen and (min-width:681px){.dashboard-controls .action-with-label{width:auto;padding:7px 12px}.dashboard-controls .action-label{display:inline}}
+
+/* One workspace banner; infrequent preferences live in Settings. */
+.workspace-topbar{min-height:64px;align-items:center;gap:12px}
+.workspace-topbar .brand-group{flex:1;gap:12px;min-width:0}
+.workspace-context{min-width:0}.workspace-context h1{font-size:19px;line-height:1.25;letter-spacing:-.3px;margin:0;overflow-wrap:anywhere}
+.workspace-context .page-title-group{gap:10px}.workspace-context .save-state{font-size:11px}
+.workspace-topbar .connection-badge{display:flex;align-items:center;gap:5px;font-size:11px;line-height:1.4;color:var(--muted);margin-top:3px}
+.workspace-topbar .connection-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.workspace-topbar .workspace-heading-actions{flex-shrink:0;gap:8px}
+.workspace-topbar .workspace-heading-actions .action-with-label{width:auto;height:36px;padding:6px 10px;gap:7px;border-radius:8px;font-size:13px}
+.workspace-topbar .workspace-heading-actions .action-label{display:inline}
+.settings-card{max-width:760px}.settings-card>.hint{margin:8px 0 20px;font-size:13px}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.setting-row label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.setting-row .choice-trigger{display:flex;align-items:center;gap:10px;min-height:44px}.setting-row .choice-value{flex:1}
+.results-heading-group{min-width:0;flex:1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.results-heading-group .result-status{flex:0 1 auto}.results-heading-group .result-status strong{font-size:14px}
+.results-heading-group h2{white-space:nowrap}
+.dashboard-toolbar{gap:10px;margin-bottom:12px}.dashboard-toolbar .result-toolbar{gap:6px;align-items:center;justify-content:flex-end;max-width:100%;flex-wrap:nowrap}
+.dashboard-toolbar .action-with-label{width:auto;height:36px;min-height:36px;padding:6px 9px;font-size:13px;gap:6px;border-radius:8px}
+.dashboard-toolbar .action-label{display:inline}.dashboard-toolbar .result-toolbar .ui-icon{width:20px;height:20px}
+.exports-inline{display:flex;gap:6px}
+.export-menu{display:none;position:relative}.export-menu>summary{list-style:none;min-height:36px;height:36px;padding:6px 9px;font-size:13px;font-weight:400;cursor:pointer}
+.export-menu>summary::-webkit-details-marker{display:none}.export-menu>summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.export-options{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:6;display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:8px;border-radius:10px;min-width:195px}
+.dashboard-toolbar .export-options .action-with-label{width:100%;justify-content:flex-start}.dashboard-toolbar .export-options .action-label{display:inline}
+.record-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.record-heading h3{margin:0}
+.record-heading .btn{font-size:12px;padding:5px 8px;min-height:34px;font-weight:400;flex-shrink:0}.record-heading .ui-icon{width:17px;height:17px}
+@container result-dashboard (max-width:1199px){.exports-inline{display:none}.export-menu{display:block}}
+@container result-dashboard (max-width:759px){.dashboard-toolbar .action-with-label{width:36px;padding:7px}.dashboard-toolbar .action-label{display:none}.dashboard-toolbar .export-options .action-with-label{width:100%;height:auto}.dashboard-toolbar .export-menu>summary{width:36px;padding:7px}.export-menu>summary>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.dashboard-toolbar .result-toolbar{justify-content:flex-start}.results-heading-group{flex-basis:100%}}
+@media screen and (max-width:680px){.workspace-topbar{direction:inherit;gap:8px}.workspace-topbar .brand-group{gap:8px}.workspace-topbar .workspace-context h1{font-size:16px}.workspace-topbar .page-title-group{gap:3px 8px}.workspace-topbar .workspace-heading-actions{gap:6px}.workspace-topbar .workspace-heading-actions .action-with-label{width:36px;padding:7px}.workspace-topbar .workspace-heading-actions .action-label{display:none}.workspace-topbar .mobile-menu-button{display:grid;border:0;padding:0}.settings-grid{grid-template-columns:minmax(0,1fr);gap:16px}.results-heading-group{gap:6px 12px}.record-heading{flex-wrap:wrap}}
+@media(pointer:coarse){.workspace-topbar .workspace-heading-actions .action-with-label,.dashboard-toolbar .action-with-label,.dashboard-toolbar .export-menu>summary{min-height:44px;height:44px}.workspace-topbar .brand-mark{min-height:44px;min-width:44px}}
+@media print{.record-heading .btn,.result-toolbar,.export-menu{display:none!important}}
+
+/* Freeze the workspace context and navigation while the page scrolls. */
+@media screen{
+ :root{--workspace-header-height:64px;scroll-padding-top:calc(var(--workspace-header-height) + 12px)}
+ .workspace-topbar{position:sticky;top:0;z-index:10}
+ .shell{min-height:calc(100dvh - var(--workspace-header-height))}
+ .sidebar{position:sticky;top:var(--workspace-header-height);height:calc(100dvh - var(--workspace-header-height));overflow-y:auto;overscroll-behavior:contain}
+ #main{scroll-margin-top:12px}
+}
