@@ -21,17 +21,17 @@ class TransferManager {
             if(event.kind!=='record'||index<phase||index<0||!record||typeof record!=='object'||Array.isArray(record))throw new Error('importInvalid');phase=index;
             const key=event.store==='settings'?record.key:record.id;
             if(typeof key!=='string'||!key||event.store!=='settings'&&key.length>200||ids[event.store].has(key)||++counts[event.store]>50000)throw new Error('importInvalid');ids[event.store].add(key);
-            if(event.store==='children'){HistoryManager.checkChild(record);if(record.ageDomainVersion===2)extendedAges.set(key,{ageDomainVersion:2,totalAgeMonths:record.totalAgeMonths});remember(children,key);}
+            if(event.store==='children'){HistoryManager.checkChild(record);if(record.ageDomainVersion===2)extendedAges.set(key,record);remember(children,key);}
             else if(event.store==='results'){HistoryManager.checkResult(record,ids.children);HistoryManager.checkPair(extendedAges.get(record.childId)||{},record);remember(results,key);}
             else if(event.store==='sessions'){
                 if(typeof record.name!=='string'||!Number.isFinite(Date.parse(record.createdAt))||!Array.isArray(record.children)||!Array.isArray(record.results)||record.children.some(id=>!ids.children.has(id))||record.results.some(id=>!ids.results.has(id)))throw new Error('importInvalid');
-                const w=record.metadata?.workspace;if(w){HistoryManager.checkWorkspace(w);for(const entry of [...w.batch,...(w.single?[w.single]:[])]){remember(children,entry.child.id);if(entry.result)remember(results,entry.result.id);}}
+                const w=record.metadata?.workspace;HistoryManager.checkWorkspace(w);if(w){for(const entry of [...w.batch,...(w.single?[w.single]:[])]){remember(children,entry.child.id);if(entry.result)remember(results,entry.result.id);}}
             }
         }};
     }
     async export(preferences,onProgress=()=>{}){
         const groups=Object.fromEntries(TransferManager.stores.map(s=>[s,[]])),journals=[],recovery=[];
-        for(const key of Object.keys(localStorage))if(key.startsWith('zscore-draft-v2-')){
+        for(const key of Object.keys(localStorage))if(key.startsWith('zscore-work-v5-')){
             const raw=localStorage.getItem(key);
             try{const snapshot=HistoryManager.parse(raw);HistoryManager.checkWorkspace(snapshot?.metadata?.workspace);journals.push({snapshot,signature:JSON.stringify(snapshot.metadata.workspace)});}
             catch(_){recovery.push({kind:'recovery',key,raw});}

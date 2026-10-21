@@ -1,9 +1,12 @@
 /** Public, local-first workspace: no administrator credentials and no remote mutation API. */
+const NutritionUI=typeof module!=='undefined'&&module.exports?require('./services/nutrition-assessment.js').NutritionAssessment:globalThis.NutritionAssessment;
+const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
+const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 class WorkspaceApp {
-    static version = '4.1.0';
-    static resultIndicators(result) { return result?.schemaVersion===4?result.applicableIndicators:ClinicalEngine.resultIndicators(result); }
+    static version = '5.0.0';
+    static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
-        if (![3,4].includes(result?.schemaVersion) || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
+        if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
         const numeric=typeof value.percentile==='number'&&Number.isFinite(value.percentile)&&value.percentile>0&&value.percentile<100&&!value.flagged;
         const label=numeric?this.t('percentileLabel')+' : '+this.number(value.percentile,1):this.t('percentileExtreme');
         return `<span class="centile" title="${this.esc(numeric?this.t('centileHelp'):label)}" aria-label="${this.esc(label)}"><bdi dir="ltr">P ${numeric?this.number(value.percentile,1):'—'}</bdi></span>`;
@@ -20,7 +23,7 @@ class WorkspaceApp {
         if (!['fr', 'en', 'ar'].includes(this.prefs.language)) this.prefs.language = 'fr';
         this.prefs.navCollapsed = prefs.navCollapsed === true;
     }
-    emptyDraft() { return { caseId: '', name: '', ageMode: 'months', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: 'n' }; }
+    emptyDraft() { return { caseId: '', name: '', ageMode: 'months', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: '' }; }
     emptyWorkspace() { return { version: 1, draft: this.emptyDraft(), batchDraft: this.emptyDraft(), single: null, batch: [], paste: '', mode: 'single', stale: false }; }
     t(key) { const own=table=>table&&Object.hasOwn(table,key)&&typeof table[key]==='string'?table[key]:'';return own(this.translations?.[this.prefs.language])||own(this.translations?.fr)||String(key??''); }
     esc(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -40,16 +43,16 @@ class WorkspaceApp {
     }
     async createLocalCopy(){
         if(this.transferBusy||this.stageBusy)return;this.transferBusy=true;this.transferStatus(true);
-        document.querySelectorAll('[data-action="export-backup"],[data-action="export-legacy"],[data-action="stage-local-copy"]').forEach(b=>{b.disabled=true;});
+        document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"],[data-action="stage-local-copy"]').forEach(b=>{b.disabled=true;});
         try{
             await this.saveImmediate('beforeExport');await this.transfers().createLocalCopy(this.prefs,n=>this.transferStatus(n));this.stagePage=0;
             if(this.page==='history'){this.sessions=await this.history.catalog();this.renderHistoryList();}
             this.toast('stageCreated');
         }catch(_){this.toast('stageCopyFailed',true);}
-        finally{this.transferBusy=false;this.transferStatus();document.querySelectorAll('[data-action="export-backup"],[data-action="export-legacy"],[data-action="stage-local-copy"]').forEach(b=>{b.disabled=false;});if(this.page==='history'){await this.refreshStages();await this.refreshCapacity();}}
+        finally{this.transferBusy=false;this.transferStatus();document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"],[data-action="stage-local-copy"]').forEach(b=>{b.disabled=false;});if(this.page==='history'){await this.refreshStages();await this.refreshCapacity();}}
     }
     showImportPreview(prepared,name,duplicate){
-        this.preparedImport=prepared;this.importOverview={name,duplicate};const r=prepared.format==='stream'?prepared.counts:HistoryManager.counts(prepared.records);
+        this.preparedImport=prepared;this.importOverview={name,duplicate};const r=prepared.counts;
         const previews=prepared.previews||[];
         this.dialog('importPreview',`<p class="lede">${this.t('importHelp')}</p>${duplicate?`<p class="notice warn">${this.t('importDuplicate')}</p>`:''}<p><bdi dir="auto">${this.esc(name)}</bdi></p><div class="preview-grid">${['sessions','children','results'].map(k=>`<div class="card"><div class="stat">${r[k]}</div><div>${this.t(k)}</div></div>`).join('')}</div><p class="hint">${this.t('importCountsHelp')}</p>${previews.length?`<h3>${this.t('stageRecentVersions')}</h3><p class="hint">${this.t('stagePreviewHelp')}</p>${previews.map(p=>`<article class="history-item"><div><div class="item-title"><bdi>${this.esc(p.name||this.t('draft'))}</bdi></div><p class="item-sub">${this.date(p.createdAt)} · ${p.count} ${this.t('count')}</p></div><button class="btn" data-action="stage-preview-session" data-seq="${p.seq}">${this.t('preview')}</button></article>`).join('')}`:''}`,`<button class="btn primary" data-action="commit-import">${this.t('confirmImport')}</button>`);
     }
@@ -356,8 +359,8 @@ class WorkspaceApp {
             <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number','min="0" max="6970" step="1" inputmode="numeric"')}</div>
             ${field('measurementDate','date',`max="${ClinicalEngine.today()}"`)}
             ${field('weight','number','min="50" max="300000" step="1" inputmode="decimal"','weightHint')}${field('height','number','min="30" max="250" step="0.1" inputmode="decimal"')}
-            ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['n','no'],['y','yes']])}${select('position',[['','choose'],['L','lying'],['H','standing']],'positionHint')}
-            </div><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
+            ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['','unknown'],['n','no'],['y','yes']])}${select('position',[['','choose'],['L','lying'],['H','standing']],'positionHint')}
+            </div><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t('clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
     }
     singleHTML() {
         return `<div class="workspace-grid"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('calculate','run','',{primary:true,submit:true,attrs:'form="single-form"',showLabel:true,labelKey:'calculateShort'})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div>${this.formHTML('single', this.state.draft)}</section>
@@ -365,20 +368,23 @@ class WorkspaceApp {
     }
     resultsHTML(entry, stale = false, preview = false) {
         if (!entry?.result) return `<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
-        const { child, result } = entry, legacy = ![2,3,4].includes(result.schemaVersion);
-        return `<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(legacy ? 'stored' : result.status))}</span></div>
-          ${stale ? `<p class="notice warn">${this.t('stale')}</p>` : ''}${legacy ? `<p class="notice warn">${this.t('legacyResult')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}
-          ${WorkspaceApp.resultIndicators(result).map(key => {
+        const { child, result } = entry;
+        return `<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(result.status))}</span></div>
+          ${stale ? `<p class="notice warn">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}
+          ${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${WorkspaceApp.resultIndicators(result).map(key => {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
-            const category = legacy ? this.legacyCategory(v?.classification) : v?.classification;
+            const category = v?.classification;
             const severe = /Severe|severe|obesity|bmiBelow3|bmiAbove3/.test(category || '');
             return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score">${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
           }).join('')}
           ${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}
-          ${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}<div class="scale" aria-hidden="true"><span></span><span></span><span></span></div><div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${[3,4].includes(result.schemaVersion)&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'legacy-unverified')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>
+          ${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}<div class="scale" aria-hidden="true"><span></span><span></span><span></span></div><div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>
           ${preview ? '' : `<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true}):''}</div>`}`;
     }
-    legacyCategory(value) { const categories={malnutrition_severe:'underweightSevere',malnutrition_moderate:'underweightModerate',stunting_severe:'stuntingSevere',stunting_moderate:'stuntingModerate',wasting_severe:'wastingSevere',wasting_moderate:'wastingModerate',normal:'withinReference',obesity:'obesity',overweight:'overweight'};return Object.hasOwn(categories,value)?categories[value]:'unknown'; }
+    nutritionHTML(child,result) {
+        const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
+        return `<section class="nutrition-result ${n.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(n.orientation)?'clinical-urgent':''}" aria-label="${label('clinicalSection')}"><h3>${label('screeningTitle')}</h3><strong>${label(n.category)}</strong>${n.criteria?.length?`<p>${n.criteria.map(label).join(' · ')}</p>`:''}<p><b>${label('orientationTitle')}</b> — ${label(n.orientation)}</p><p>${label('muac')} : ${n.muacMm===null?this.t('unknown'):this.number(n.muacMm,1)+' mm'} · ${label(n.muac)}</p>${n.reasons.length?`<p>${n.reasons.map(k=>label(k)).join(' · ')}</p>`:''}<details><summary>${label('assessmentDetails')}</summary><p>${label('clinicalHelp')}</p>${n.missing.length?`<p>${label('assessmentMissing')} : ${n.missing.map(k=>label(k)).join(', ')}</p>`:''}<p>${label('clinicalReference')} : ${this.esc(n.reference)} · v${n.version}</p><a href="https://www.who.int/publications/i/item/9789240082830" target="_blank" rel="noopener noreferrer">OMS 2023</a> · <a href="https://www.who.int/publications/i/item/9789240122840" target="_blank" rel="noopener noreferrer">OMS / UNICEF 2026</a></details></section>`;
+    }
     lotModels(){
         if(!this.engine?.older)return [LotAnalysis.build(this.state.batch,this.engine?.data.referenceVersion)];
         const family=e=>e.result?.referenceFamily||(e.child.totalAgeMonths>=60?'WHO2007':'WHO2006');
@@ -401,17 +407,16 @@ class WorkspaceApp {
         const note = key => `<div class="${compact&&key==='withinReference'?'sr-only':'item-sub'}">${this.esc(this.t(key))}</div>`;
         const cell = (key,value) => `<td role="cell"${indicators.includes(key)?' class="score"':''}><span class="cell-label" aria-hidden="true">${this.esc(this.t(key))}</span><div class="cell-value">${value}</div></td>`;
         return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
-            const legacy=result&&![2,3,4].includes(result.schemaVersion);
-            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${!result?note('notCalculated'):''}${legacy?note('legacyResult'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
+            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${this.esc(child.muac??'—')} mm</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p></details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
             return `<tr role="row">${cell('name',identity)}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
-                const value=key==='bmiForAge'&&![3,4].includes(result?.schemaVersion)?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
-                const category=legacy?this.legacyCategory(value?.classification):value?.classification;
-                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||'unknown'):key==='bmiForAge'&&result&&![3,4].includes(result.schemaVersion)?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
+                const value=key==='bmiForAge'&&result?.schemaVersion!==4?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
+                const category=value?.classification;
+                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||'unknown'):key==='bmiForAge'&&result&&!result.schemaVersion===4?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
             }).join('')}</tr>`;
         }).join('')}</tbody></table>`;
     }
     historyHTML() {
-        return `<div class="toolbar"><button class="btn primary" data-action="export-backup">${this.t('exportAll')}</button><button class="btn" data-action="export-legacy">${this.t('exportLegacy')}</button><label class="btn file-label">${this.t('importBackup')}<input class="file-input" type="file" id="backup-file" accept=".json,.zscore,application/json,application/x-ndjson"></label></div><p class="hint">${this.t('exportSensitive')}</p><p class="hint">${this.t('transferHelp')}</p><p id="transfer-status" role="status" aria-live="polite"></p><section id="storage-capacity" class="card capacity" aria-labelledby="storage-capacity-title" aria-live="polite">${this.capacityHTML()}</section><div class="field search"><label for="history-search">${this.t('search')}</label><input type="search" id="history-search" value="${this.esc(this.search)}"></div><div id="history-list" class="list"></div><div id="history-pages"></div><p class="meta">${this.t('allPreserved')}</p>`;
+        return `<div class="toolbar"><button class="btn primary" data-action="export-backup">${this.t('exportAll')}</button><button class="btn" data-action="password-export">${this.t('exportEncrypted')}</button><label class="btn file-label">${this.t('importBackup')}<input class="file-input" type="file" id="backup-file" accept=".zscore,.enc,application/x-ndjson,application/octet-stream"></label></div><p class="hint">${this.t('exportSensitive')}</p><p class="hint">${this.t('transferHelp')}</p><p id="transfer-status" role="status" aria-live="polite"></p><section id="storage-capacity" class="card capacity" aria-labelledby="storage-capacity-title" aria-live="polite">${this.capacityHTML()}</section><div class="field search"><label for="history-search">${this.t('search')}</label><input type="search" id="history-search" value="${this.esc(this.search)}"></div><div id="history-list" class="list"></div><div id="history-pages"></div><p class="meta">${this.t('allPreserved')}</p>`;
     }
     formatBytes(value) {
         if(!Number.isSafeInteger(value)||value<0)return this.t('storageUnknown');
@@ -424,7 +429,7 @@ class WorkspaceApp {
     capacityHTML() {
         const stats=this.history?.catalogStats,estimate=this.capacityInfo||{usage:null,quota:null},size=stats?.backupBytes;
         const near=estimate.quota&&estimate.usage!==null&&estimate.usage>=estimate.quota*.8;
-        return `<h2 id="storage-capacity-title">${this.t('storageTitle')}</h2><dl class="capacity-data"><dt>${this.t('versions')}</dt><dd>${stats?this.number(stats.versions,0):this.t('storageUnknown')}</dd><dt>${this.t('storageBackupEstimate')}</dt><dd>${this.formatBytes(size)}</dd><dt>${this.t('storageOriginEstimate')}</dt><dd>${this.formatBytes(estimate.usage)}</dd><dt>${this.t('storageQuotaEstimate')}</dt><dd>${this.formatBytes(estimate.quota)}</dd><dt>${this.t('storageImportLimit')}</dt><dd><bdi dir="ltr">50</bdi> ${this.t('unitMiB')}</dd></dl>${near?`<p class="notice warn">${this.t('storageNearFull')}</p>`:''}${size>=40*1024**2?`<p class="notice warn">${this.t(size>50*1024**2?'storageBackupOver':'storageBackupNear')}</p>`:''}<p class="hint">${this.t('storageCapacityNote')}</p><div class="toolbar"><button class="btn" data-action="capacity-refresh" ${this.capacityBusy?'disabled':''}>${this.t(this.capacityBusy?'storageCapacityLoading':'storageCapacityRefresh')}</button></div>`;
+        return `<h2 id="storage-capacity-title">${this.t('storageTitle')}</h2><dl class="capacity-data"><dt>${this.t('versions')}</dt><dd>${stats?this.number(stats.versions,0):this.t('storageUnknown')}</dd><dt>${this.t('storageBackupEstimate')}</dt><dd>${this.formatBytes(size)}</dd><dt>${this.t('storageOriginEstimate')}</dt><dd>${this.formatBytes(estimate.usage)}</dd><dt>${this.t('storageQuotaEstimate')}</dt><dd>${this.formatBytes(estimate.quota)}</dd><dt>${this.t('encryptedLimit')}</dt><dd><bdi dir="ltr">1</bdi> GiB</dd></dl>${near?`<p class="notice warn">${this.t('storageNearFull')}</p>`:''}<p class="hint">${this.t('storageCapacityNote')}</p><div class="toolbar"><button class="btn" data-action="capacity-refresh" ${this.capacityBusy?'disabled':''}>${this.t(this.capacityBusy?'storageCapacityLoading':'storageCapacityRefresh')}</button></div>`;
     }
     async refreshCapacity(provider=()=>navigator.storage?.estimate?.()) {
         if(this.capacityBusy)return;this.capacityBusy=true;
@@ -456,7 +461,7 @@ class WorkspaceApp {
         const rows = filtered.slice(this.historyPage*8,(this.historyPage+1)*8);
         document.getElementById('history-list').innerHTML = rows.length ? rows.map(s => {
             const w = s.metadata.workspace, count = s.summary?s.summary.count:new Set([...(w?.batch || []).map(e => e.child.id), ...(w?.single ? [w.single.child.id] : [])]).size;
-            const reason = s.metadata.importedAt ? 'imported' : s.metadata.kind === 'legacy' ? 'legacy' : s.metadata.reason || 'automatic';
+            const reason = s.metadata.importedAt ? 'imported' : s.metadata.reason || 'automatic';
             const name = this.historyName(s);
             const detail = `${this.date(s.createdAt)} · ${this.t(reason)} · ${count} ${this.t('count')}`;
             return `<article class="history-item"><div><div class="item-title">${this.esc(name)}</div><div class="item-sub">${this.esc(detail)}</div></div><button class="btn" data-action="preview" data-id="${this.esc(s.id)}" aria-label="${this.esc(`${this.t('preview')} · ${name} · ${detail}`)}">${this.t('preview')}</button></article>`;
@@ -471,7 +476,7 @@ class WorkspaceApp {
         return `<section class="card full quick-guide" aria-labelledby="quick-guide-title"><h2 id="quick-guide-title">${this.t('quickGuideTitle')}</h2>${['Measure','Resume','Transfer','Offline','Reports'].map(topic=>`<details><summary>${this.t('quickGuide'+topic)}</summary><p>${this.t('quickGuide'+topic+'Text')}</p></details>`).join('')}</section>`;
     }
     referencesHTML() {
-        const links = [['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt'],['sourceWHO2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],['sourceLicense2007','data/LICENSE-anthroplus.txt']];
+        const links = [['sourceClinical2023','https://www.who.int/publications/i/item/9789240082830'],['sourceClinical2026','https://www.who.int/publications/i/item/9789240122840'],['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt'],['sourceWHO2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],['sourceLicense2007','data/LICENSE-anthroplus.txt']];
         return `<div class="reference-grid">${this.quickGuideHTML()}<section class="card full"><span class="eyebrow">OMS / WHO · 2006 / 2007</span><h2>${this.t('references')}</h2><div class="source-links">${links.map(([k,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${this.t(k)} ↗</a>`).join('')}</div><p>${this.t('referenceBoth')}</p><p class="meta">${this.esc(this.manifest.referenceVersion)}<br>SHA-256 : ${this.manifest.sha256}</p>${this.olderManifest?`<p class="meta">${this.esc(this.olderManifest.referenceVersion)}<br>SHA-256 : ${this.olderManifest.sha256}</p>`:''}</section>${[['scope','scopeText'],['method','methodText'],['measurementHelp','measurementHelpText'],['privacyTitle','privacyText'],['validationTitle','validationText']].map(([title,text])=>`<section class="card"><h2>${this.t(title)}</h2><p>${this.t(text)}</p></section>`).join('')}<section class="card"><h2>${this.t('updateCurrent').replace('{version}',WorkspaceApp.version)}</h2><button class="btn" data-action="check-update" ${this.offlineRegistration?'':'disabled'}>${this.t('updateCheck')}</button></section></div>`;
     }
     events() {
@@ -500,7 +505,7 @@ class WorkspaceApp {
             const r = header.getBoundingClientRect();
             if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) header.close();
         });
-        document.getElementById('workspace-dialog').addEventListener('close',()=>{this.previewRequest=(this.previewRequest||0)+1;this.importRequest=(this.importRequest||0)+1;this.previewedVersion=null;this.stagePreviewSession=null;if(this.preparedImport?.format==='stream'){this.transfers().release(this.preparedImport);this.preparedImport=null;}});
+        document.getElementById('workspace-dialog').addEventListener('close',()=>{document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;this.previewRequest=(this.previewRequest||0)+1;this.importRequest=(this.importRequest||0)+1;this.previewedVersion=null;this.stagePreviewSession=null;if(this.preparedImport?.format==='stream'){this.transfers().release(this.preparedImport);this.preparedImport=null;}});
         document.getElementById('app-root').addEventListener('submit', async event => {
             event.preventDefault(); this.readForms();
             try {
@@ -614,34 +619,77 @@ class WorkspaceApp {
             finally {button.disabled=false;}
         }
         else if(action==='parse-csv') await this.addCSV(this.state.paste);
-        else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n\r\n','zscore-modele.csv','text/csv');
+        else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema,muac\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n,130\r\n','zscore-modele.csv','text/csv');
+        else if(action==='reporting')this.reportingDialog();
+        else if(action==='download-report')this.downloadReport(false);
+        else if(action==='download-dhis2')this.downloadReport(true);
         else if(action==='export-summary'){const models=this.lotModels(),model=models.find(m=>m.family===(button.dataset.family||'WHO2006'))||models[0];if(model)this.download(CSVManager.summary(model),'zscore-resume-lot-'+model.family+'-'+ClinicalEngine.today()+'.csv','text/csv');}
         else if(action==='csv-results'){ const entries=this.page==='batch'?this.state.batch:this.state.single?[this.state.single]:[]; this.download(CSVManager.results(entries),'zscore-resultats.csv','text/csv'); }
         else if(action==='print')window.print();
         else if(action==='export-pdf')await this.exportPDF(button.dataset.layout);
-        else if(action==='export-backup'||action==='export-legacy')await this.exportBackup(action==='export-legacy');
+        else if(action==='password-export')this.passwordDialog();
+        else if(action==='confirm-encrypted-export')await this.passwordOperation(false,button);
+        else if(action==='unlock-backup')await this.passwordOperation(true,button);
+        else if(action==='export-backup')await this.exportBackup();
         else if(action==='history-previous'||action==='history-next'){this.historyPage+=action==='history-next'?1:-1;this.renderHistoryList();this.focusPagination('history-page');}
         else if(action==='history-page'){const page=Number(button.dataset.page);if(Number.isInteger(page)&&page>=0){this.historyPage=page;this.renderHistoryList();this.focusPagination('history-page');}}
         else if(action==='preview')await this.previewSession(this.sessions.find(s=>s.id===button.dataset.id));
-        else if(action==='close-dialog')document.getElementById('workspace-dialog').close();
+        else if(action==='close-dialog'){document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;document.getElementById('workspace-dialog').close();}
         else if(action==='restore'){const selected=this.previewedVersion||this.sessions.find(s=>s.id===button.dataset.id);if(selected?.id===button.dataset.id&&selected.metadata?.workspace)await this.restore(selected);else this.toast('historyReadFailed',true);}
         else if(action==='commit-import'){
             if(!this.preparedImport)return;button.disabled=true;
-            try{if(this.preparedImport.format==='stream')await this.transfers().commit(this.preparedImport);else await this.history.commitImport(this.preparedImport);this.preparedImport=null;document.getElementById('workspace-dialog').close();this.sessions=await this.history.catalog();this.page='history';this.render('main');this.toast('importDone');}
+            try{await this.transfers().commit(this.preparedImport);this.preparedImport=null;document.getElementById('workspace-dialog').close();this.sessions=await this.history.catalog();this.page='history';this.render('main');this.toast('importDone');}
             finally{button.disabled=false;}
         }
     }
     download(content,name,type){const url=URL.createObjectURL(new Blob([content],{type:type==='application/pdf'?type:type+';charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);}
-    async exportBackup(legacy=false){
+    reportingDialog() {
+        this.reportingEntries=HistoryManager.clone(this.state.batch);
+        const period=(this.state.batch.find(e=>e.child.measurementDate)?.child.measurementDate||ClinicalEngine.today()).slice(0,7);
+        this.dialog('reportTitle',`<p>${this.t('reportHelp')}</p><div class="field"><label for="report-period">${this.t('reportPeriod')}</label><input id="report-period" type="month" value="${this.esc(period)}"></div><details><summary>${this.t('reportMapping')}</summary><p>${this.t('reportMappingHelp')}</p><div class="field"><label for="report-profile">${this.t('reportMapping')}</label><textarea id="report-profile" rows="6" maxlength="20000" spellcheck="false" dir="ltr"></textarea></div></details>`,`<button class="btn" data-action="download-report">${this.t('reportGeneric')}</button><button class="btn" data-action="download-dhis2">${this.t('reportDhis2')}</button>`);
+    }
+    downloadReport(dhis2) {
+        const period=document.getElementById('report-period').value.replace('-','');
+        const report=ReportingUI.aggregate(this.reportingEntries,period);
+        let output=report;
+        if(dhis2){let profile;try{profile=JSON.parse(document.getElementById('report-profile').value);}catch(_){throw new Error('reportMappingInvalid');}output=ReportingUI.dhis2(report,profile);}
+        this.download(JSON.stringify(output,null,2),'zscore-'+(dhis2?'dhis2-':'aggregate-')+period+'.json','application/json');
+        this.toast('reportExported');
+    }
+    passwordDialog(file=null) {
+        if(this.transferBusy||this.cryptoBusy){this.toast('transferPreparing');return;}
+        this.encryptedPending=file;
+        this.dialog(file?'unlockBackup':'exportEncrypted',`<p>${this.t('encryptedHelp')}</p><div class="field"><label for="backup-password">${this.t('backupPassword')}</label><input id="backup-password" type="password" minlength="12" maxlength="1024" autocomplete="${file?'current-password':'new-password'}"></div>${file?'':`<div class="field"><label for="backup-password-confirm">${this.t('backupPasswordConfirm')}</label><input id="backup-password-confirm" type="password" minlength="12" maxlength="1024" autocomplete="new-password"></div>`}`,`<button class="btn primary" data-action="${file?'unlock-backup':'confirm-encrypted-export'}">${this.t(file?'unlockBackup':'exportEncrypted')}</button>`);
+        document.getElementById('backup-password').focus();
+    }
+    async passwordOperation(unlock,button) {
+        if(this.cryptoBusy||this.transferBusy)return;
+        const input=document.getElementById('backup-password'),confirm=document.getElementById('backup-password-confirm');
+        let password=input.value;
+        if(password.length<12||new TextEncoder().encode(password).length>1024){this.toast('backupPasswordInvalid',true);input.focus();return;}
+        if(!unlock&&password!==confirm.value){this.toast('backupPasswordMismatch',true);confirm.focus();return;}
+        const file=this.encryptedPending,epoch=this.renderEpoch;this.cryptoBusy=true;
+        input.value='';if(confirm)confirm.value='';this.encryptedPending=null;button.disabled=true;
+        document.getElementById('workspace-dialog').close();
+        try{
+            if(unlock){
+                const blob=await SecureBackup.decrypt(file,password);
+                if(epoch!==this.renderEpoch)return;
+                await this.previewImport(new File([blob],(file.name||'backup.zscore.enc').replace(/\.enc$/i,''),{type:'application/x-ndjson'}),{decrypted:true});
+            }else await this.exportBackup(password);
+        }catch(error){this.toast(error.message,true);}
+        finally{password='';this.cryptoBusy=false;button.disabled=false;}
+    }
+    async exportBackup(password=null){
         if(this.transferBusy)return;this.transferBusy=true;this.transferStatus(true);this.toast('transferPreparing');
-        document.querySelectorAll('[data-action="export-backup"],[data-action="export-legacy"]').forEach(b=>{b.disabled=true;});
+        document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"]').forEach(b=>{b.disabled=true;});
         try{
             await this.saveImmediate('beforeExport');
-            let content;if(legacy){this.sessions=await this.history.catalog();if(this.history.catalogStats.backupBytes>50*1024**2)throw new Error('fileTooLarge');content=await this.history.exportBackup(this.prefs);if(new TextEncoder().encode(content).length>50*1024**2)throw new Error('fileTooLarge');}
-            else content=await this.transfers().export(this.prefs,n=>this.transferStatus(n));
-            this.download(content,'zscore-sauvegarde-'+new Date().toISOString().replace(/[:.]/g,'-')+(legacy?'.json':'.zscore'),legacy?'application/json':'application/x-ndjson');this.toast('exportSensitive');
+            let content=await this.transfers().export(this.prefs,n=>this.transferStatus(n));
+            if(password!==null)content=await SecureBackup.encrypt(content,password);
+            this.download(content,'zscore-sauvegarde-'+new Date().toISOString().replace(/[:.]/g,'-')+(password!==null?'.zscore.enc':'.zscore'),password!==null?'application/octet-stream':'application/x-ndjson');this.toast(password!==null?'encryptedReady':'exportSensitive');
             if(this.page==='history'){this.sessions=await this.history.catalog();this.renderHistoryList();await this.refreshCapacity();}
-        }finally{this.transferBusy=false;this.transferStatus();document.querySelectorAll('[data-action="export-backup"],[data-action="export-legacy"]').forEach(b=>{b.disabled=false;});}
+        }finally{this.transferBusy=false;this.transferStatus();document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"]').forEach(b=>{b.disabled=false;});}
     }
     async exportPDF(layout='detailed'){
         if(this.pdfBusy)return;
@@ -702,7 +750,7 @@ class WorkspaceApp {
     previewDraft(draft, mode) {
         if (!draft || !HistoryManager.hasWork({[mode === 'batch' ? 'batchDraft' : 'draft']:draft})) return '';
         const ageFields = draft.ageMode === 'dates' ? ['birthDate'] : draft.ageMode === 'days' ? ['ageDays'] : ['ageYears','ageMonths'];
-        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema'];
+        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema',...NutritionUI.inputFields];
         const labels = { gender:{M:'male',F:'female'}, position:{L:'lying',H:'standing'}, oedema:{n:'no',y:'yes'} };
         const value = key => key === 'ageMode' ? this.t(draft[key]) : labels[key]?.[draft[key]] ? this.t(labels[key][draft[key]]) : draft[key];
         return `<h3>${this.t('draft')} · ${this.t(mode)}</h3><div class="preview-grid">${fields.filter(k=>draft[k]!==''&&draft[k]!==undefined&&draft[k]!==null).map(k=>`<dl><dt>${this.t(k)}</dt><dd>${this.esc(value(k))}</dd></dl>`).join('')}</div>`;
@@ -724,17 +772,21 @@ class WorkspaceApp {
         await this.history.save(workspace,'restoreCopy',true);
         this.state=workspace;this.batchPage=0;this.checkpoint(false);this.page=workspace.mode==='batch'?'batch':'single';document.getElementById('workspace-dialog').close();this.render('main');this.toast('restored');
     }
-    async previewImport(file){
+    async previewImport(file,{decrypted=false}={}){
+        if(this.transferBusy||this.cryptoBusy&&!decrypted){this.toast('transferPreparing');return;}
+        const encryptedEpoch=this.renderEpoch;
+        if(await SecureBackup.isEncrypted(file)){
+            if(encryptedEpoch===this.renderEpoch)this.passwordDialog(file);
+            return;
+        }
         const epoch=this.renderEpoch,request=this.importRequest=(this.importRequest||0)+1;
         if(this.preparedImport?.format==='stream')this.transfers().release(this.preparedImport);this.preparedImport=null;
         let prepared;
         try{
             this.toast('transferPreparing');this.transferStatus(true);
-            const prefix=await file.slice(0,4096).text(),stream=/\.zscore$/i.test(file.name||'')||/^\s*\{\s*"kind"\s*:\s*"header"\s*,\s*"format"\s*:\s*"zscore-niger-stream"/.test(prefix);
-            if(!stream&&file.size>50*1024*1024)throw new Error('fileTooLarge');
-            prepared=stream?await this.transfers().prepare(file,n=>{if(request===this.importRequest)this.transferStatus(n);}):await this.history.prepareImport(await file.text());
-            const duplicate=stream?await this.transfers().hasImported(prepared):await this.history.hasImported(prepared);
-            if(epoch!==this.renderEpoch||request!==this.importRequest){if(stream)this.transfers().release(prepared);return;}
+            prepared=await this.transfers().prepare(file,n=>{if(request===this.importRequest)this.transferStatus(n);});
+            const duplicate=await this.transfers().hasImported(prepared);
+            if(epoch!==this.renderEpoch||request!==this.importRequest){this.transfers().release(prepared);return;}
             this.showImportPreview(prepared,file.name,duplicate);
         }catch(error){if(prepared?.format==='stream')this.transfers().release(prepared);if(request!==this.importRequest)return;this.preparedImport=null;this.toast(error instanceof SyntaxError||error instanceof TypeError?'importInvalid':error.message,true);}
         finally{if(request===this.importRequest)this.transferStatus();}
@@ -745,7 +797,7 @@ class WorkspaceApp {
         const {entries,identityConflict}=await this.history.caseVisits(child.caseId,child.gender,child.birthDate);
         if(epoch!==this.renderEpoch || this.page!=='single' || this.state.single?.child.caseId!==child.caseId)return;
         if(entries.length<1&&!identityConflict)return;
-        const target=document.getElementById('single-results');if(target)target.insertAdjacentHTML('beforeend',`<section class="visits"><h3>${this.t('followup')}</h3><p class="hint">${this.t('followupHelp')}</p>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}<p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.t('measurementDate')} : ${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'legacy-unverified')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></section>`);
+        const target=document.getElementById('single-results');if(target)target.insertAdjacentHTML('beforeend',`<section class="visits"><h3>${this.t('followup')}</h3><p class="hint">${this.t('followupHelp')}</p>${identityConflict?`<p class="notice warn">${this.t('followupIdentityWarning')}</p>`:''}<p class="meta">${this.t('followupCount').replace('{shown}',Math.min(entries.length,10)).replace('{total}',entries.length)}</p>${entries.slice(0,10).map(e=>`<div class="visit-row">${this.t('measurementDate')} : ${this.calendarDate(e.child.measurementDate)} · ${this.number(e.child.weight,0)} ${this.t('unitG')} · ${this.number(e.child.height,1)} ${this.t('unitCm')}<br><span class="meta">${this.esc(e.result.referenceVersion||'unknown')} · ${this.t('calculatedAt')} : ${this.date(e.result.calculatedAt)}</span></div>`).join('')}<button class="btn" data-action="view-case" data-case-id="${this.esc(child.caseId)}">${this.t('viewCaseVersions')}</button></section>`);
         if(target)target.querySelector('[data-action="view-case"]').insertAdjacentHTML('beforebegin',this.chartsHTML(entries));
     }
     updateConnection(){const badge=document.getElementById('connection');if(badge)badge.innerHTML=`<span class="dot" aria-hidden="true"></span>${this.t(navigator.onLine?'online':'offline')}`;}

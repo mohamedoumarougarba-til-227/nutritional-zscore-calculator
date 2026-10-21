@@ -10,3 +10,6 @@
 - [Périmètre Git](maintenance/SYNCHRONISATION_GIT.md)
 
 Le dossier projet contient le plan, les états de validation et l’ancien README complet ; il reste local et exclu du dépôt. Les audits historiques sont préservés, octets inchangés, sous .local/audit/historique. Les chemins anciens dans ces preuves décrivent l’organisation au moment de leur création.
+
+- [PB et orientation](references/EVALUATION_NUTRITIONNELLE.md)
+- [Rapports agrégés / DHIS2](references/INTEROPERABILITE.md)

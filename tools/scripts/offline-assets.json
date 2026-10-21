@@ -24,13 +24,7 @@
   "vendor/pdf/METADATA.pb",
   "vendor/pdf/provenance.json",
   "js/components/growth-chart.js",
-  "js/utils/validators.js",
-  "js/utils/formatters.js",
-  "js/models/Child.js",
-  "js/models/ZScoreResult.js",
-  "js/models/UserSettings.js",
   "js/services/storage-manager.js",
-  "js/services/export-manager.js",
   "assets/icons/icon-72.png",
   "assets/icons/icon-96.png",
   "assets/icons/icon-128.png",
@@ -55,5 +49,8 @@
   "data/zscore-sources.zip",
   "data/zscore-sources.json",
   "vendor/pdf/NOTICE-report.txt",
-  "vendor/pdf/report-provenance.json"
+  "vendor/pdf/report-provenance.json",
+  "js/services/nutrition-assessment.js",
+  "js/services/encrypted-backup.js",
+  "js/services/reporting-export.js"
 ]

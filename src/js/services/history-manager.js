@@ -1,9 +1,10 @@
-/** Additive local history. Existing children/results and previous session formats stay readable. */
+/** Additive local history for the current workspace format only. */
+const NutritionHistory=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
 class HistoryManager {
     constructor(storage) {
         this.storage = storage;
         this.tabId = crypto.randomUUID();
-        this.journalKey = 'zscore-draft-v2-' + this.tabId;
+        this.journalKey = 'zscore-work-v5-' + this.tabId;
         this.lastSaved = '';
         this.recoveryErrors = [];
     }
@@ -12,7 +13,7 @@ class HistoryManager {
     static hasWork(workspace) {
         const meaningfulDraft = draft => draft && (
             ['caseId', 'name', 'ageYears', 'ageMonths', 'ageDays', 'birthDate', 'weight', 'height', 'gender', 'position'].some(k => draft[k] !== '' && draft[k] !== undefined && draft[k] !== null)
-            || draft.oedema === 'y' || ['days', 'dates'].includes(draft.ageMode)
+            || NutritionHistory.inputFields.some(k=>draft[k]!==undefined&&draft[k]!==null&&draft[k]!=='') || draft.oedema === 'y' || ['days', 'dates'].includes(draft.ageMode)
             || !!draft.measurementDate && draft.measurementDate !== ClinicalEngine.today()
         );
         return meaningfulDraft(workspace.draft)
@@ -45,7 +46,7 @@ class HistoryManager {
         this.recoveryErrors = [];
         const journals = [];
         for (const key of Object.keys(localStorage)) {
-            if (!key.startsWith('zscore-draft-v2-')) continue;
+            if (!key.startsWith('zscore-work-v5-')) continue;
             let snapshot;
             try {
                 snapshot = JSON.parse(localStorage.getItem(key));
@@ -66,34 +67,9 @@ class HistoryManager {
         return archive;
     }
     async list() { return HistoryManager.sessionsFromArchive(await this.archive()); }
-    static sessionsFromArchive(archive,additionalLinked=[]) {
-        const children = new Map(archive.children.map(c => [c.id, c]));
-        const results = new Map(archive.results.map(r => [r.id, r]));
-        const resultsByChild = new Map();
-        for (const result of archive.results) {
-            if (!resultsByChild.has(result.childId)) resultsByChild.set(result.childId, []);
-            resultsByChild.get(result.childId).push(result);
-        }
-        const sessions = archive.sessions.map(session => {
-            if (session.metadata?.workspace) return session;
-            const sessionResults = new Map();
-            for (const id of session.results || []) {
-                const result = results.get(id);
-                if (result && !sessionResults.has(result.childId)) sessionResults.set(result.childId, result);
-            }
-            const entries = (session.children || []).map(id => children.get(id)).filter(Boolean).map(child => ({ child, result: sessionResults.get(child.id) || null }));
-            return { ...session, metadata: { ...session.metadata, kind: 'legacy', workspace: { version: 1, draft: {}, batchDraft: {}, single: entries.length === 1 ? entries[0] : null, batch: entries.length > 1 ? entries : [], mode: entries.length > 1 ? 'batch' : 'single', paste: '' } } };
-        });
-        const linked = new Set([...additionalLinked,...archive.sessions.flatMap(s => s.children || [])]);
-        for (const child of archive.children) {
-            if (linked.has(child.id)) continue;
-            const childResults = resultsByChild.get(child.id) || [];
-            for (const result of childResults.length ? childResults : [null]) {
-                sessions.push({ id: 'saved_' + (result?.id || child.id), name: child.name, createdAt: result?.calculatedAt || child.createdAt,
-                    metadata: { kind: 'legacy', workspace: { version: 1, draft: child, batchDraft: {}, single: { child, result }, batch: [], mode: 'single', paste: '' } } });
-            }
-        }
-        return sessions.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+    static sessionsFromArchive(archive) {
+        for(const session of archive.sessions)HistoryManager.checkWorkspace(session.metadata?.workspace);
+        return archive.sessions.slice().sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
     }
     static summary(session,origin) {
         const w=session.metadata?.workspace||{},entries=[...(w.batch||[]),...(w.single?[w.single]:[])],people=[w.draft,w.batchDraft,...entries.map(e=>e.child)];
@@ -105,7 +81,7 @@ class HistoryManager {
         if(typeof this.storage.scanHistory!=='function')return (await this.list()).map(s=>HistoryManager.summary(s,{kind:'memory',record:s}));
         this.recoveryErrors=[];const journals=[];
         for(const key of Object.keys(localStorage)){
-            if(!key.startsWith('zscore-draft-v2-'))continue;
+            if(!key.startsWith('zscore-work-v5-'))continue;
             try{const snapshot=HistoryManager.parse(localStorage.getItem(key));HistoryManager.checkWorkspace(snapshot?.metadata?.workspace);journals.push({key,snapshot,signature:JSON.stringify(snapshot.metadata.workspace)});}
             catch(_){this.recoveryErrors.push(key);}
         }
@@ -115,11 +91,6 @@ class HistoryManager {
             return HistoryManager.summary(session,origin);
         });
         const rows=scanned.rows;
-        let orphanOrder=scanned.origins.size;
-        for(const session of HistoryManager.sessionsFromArchive(scanned.legacy,scanned.linkedChildren)){
-            const origin=scanned.origins.get(session.id)||{kind:'unlinked',childId:session.metadata.workspace.single.child.id,resultId:session.metadata.workspace.single.result?.id,order:orphanOrder++};
-            rows.push(HistoryManager.summary(session,origin));
-        }
         for(const journal of journals){
             if(matched.has(journal.signature))continue;matched.add(journal.signature);
             rows.push(HistoryManager.summary(journal.snapshot,{kind:'journal',record:journal.snapshot}));
@@ -132,15 +103,9 @@ class HistoryManager {
         if(!row)return null;if(row.metadata?.workspace)return row;
         const origin=row.origin;if(!origin)return null;
         if(['journal','memory'].includes(origin.kind))return HistoryManager.clone(origin.record);
-        if(origin.kind==='unlinked'){
-            const records=await this.storage.readHistoryRecords({children:[origin.childId],results:origin.resultId?[origin.resultId]:[]});
-            const child=records.children[0],result=records.results[0]||null;if(!child||origin.resultId&&!result)throw new Error('historyReadFailed');
-            return {id:row.id,name:child.name,createdAt:result?.calculatedAt||child.createdAt,metadata:{kind:'legacy',workspace:{version:1,draft:child,batchDraft:{},single:{child,result},batch:[],mode:'single',paste:''}}};
-        }
         const records=await this.storage.readHistoryRecords({sessions:[row.id]},origin),session=records.sessions[0];
-        if(!session)throw new Error('historyReadFailed');if(session.metadata?.workspace)return session;
-        const related=await this.storage.readHistoryRecords({children:session.children||[],results:session.results||[]});
-        return HistoryManager.sessionsFromArchive({...related,sessions:[session],settings:[]})[0];
+        if(!session)throw new Error('historyReadFailed');
+        HistoryManager.checkWorkspace(session.metadata?.workspace);return session;
     }
     static async digest(value) {
         const bytes = new TextEncoder().encode(JSON.stringify(value));
@@ -178,13 +143,6 @@ class HistoryManager {
         }
         return { sessions: records.sessions.length, children: children.size, results: results.size };
     }
-    async exportBackup(preferences) {
-        const records = await this.archive();
-        // Include unreadable emergency bytes for technical recovery without activating them on import.
-        const recoveryJournals = this.recoveryErrors.map(key => ({ key, raw: localStorage.getItem(key) }));
-        const payload = { format: 'zscore-niger-backup', version: 2, exportedAt: new Date().toISOString(), records, preferences, recoveryJournals };
-        return JSON.stringify({ ...payload, checksum: await HistoryManager.digest(payload) }, null, 2);
-    }
     static parse(text) {
         if (new TextEncoder().encode(text).length > 50 * 1024 * 1024) throw new Error('fileTooLarge');
         return JSON.parse(text, (key, value) => {
@@ -194,21 +152,20 @@ class HistoryManager {
     }
     static checkChild(child) {
         if (!child || typeof child.id !== 'string' || !child.id || child.id.length > 200 || typeof child.name !== 'string' || child.name.length > 100) throw new Error('importInvalid');
-        if(child.ageDomainVersion!==undefined&&child.ageDomainVersion!==2)throw new Error('importVersion');
+        if(child.ageDomainVersion!==2)throw new Error('importVersion');
         const extended=child.ageDomainVersion===2;
+        NutritionHistory.normalize(child);
+        if(child.muac!==undefined&&child.muac!==''&&typeof child.muac!=='number')throw new Error('importInvalid');
         for (const [key, min, max] of [['weight', 50, extended?300000:100000], ['height', 30, extended?250:150]]) ClinicalEngine.numeric(child[key], min, max, 'importInvalid');
         if (!['M', 'F'].includes(child.gender)) throw new Error('importInvalid');
-        if (child.ageMode) {
-            const normalized=ClinicalEngine.normalize(child, { forArchive: true,extended });
-            if(extended&&(normalized.ageDays!==child.ageDays||normalized.totalAgeMonths!==child.totalAgeMonths))throw new Error('importInvalid');
-        }
-        else {
-            ClinicalEngine.numeric(child.ageYears, 0, 5, 'importInvalid');
-            ClinicalEngine.numeric(child.ageMonths, 0, 11, 'importInvalid');
-        }
+        const normalized=ClinicalEngine.normalize(child,{forArchive:true,extended:true});
+        if(normalized.ageDays!==child.ageDays||normalized.totalAgeMonths!==child.totalAgeMonths)throw new Error('importInvalid');
     }
     static checkPair(child,result){
-        if(result?.schemaVersion!==4)return;
+        if(result)NutritionHistory.check(child,result);
+        if(!result)return;
+        if(result.schemaVersion!==4)throw new Error('importVersion');
+        if(!result.nutrition||result.nutrition.version!==1)throw new Error('importInvalid');
         if(child.ageDomainVersion!==2||result.ageInMonths!==child.totalAgeMonths||result.referenceFamily!==(child.totalAgeMonths<60?'WHO2006':'WHO2007'))throw new Error('importInvalid');
     }
     static checkResult(result, children) {
@@ -216,10 +173,10 @@ class HistoryManager {
         if (typeof result.calculatedAt !== 'string' || !Number.isFinite(Date.parse(result.calculatedAt))) throw new Error('importInvalid');
         for (const key of ['status','referenceVersion','engineVersion']) if (result[key] !== undefined && (typeof result[key] !== 'string' || result[key].length > 300)) throw new Error('importInvalid');
         if (result.warnings !== undefined && (!Array.isArray(result.warnings) || result.warnings.length > 50 || result.warnings.some(w => typeof w !== 'string' || w.length > 200))) throw new Error('importInvalid');
-        if (result.schemaVersion !== undefined && ![1,2,3,4].includes(result.schemaVersion)) throw new Error('importVersion');
+        if(result.schemaVersion!==4)throw new Error('importVersion');
+        if(!result.nutrition||result.nutrition.version!==1)throw new Error('importInvalid');
         if (result.percentileVersion !== undefined && result.percentileVersion !== 1) throw new Error('importVersion');
-        if (result.percentileVersion === 1 && ![3,4].includes(result.schemaVersion)) throw new Error('importInvalid');
-        const modern = [2,3,4].includes(result.schemaVersion);
+        if (result.percentileVersion === 1 && result.schemaVersion!==4) throw new Error('importInvalid');
         const keys = ClinicalEngine.resultIndicators(result);
         if(result.schemaVersion===4){
             const age=result.ageInMonths,family=result.referenceFamily;
@@ -227,20 +184,20 @@ class HistoryManager {
             if(JSON.stringify(result.applicableIndicators)!==JSON.stringify(ClinicalEngine.applicable(family,age)))throw new Error('importInvalid');
             for(const key of keys){const excluded=!result.applicableIndicators.includes(key),value=result[key];if(excluded?(value?.notApplicable!==true||value?.zscore!==null||value?.error!==(key==='weightForHeight'?'noWeightForHeight2007':'weightAgeLimit2007')):value?.notApplicable===true)throw new Error('importInvalid');}
         }
-        if ([3,4].includes(result.schemaVersion) && (!Object.hasOwn(result,'bmi') || result.bmi !== null && (typeof result.bmi !== 'number' || !Number.isFinite(result.bmi) || result.bmi <= 0))) throw new Error('importInvalid');
+        if (result.schemaVersion===4 && (!Object.hasOwn(result,'bmi') || result.bmi !== null && (typeof result.bmi !== 'number' || !Number.isFinite(result.bmi) || result.bmi <= 0))) throw new Error('importInvalid');
         for (const key of keys) {
             const v = result[key];
             if (v !== undefined && v !== null && (typeof v !== 'object' || Array.isArray(v))) throw new Error('importInvalid');
             if (v && v.zscore !== null && (typeof v.zscore !== 'number' || !Number.isFinite(v.zscore))) throw new Error('importInvalid');
             for (const field of ['classification','error','reference']) if (v?.[field] !== undefined && (typeof v[field] !== 'string' || v[field].length > 300)) throw new Error('importInvalid');
             if (v?.flagged !== undefined && typeof v.flagged !== 'boolean') throw new Error('importInvalid');
-            if (modern && !v) throw new Error('importInvalid');
-            if (modern && v.zscore !== null) {
+            if (!v) throw new Error('importInvalid');
+            if (v.zscore !== null) {
                 const categories = {weightForAge:['underweightSevere','underweightModerate','withinReference'],heightForAge:['stuntingSevere','stuntingModerate','withinReference'],weightForHeight:['wastingSevere','wastingModerate','withinReference','riskOverweight','overweight','obesity'],bmiForAge:['bmiBelow3','bmiBelow2','bmiWithin','bmiAbove1','bmiAbove2','bmiAbove3']};
                 const flagged = key === 'weightForAge' ? v.zscore < -6 || v.zscore > 5 : Math.abs(v.zscore) > (key === 'heightForAge' ? 6 : 5);
                 if (!categories[key].includes(v.classification) || v.flagged !== flagged || v.reference !== result.referenceVersion) throw new Error('importInvalid');
             }
-            if (modern && v.zscore === null && !v.error) throw new Error('importInvalid');
+            if (v.zscore === null && !v.error) throw new Error('importInvalid');
             if (result.percentileVersion === 1) {
                 if (v.zscore === null) {
                     if (v.zscoreRaw !== null || v.percentile !== null || v.percentileStatus !== 'percentileUnavailable') throw new Error('importInvalid');
@@ -251,12 +208,12 @@ class HistoryManager {
                 }
             }
         }
-        if (modern) {
-            const indicators = (result.schemaVersion===4?result.applicableIndicators:keys).map(k => result[k]);
+        {
+            const indicators = (result.applicableIndicators).map(k => result[k]);
             const expectedStatus = indicators.some(v => v.zscore === null) ? 'incomplete' : indicators.some(v => v.flagged) ? 'checkMeasures' : 'complete';
             if (result.status !== expectedStatus || !result.referenceVersion || !result.engineVersion) throw new Error('importInvalid');
         }
-        if ([3,4].includes(result.schemaVersion) && (result.bmiForAge.zscore === null ? result.bmi !== null : result.bmi === null)) throw new Error('importInvalid');
+        if (result.schemaVersion===4 && (result.bmiForAge.zscore === null ? result.bmi !== null : result.bmi === null)) throw new Error('importInvalid');
     }
     static checkWorkspace(workspace) {
         if (!workspace || workspace.version !== 1 || !Array.isArray(workspace.batch) || workspace.batch.length > 5000) throw new Error('importInvalid');
@@ -272,77 +229,6 @@ class HistoryManager {
             if (entry.result) HistoryManager.checkResult(entry.result, new Set([entry.child.id]));
             HistoryManager.checkPair(entry.child,entry.result);
         }
-    }
-    async prepareImport(text) {
-        const data = HistoryManager.parse(text);
-        let records, preferences = {}, recoveryJournals = [];
-        if (data.format === 'zscore-niger-backup') {
-            if (data.version !== 2) throw new Error('importVersion');
-            const { checksum, ...payload } = data;
-            if (!checksum || checksum !== await HistoryManager.digest(payload)) throw new Error('importChecksum');
-            records = data.records; preferences = data.preferences || {};
-            recoveryJournals = data.recoveryJournals || [];
-            if (!Array.isArray(recoveryJournals) || recoveryJournals.length > 50000 || recoveryJournals.some(j => !j || typeof j.key !== 'string' || typeof j.raw !== 'string')) throw new Error('importInvalid');
-        } else if (Array.isArray(data.children) && Array.isArray(data.results) && data.session) {
-            if (data.metadata?.compressed) throw new Error('importInvalid');
-            if (data.metadata?.checksum) {
-                const manager = new ExportManager();
-                const validation = manager.validateImportedData(data);
-                if (!validation.valid) throw new Error('importChecksum');
-            }
-            const entries = data.children.map(child => ({ child, result: data.results.find(r => r.childId === child.id) || null }));
-            records = { ...HistoryManager.emptyArchive(), children: data.children, results: data.results, sessions: [{ id: data.session.id || 'legacy_session', name: data.session.name || '', createdAt: data.session.createdAt || new Date().toISOString(), children: data.children.map(c => c.id), results: data.results.map(r => r.id), metadata: { workspace: { version: 1, draft: entries.length === 1 ? entries[0].child : {}, batchDraft: {}, single: entries.length === 1 ? entries[0] : null, batch: entries.length > 1 ? entries : [], mode: entries.length > 1 ? 'batch' : 'single', paste: '' } } }] };
-        } else throw new Error('importInvalid');
-        for (const key of ['sessions', 'children', 'results', 'settings']) if (!Array.isArray(records?.[key]) || records[key].length > 50000) throw new Error('importInvalid');
-        for (const key of ['sessions', 'children', 'results']) {
-            const ids = records[key].map(r => r.id);
-            if (ids.some(id => typeof id !== 'string' || !id || id.length > 200) || new Set(ids).size !== ids.length) throw new Error('importInvalid');
-        }
-        for (const child of records.children) HistoryManager.checkChild(child);
-        const children = new Set(records.children.map(c => c.id));
-        const results = new Set(records.results.map(r => r.id));
-        const childrenById=new Map(records.children.map(c=>[c.id,c]));
-        for (const result of records.results) {HistoryManager.checkResult(result, children);HistoryManager.checkPair(childrenById.get(result.childId),result);}
-        for (const session of records.sessions) {
-            if (typeof session.name !== 'string' || !Number.isFinite(Date.parse(session.createdAt))) throw new Error('importInvalid');
-            if (!Array.isArray(session.children) || !Array.isArray(session.results) || session.children.some(id => !children.has(id)) || session.results.some(id => !results.has(id))) throw new Error('importInvalid');
-            if (session.metadata?.workspace) HistoryManager.checkWorkspace(session.metadata.workspace);
-        }
-        for (const setting of records.settings) if (typeof setting.key !== 'string' || !setting.key) throw new Error('importInvalid');
-        return { records, preferences, recoveryJournals, fingerprint: await HistoryManager.digest(records), recoveryFingerprint: await HistoryManager.digest(recoveryJournals) };
-    }
-    async hasImported(prepared) {
-        return (await this.archive()).settings.some(s => s.value?.importFingerprint === prepared.fingerprint);
-    }
-    async commitImport(prepared) {
-        // Reject a preview changed after validation; imported IDs never overwrite local IDs.
-        if (await HistoryManager.digest(prepared.records) !== prepared.fingerprint) throw new Error('importInvalid');
-        if (await HistoryManager.digest(prepared.recoveryJournals || []) !== prepared.recoveryFingerprint) throw new Error('importInvalid');
-        const source = HistoryManager.clone(prepared.records);
-        const maps = { children: new Map(), results: new Map(), sessions: new Map() };
-        const newId = (kind, id) => { if (!maps[kind].has(id)) maps[kind].set(id, kind + '_' + crypto.randomUUID()); return maps[kind].get(id); };
-        const entry = item => {
-            item.child.id = newId('children', item.child.id);
-            if (item.result) { item.result.id = newId('results', item.result.id); item.result.childId = item.child.id; item.result.imported = true; }
-        };
-        for (const child of source.children) { const original = child.id; child.id = newId('children', original); if (child.sessionId) child.sessionId = newId('sessions', child.sessionId); }
-        for (const result of source.results) { result.id = newId('results', result.id); result.childId = newId('children', result.childId); result.imported = true; if (result.sessionId) result.sessionId = newId('sessions', result.sessionId); }
-        for (const session of source.sessions) {
-            session.id = newId('sessions', session.id);
-            session.children = session.children.map(id => newId('children', id)); session.results = session.results.map(id => newId('results', id));
-            session.metadata = { ...session.metadata, importedAt: new Date().toISOString() };
-            const workspace = session.metadata.workspace;
-            if (workspace) {
-                if (workspace.single) entry(workspace.single);
-                for (const item of workspace.batch) entry(item);
-                for (const draft of [workspace.draft, workspace.batchDraft]) if (draft?.id) draft.id = newId('children', draft.id);
-            }
-        }
-        const namespace = 'import_' + crypto.randomUUID();
-        source.settings = source.settings.map(s => ({ ...s, originalKey: s.key, key: namespace + '_' + s.key }));
-        source.settings.push({ key: namespace, value: { importFingerprint: prepared.fingerprint, preferences: prepared.preferences, recoveryJournals: prepared.recoveryJournals || [] }, updatedAt: new Date().toISOString() });
-        await this.storage.addArchive(source);
-        return { sessions: source.sessions.length, children: source.children.length, results: source.results.length };
     }
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = { HistoryManager };

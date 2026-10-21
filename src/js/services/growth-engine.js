@@ -1,8 +1,9 @@
 /** Combined WHO references. Stored results are never recalculated by reading them. */
 const GrowthClinicalCore=typeof module!=='undefined'&&module.exports?require('./clinical-engine.js').ClinicalEngine:ClinicalEngine;
 const GrowthOlderCore=typeof module!=='undefined'&&module.exports?require('./reference-2007.js').WHO2007Reference:WHO2007Reference;
+const NutritionGrowth=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
 class GrowthEngine {
-    static version='4.0.0';
+    static version='4.1.0';
     constructor(young,older){this.young=new GrowthClinicalCore(young);this.older=new GrowthOlderCore(older);this.data=young;}
     static normalize(raw){return GrowthClinicalCore.normalize(raw,{extended:true});}
     static applicable(family,age){return GrowthClinicalCore.applicable(family,age);}
@@ -24,6 +25,7 @@ class GrowthEngine {
         }
         Object.assign(result,{schemaVersion:4,percentileVersion:1,engineVersion:GrowthEngine.version,referenceFamily:family,ageInMonths:age,applicableIndicators:GrowthEngine.applicable(family,age)});
         const values=result.applicableIndicators.map(k=>result[k]);result.status=values.some(v=>v.zscore===null)?'incomplete':values.some(v=>v.flagged)?'checkMeasures':'complete';
+        result.nutrition=NutritionGrowth.assess(child,result);
         return {child,result};
     }
 }

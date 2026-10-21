@@ -54,18 +54,12 @@
 !/src/data/who-official.json
 !/src/index.html
 !/src/js/components/growth-chart.js
-!/src/js/models/Child.js
-!/src/js/models/UserSettings.js
-!/src/js/models/ZScoreResult.js
 !/src/js/services/clinical-engine.js
 !/src/js/services/csv-manager.js
-!/src/js/services/export-manager.js
 !/src/js/services/history-manager.js
 !/src/js/services/pdf-manager.js
 !/src/js/services/storage-manager.js
 !/src/js/services/transfer-manager.js
-!/src/js/utils/formatters.js
-!/src/js/utils/validators.js
 !/src/js/workspace-app.js
 !/src/js/workspace-bootstrap.js
 !/src/manifest.json
@@ -184,3 +178,10 @@
 !/docs/references/DISTRIBUTION_GPL.md
 
 !/tools/reference/vercel-config.json
+
+!/src/js/services/nutrition-assessment.js
+!/src/js/services/encrypted-backup.js
+!/src/js/services/reporting-export.js
+
+!/docs/references/EVALUATION_NUTRITIONNELLE.md
+!/docs/references/INTEROPERABILITE.md

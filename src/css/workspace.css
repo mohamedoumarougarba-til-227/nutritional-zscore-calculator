@@ -194,3 +194,7 @@ main{padding:12px 16px;max-width:none;min-width:0;width:100%}
 .lot-analysis .action-with-label{width:auto;padding:6px 10px;max-width:100%}.lot-analysis .action-label{display:inline}
 
 .compact-footer .legal-footer-link{margin-inline-end:auto;font-size:inherit}@media print{.compact-footer .legal-footer-link{display:none}}
+
+.clinical-fields{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}.clinical-fields summary,.nutrition-result summary{cursor:pointer;min-height:36px;font-size:14px;font-weight:600}.clinical-fields .hint{margin:8px 0}.nutrition-result{border:1px solid var(--line);border-inline-start:4px solid var(--accent);padding:10px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}.nutrition-result p{margin:6px 0}.nutrition-result details{font-size:12px;color:var(--muted)}
+.nutrition-result.clinical-urgent{border-inline-start-color:var(--danger)}.nutrition-result.clinical-urgent>strong{color:var(--danger)}.nutrition-result h3,.growth-heading{font-size:14px;margin:0 0 6px}.growth-heading{margin-top:12px}
+.row-assessment{font-size:12px;margin-top:4px}.row-assessment summary{cursor:pointer;line-height:1.4}.row-assessment p{margin:6px 0}.row-assessment.clinical-urgent>summary{color:var(--danger);font-weight:600}

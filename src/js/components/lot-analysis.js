@@ -30,9 +30,9 @@ class LotAnalysis {
             let sum=0;
             for(const entry of entries){
                 const {result:r}=entry;
-                if(!r || key==='bmiForAge'&&![3,4].includes(r.schemaVersion)){item.missing++;continue;}
+                if(!r || key==='bmiForAge'&&r.schemaVersion!==4){item.missing++;continue;}
                 const value=r[key];
-                if(![2,3,4].includes(r.schemaVersion)||!reference||r.referenceVersion!==reference||!ageEligible.has(entry)){item.unverified++;continue;}
+                if(r.schemaVersion!==4||!reference||r.referenceVersion!==reference||!ageEligible.has(entry)){item.unverified++;continue;}
                 if(!value){item.missing++;continue;}
                 if(r.schemaVersion===4&&value.notApplicable===true){item.notApplicable++;continue;}
                 if(value.error){item.suspended++;continue;}
@@ -65,7 +65,7 @@ class LotAnalysis {
         const population=[['male',model.sex.M],['female',model.sex.F],['lotUnknownSex',model.sex.unknown],...(model.family==='WHO2007'?[['lotAge5to9',model.ages.from5to9],['lotAge10to14',model.ages.from10to14],['lotAge15to19',model.ages.from15to19]]:[['lotAgeUnder6',model.ages.under6],['lotAge6to23',model.ages.from6to23],['lotAge24to59',model.ages.from24to59]]),['lotUnknownAge',model.ages.unknown]];
         const ratio=c=>`${n(c.count)} / ${n(c.denominator)}${c.percent===null?' · —':' · '+n(c.percent,1)+' %'}`;
         const cards=model.indicators.map(item=>`<section class="lot-indicator"><h3>${e(t(item.key))}</h3><dl class="lot-metrics">${['usable','missing','suspended','flagged','unverified','notApplicable'].map(key=>datum('lot'+key[0].toUpperCase()+key.slice(1),item[key])).join('')}</dl><p class="hint">${e(t('lotMean'))} : <bdi dir="ltr">${item.mean===null?'—':e(n(item.mean,2))}</bdi> · ${e(t('lotRange'))} : <bdi dir="ltr">${item.min===null?'—':e(n(item.min,2))+' / '+e(n(item.max,2))}</bdi></p><table><caption class="sr-only">${e(t('lotCategories')+' · '+t(item.key))}</caption><thead><tr><th scope="col">${e(t('lotCategories'))}</th><th scope="col">${e(t('lotProportion'))}</th></tr></thead><tbody>${item.categories.map(c=>`<tr><th scope="row">${e(t(c.key))}</th><td><bdi dir="ltr">${e(ratio(c))}</bdi></td></tr>`).join('')}</tbody></table></section>`).join('');
-        return `<details class="lot-analysis"${open?' open':''}><summary>${e(t('lotSummary')+(model.family==='WHO2007'?' · OMS 2007':''))}</summary><p class="hint">${e(t('lotScope'))}</p><p class="meta">${e(model.reference||t('unknown'))}</p>${exportButton?`<div class="toolbar compact-toolbar">${ui.toolButton(model.family==='WHO2007'?'lotExportOlder':'lotExport','csv','export-summary',{showLabel:true,attrs:'data-family="'+e(model.family)+'"'})}</div>`:''}<dl class="lot-overview">${overview.map(([k,v])=>datum(k,v)).join('')}</dl><p class="hint">${e(t('lotIdentifiers'))}</p><dl class="lot-overview">${population.map(([k,v])=>datum(k,v)).join('')}</dl><p class="hint">${e(t(model.family==='WHO2007'?'lotRulesOlder':'lotRules'))}</p><div class="lot-indicators">${cards}</div></details>`;
+        return `<details class="lot-analysis"${open?' open':''}><summary>${e(t('lotSummary')+(model.family==='WHO2007'?' · OMS 2007':''))}</summary><p class="hint">${e(t('lotScope'))}</p><p class="meta">${e(model.reference||t('unknown'))}</p>${exportButton?`<div class="toolbar compact-toolbar">${ui.toolButton('reportTitle','csv','reporting',{showLabel:true})}${ui.toolButton(model.family==='WHO2007'?'lotExportOlder':'lotExport','csv','export-summary',{showLabel:true,attrs:'data-family="'+e(model.family)+'"'})}</div>`:''}<dl class="lot-overview">${overview.map(([k,v])=>datum(k,v)).join('')}</dl><p class="hint">${e(t('lotIdentifiers'))}</p><dl class="lot-overview">${population.map(([k,v])=>datum(k,v)).join('')}</dl><p class="hint">${e(t(model.family==='WHO2007'?'lotRulesOlder':'lotRules'))}</p><div class="lot-indicators">${cards}</div></details>`;
     }
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={LotAnalysis};

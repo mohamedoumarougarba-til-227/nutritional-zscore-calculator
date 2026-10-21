@@ -1,8 +1,9 @@
 /** Independent implementation of the published WHO LMS method. Reference data are read-only. */
+const NutritionCore=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
 class ClinicalEngine {
-    static version = '3.1.0';
+    static version = '4.1.0';
     static indicators = ['weightForAge', 'heightForAge', 'weightForHeight', 'bmiForAge'];
-    static resultIndicators(result) { return this.indicators.slice(0, [3,4].includes(result?.schemaVersion) ? 4 : 3); }
+    static resultIndicators(result) { return this.indicators.slice(); }
     static applicable(family,age) { return family==='WHO2006'?this.indicators.slice():age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
     constructor(data) {
         if (data?.schemaVersion !== 1 || !data.referenceVersion) throw new Error('referenceInvalid');
@@ -84,8 +85,9 @@ class ClinicalEngine {
         const name = (raw.name || '').trim();
         const caseId = (raw.caseId || '').trim();
         if (name.length > 100 || caseId.length > 100) throw new Error('nameInvalid');
-        const child = { ...raw, id: raw.id || 'child_' + crypto.randomUUID(), visitId: raw.visitId || 'visit_' + crypto.randomUUID(), name, caseId, ageMode, ageDays, totalAgeMonths: ageMonths, weight, height, createdAt: raw.createdAt || new Date().toISOString() };
-        if(extended)child.ageDomainVersion=2;
+        const clinical = NutritionCore.normalize(raw);
+        const child = { ...raw, ...clinical, id: raw.id || 'child_' + crypto.randomUUID(), visitId: raw.visitId || 'visit_' + crypto.randomUUID(), name, caseId, ageMode, ageDays, totalAgeMonths: ageMonths, weight, height, createdAt: raw.createdAt || new Date().toISOString() };
+        child.ageDomainVersion=2;
         if (ageMode !== 'months') {
             child.ageYears = Math.floor(ageMonths / 12);
             child.ageMonths = Math.floor(ageMonths % 12);
@@ -184,7 +186,9 @@ class ClinicalEngine {
             } catch (failure) { indicators[key] = { zscore: null, error: failure.message, zscoreRaw:null, percentile:null, percentileStatus:'percentileUnavailable' }; }
         }
         const status = Object.values(indicators).some(v => v.zscore === null) ? 'incomplete' : Object.values(indicators).some(v => v.flagged) ? 'checkMeasures' : 'complete';
-        return { child, result: { id: 'result_' + crypto.randomUUID(), childId: child.id, childName: child.name, schemaVersion: 3, percentileVersion:1, calculatedAt: new Date().toISOString(), referenceVersion: this.data.referenceVersion, engineVersion: ClinicalEngine.version, correctedHeight, bmi: indicators.bmiForAge.zscore === null ? null : bmi, status, warnings, ...indicators } };
+        const result = { id: 'result_' + crypto.randomUUID(), childId: child.id, childName: child.name, schemaVersion: 4, referenceFamily: 'WHO2006', ageInMonths:child.totalAgeMonths, applicableIndicators:ClinicalEngine.indicators.slice(), percentileVersion:1, calculatedAt: new Date().toISOString(), referenceVersion: this.data.referenceVersion, engineVersion: ClinicalEngine.version, correctedHeight, bmi: indicators.bmiForAge.zscore === null ? null : bmi, status, warnings, ...indicators };
+        result.nutrition=NutritionCore.assess(child,result);
+        return {child,result};
     }
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = { ClinicalEngine };

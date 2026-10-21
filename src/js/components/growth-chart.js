@@ -26,7 +26,7 @@ class GrowthChart {
                     else if(child.ageMode==='dates')withinAge=withinAge&&ClinicalEngine.beforeFifthBirthday(ClinicalEngine.dateDays(child.birthDate),measurement);
                     else if(child.ageDays===1826)withinAge=withinAge&&ClinicalEngine.beforeFifthBirthday(measurement-child.ageDays,measurement);
                 }catch(_){dated=false;}
-                if(!dated||!withinAge||![2,3,4].includes(result?.schemaVersion)||result.referenceVersion!==reference||indicator?.reference!==reference||!Number.isFinite(indicator.zscore)||indicator.error||indicator.flagged)return [];
+                if(!dated||!withinAge||result?.schemaVersion!==4||result.referenceVersion!==reference||indicator?.reference!==reference||!Number.isFinite(indicator.zscore)||indicator.error||indicator.flagged)return [];
                 const value=key==='weightForAge'?child.weight/1000:key==='heightForAge'?result.correctedHeight:result.bmi;
                 if(!Number.isFinite(value)||value<=0)return [];
                 return [{index,day:older?result.ageInMonths*month:child.ageDays,date:child.measurementDate,value,estimated:child.ageMode==='months',imported:!!result.imported}];
@@ -74,11 +74,11 @@ class GrowthChart {
             try { day = ClinicalEngine.dateDays(entry.child.measurementDate); } catch (_) { /* Unknown dates stay in the table. */ }
             return {entry,day};
         });
-        const keys = ['weightForAge','heightForAge','weightForHeight',...(entries.some(e=>[3,4].includes(e.result?.schemaVersion))?['bmiForAge']:[])].filter(key=>entries.some(e=>e.result?.schemaVersion!==4||e.result.applicableIndicators.includes(key)));
+        const keys = ['weightForAge','heightForAge','weightForHeight',...(entries.some(e=>e.result?.schemaVersion===4)?['bmiForAge']:[])].filter(key=>entries.some(e=>e.result?.schemaVersion!==4||e.result.applicableIndicators.includes(key)));
         const panels = keys.map(key => {
             const points = dated.filter(({entry,day}) => {
                 const r = entry.result, v = r?.[key];
-                return day !== null && [2,3,4].includes(r?.schemaVersion) && r.referenceVersion === referenceVersion
+                return day !== null && r?.schemaVersion===4 && r.referenceVersion === referenceVersion
                     && v?.reference === referenceVersion && Number.isFinite(v.zscore) && !v.flagged && Math.abs(v.zscore) <= 6;
             }).map(({entry,day}) => ({day,date:entry.child.measurementDate,zscore:entry.result[key].zscore,imported:!!entry.result.imported}))
                 .sort((a,b)=>a.day-b.day);
@@ -111,7 +111,7 @@ class GrowthChart {
             const circles = points.map(p=>`<circle cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="4.5" class="chart-point ${p.imported?'chart-imported':''}"><title>${e(ui.calendarDate(p.date))} : ${e(ui.number(p.zscore))}${p.imported?' · '+e(t('importedResult')):''}</title></circle>`).join('');
             return `<figure class="growth-chart"><figcaption>${e(t(panel.key))}</figcaption><p class="hint">${e(summary)}</p><svg viewBox="0 0 420 180" role="img" aria-label="${e(t(panel.key)+' · '+summary)}">${grid}${labels}${line}${circles}</svg></figure>`;
         };
-        const table = `<div class="table-scroll"><table><caption>${e(t('chartData'))}</caption><thead><tr><th scope="col">${e(t('measurementDate'))}</th>${model.panels.map(p=>`<th scope="col">${e(t(p.key))}</th>`).join('')}<th scope="col">${e(t('referenceVersion'))}</th></tr></thead><tbody>${[...entries].reverse().map(entry=>`<tr><th scope="row">${e(ui.calendarDate(entry.child.measurementDate))}</th>${model.panels.map(({key})=>`<td>${Number.isFinite(entry.result?.[key]?.zscore)?e(ui.number(entry.result[key].zscore)):'—'}${ui.percentileHTML?.(entry.result?.[key],entry.result)||''}${entry.result?.[key]?.flagged?`<br>${e(t('flagged'))}`:''}${entry.result?.[key]?.error?`<br>${e(t(entry.result[key].error))}`:''}</td>`).join('')}<td>${e(entry.result?.referenceVersion || 'legacy-unverified')}${entry.result?.imported?`<br>${e(t('imported'))}`:''}</td></tr>`).join('')}</tbody></table></div>`;
+        const table = `<div class="table-scroll"><table><caption>${e(t('chartData'))}</caption><thead><tr><th scope="col">${e(t('measurementDate'))}</th>${model.panels.map(p=>`<th scope="col">${e(t(p.key))}</th>`).join('')}<th scope="col">${e(t('referenceVersion'))}</th></tr></thead><tbody>${[...entries].reverse().map(entry=>`<tr><th scope="row">${e(ui.calendarDate(entry.child.measurementDate))}</th>${model.panels.map(({key})=>`<td>${Number.isFinite(entry.result?.[key]?.zscore)?e(ui.number(entry.result[key].zscore)):'—'}${ui.percentileHTML?.(entry.result?.[key],entry.result)||''}${entry.result?.[key]?.flagged?`<br>${e(t('flagged'))}`:''}${entry.result?.[key]?.error?`<br>${e(t(entry.result[key].error))}`:''}</td>`).join('')}<td>${e(entry.result?.referenceVersion || 'unknown')}${entry.result?.imported?`<br>${e(t('imported'))}`:''}</td></tr>`).join('')}</tbody></table></div>`;
         return `<details class="growth-charts"><summary>${e(t('chartTitle'))}</summary><p class="hint">${e(t('chartHelp'))}</p><p class="meta">${e(referenceVersion)}</p>${model.panels.map(panelHTML).join('')}<details><summary>${e(t('chartData'))}</summary>${table}</details></details>`;
     }
 }
