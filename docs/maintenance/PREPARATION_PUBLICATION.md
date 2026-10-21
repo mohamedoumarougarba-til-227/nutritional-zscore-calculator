@@ -1,5 +1,19 @@
 # Préparation de l'accès public
 
+## Livraison courante - 5.0.0, 21 octobre 2026
+
+La version 5.0.0 est publiée sur https://zscore-niger.vercel.app/ depuis le commit signé `cede1e4`. Le dépôt privé est relié à `main` ; les push déclenchent la production. Le site est accessible sans compte ; les préversions Vercel restent protégées. Le choix GPLv3, les notices et sources téléchargeables sont mis en œuvre. Aucune nouvelle décision propriétaire/GPL ou création de projet Vercel n'est attendue.
+
+L'aide PB/orientation OMS, les sauvegardes courantes avec option chiffrée et les exports agrégés préparant DHIS2 sont livrés. Une adaptation nationale, une prescription automatique ou une connexion DHIS2 ne sont pas annoncées sans leurs références et paramètres réels.
+
+Pour chaque mise à jour : contrôler branche/HEAD/diff indexé ; reconstruire l'archive des sources et la release ; vérifier les tests appropriés, `licenseDistributionReady`, le paquet et ses empreintes ; signer le commit autorisé puis pousser. Contrôler ensuite le SHA du déploiement Git READY et les ressources servies. Une documentation incluse dans l'archive modifie aussi les empreintes de release. Ne pas réécrire un commit ni effacer les données pour adopter une version.
+
+Les preuves de la livraison fonctionnelle sont dans [le bilan 5.0.0](../../.local/audit/2026-10-21/finalisation/RAPPORT.md). La revue métier, le protocole PCIMA applicable et les essais physiques complémentaires restent distincts des contrôles techniques réussis. Aucun avis médical n'est déduit de la publication. Les réglages personnels MFA/récupération des comptes ne sont pas déclarés audités.
+
+## Historique conservé - les états ci-dessous décrivent leurs dates
+
+Les absences de licence, de projet Vercel, de liaison Git ou d'autorisation décrites plus bas ont été levées. Les versions et formats remplacés sont cités comme preuves historiques, pas comme options courantes.
+
 > Actualisation du 21 octobre 2026 : le choix GPLv3 et la fourniture des sources remplacent la suspension liée au modèle propriétaire. Voir [Distribution GPL](../references/DISTRIBUTION_GPL.md). Le build Vercel contrôle désormais `licenseDistributionReady`, sans assimiler cette réussite technique à une validation clinique ou à la compatibilité du forfait. Les constats datés ci-dessous restent historiques.
 
 ## Candidat actuel — 4.0.0, 19 octobre 2026

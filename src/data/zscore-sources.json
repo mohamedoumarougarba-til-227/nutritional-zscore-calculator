@@ -3,8 +3,8 @@
   "version": "5.0.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3309243,
-  "sha256": "234757d02b746c7cf05dff10a66a75628326796854a5fbc7f01271df7d6529d4",
+  "bytes": 3311725,
+  "sha256": "fe1047970ae6af7a86c9fbfc3017e5f8587b5562d5deef13c477a1eb9fdbb7c3",
   "files": [
     {
       "file": ".gitattributes",
@@ -43,8 +43,8 @@
     },
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
-      "bytes": 8763,
-      "sha256": "726c4b1862ac16ba6851ed61e4e3ffbe230c648712b81503578602510b07c271"
+      "bytes": 9201,
+      "sha256": "fcc86a4304f8db81403dda6fa39db849626dd0a3ef7129c95204f68f5d53cb11"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
@@ -58,13 +58,13 @@
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
-      "bytes": 16054,
-      "sha256": "0196318dc3edac0633f916c464a97b042a9ece8318f3c1b62b54b8e8f9147608"
+      "bytes": 18002,
+      "sha256": "969e6fea943433cbf1be1ddc6f66da5a9cf9c69fda6ff04c37607be624804b4d"
     },
     {
       "file": "docs/maintenance/SYNCHRONISATION_GIT.md",
-      "bytes": 5303,
-      "sha256": "d735ef6b3ec62e9e4542a8edba7be0fdb9a20b0ca0ad7836d31a1e2d0528f075"
+      "bytes": 5399,
+      "sha256": "468bde5e062c7beab9c3af3380bc73abcb98e0539ea2ef86881d9554d472e2a6"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",

@@ -50,8 +50,8 @@ const RELEASE = {
     "data/LICENSE-TIL.txt": "b1148b5fbd10dfdd1efd7625fdb0959887b1e302b1f8b9a015b59468a5a77f39",
     "data/who-data-sources.zip": "c1930fd2946173b2b712336206b52e5473276c7f8ed525cfeaa050323dd51ce5",
     "data/who-data-sources.json": "aad5dd2ea2fb822df4d13821700d3026795f29057aea439f9d99e6de4b7ad98b",
-    "data/zscore-sources.zip": "234757d02b746c7cf05dff10a66a75628326796854a5fbc7f01271df7d6529d4",
-    "data/zscore-sources.json": "079a5fabd4c4333a0ff4b5ef416a9eb620bdc23428a246df797282784413b2e9",
+    "data/zscore-sources.zip": "fe1047970ae6af7a86c9fbfc3017e5f8587b5562d5deef13c477a1eb9fdbb7c3",
+    "data/zscore-sources.json": "5378f8519fd2572198aa1a8292901f5f93c0d34ed79decb4626437aac4540169",
     "vendor/pdf/NOTICE-report.txt": "62737eead55cce21047c84826116418612d79ee09ee686d25ae4279ba528b4e0",
     "vendor/pdf/report-provenance.json": "3772c55fc0cea5d50363d27dcad524f3aa0481c7831a514ff43cbed5e67c8652",
     "js/services/nutrition-assessment.js": "cdaeb5dd1b53c02dd9007424ea77ba2c9fb736eb9529a101b9053cbc7a4b5212",
@@ -59,7 +59,7 @@ const RELEASE = {
     "js/services/reporting-export.js": "ecbb53aa2b5f2d068bab4aa166fe5235b53bc36ce4c7c1aaffe19b4af1ab8a4a"
   },
   "workerTemplateSHA256": "7e6d76e432dcb20618d0ce00607945c9abd0a9a8d5dcd1cbd4f164d2380f35c7",
-  "id": "6a263d3c2f14265e558c4018397794af6c8a909d7719360dd89ae36a96001036"
+  "id": "fbbecfad2fcbd85bf23ce0759db459a7bb13bbb0580febb50600b75f3ec736de"
 };
 /** Verified release cache. Earlier caches, journals and patient archives are never deleted. */
 const STATIC_CACHE_NAME = 'zscore-release-' + RELEASE.id + '-' + self.registration.scope;

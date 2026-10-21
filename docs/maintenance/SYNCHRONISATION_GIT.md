@@ -1,6 +1,6 @@
-# Préparation du premier commit
+# Synchronisation Git et publication
 
-Mise à jour du 21 octobre 2026. Les évolutions jusqu’à 4.1.0 sont synchronisées sur `main`, notamment la distribution GPLv3 au commit signé `33c9f77`. Le contrôle de la sélection reste nécessaire avant chaque prochain commit.
+Mise à jour du 21 octobre 2026. La livraison fonctionnelle 5.0.0 est synchronisée sur `main` au commit signé `cede1e4`, avec la distribution GPLv3 et ses sources. Les corrections documentaires suivantes sont contrôlées et signées séparément. Le contrôle de la sélection reste nécessaire avant chaque prochain commit.
 
 ## Politique d’inclusion
 

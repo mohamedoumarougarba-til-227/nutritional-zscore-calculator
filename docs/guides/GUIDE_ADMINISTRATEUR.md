@@ -1,20 +1,20 @@
 # Administrer et mettre à jour Z-score Niger
 
-Guide actualisé le 19 octobre 2026. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Les anciens modules admin côté navigateur sont des démonstrations conservées dans les sources, exclues du cache actuel et du paquet public ; leurs identifiants ne doivent pas servir de protection.
+Guide actualisé le 21 octobre 2026 pour la version 5.0.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
 
 ## Environnement et propriété
 
-Node.js 20 ou ultérieur suffit pour le serveur local et la préparation. `fake-indexeddb` 6.2.5 est une dépendance de tests ; aucun paquet npm n'est requis par les utilisateurs du site. R est réservé aux comparaisons scientifiques indépendantes. Ne pas installer de logiciel supplémentaire sans justification et contrôle du budget. Dernière autorisation : cible 3 Go, plafond cumulé 5 Go ; les anciennes mentions de 1 Go sont supersédées.
+Node.js 20 ou ultérieur suffit pour le serveur local et la préparation. `fake-indexeddb` 6.2.5 est une dépendance de tests ; aucun paquet npm n'est requis par les utilisateurs du site. R est réservé aux comparaisons scientifiques indépendantes. Ne pas installer de logiciel supplémentaire sans justification et contrôle du budget. Le plafond actif de téléchargement est de 1 Go cumulé. Les anciens plafonds cités dans les journaux historiques ne s'appliquent plus.
 
-Le dossier reçu ne contient pas de dépôt Git. Branche, commit et HEAD ne peuvent donc pas être annoncés ; conserver copies et empreintes dans `audit/`. Avant chaque modification, contrôler `git status --short`, `git branch --show-current` et `git rev-parse HEAD` si un dépôt a depuis été créé. Préserver les modifications non liées. Aucun reset destructif, nettoyage global ou suppression de preuves/données.
+Le dépôt Git local est créé, sur `main`, synchronisé avec le dépôt privé `mohamedoumarougarba-til-227/nutritional-zscore-calculator`. La livraison fonctionnelle 5.0.0 correspond au commit signé `cede1e4`. Avant toute modification ou commit, contrôler `git status --short`, `git branch --show-current`, `git rev-parse HEAD` et le diff indexé. Préserver les changements non liés, les données et les preuves ; aucune réécriture d'historique ou purge globale.
 
-La licence du code original n'a pas été établie. Conserver les licences tierces, notamment la GPL v3 associée à la source Anthro et les licences PDF/polices. La présence de ces fichiers ne tranche pas les obligations applicables à leur redistribution avec un code que le propriétaire souhaite protéger : documenter les droits et résoudre ce point avant publication. Ne pas déclarer tout le projet sous MIT ou promettre un code navigateur invisible. Un dépôt privé peut protéger l'accès aux sources de développement ; le JavaScript distribué reste consultable.
+Le titulaire a choisi **GPLv3** pour son code original. Conserver `COPYING`, `NOTICE.md`, les notices tierces et les archives de sources correspondantes téléchargeables. Le dépôt de développement reste privé ; les sources distribuées sont accessibles et réutilisables conformément aux licences. Voir [distribution GPL](../references/DISTRIBUTION_GPL.md).
 
 ## Vérifier les ressources tierces
 
-[DROITS_ET_LICENCES.md](../references/DROITS_ET_LICENCES.md) décrit provenance, mentions conservées et décisions ouvertes. **npm run audit:licenses** vérifie les fichiers exacts et leurs notices sans modifier le projet. Préparation et vérification du paquet font également ce contrôle. Son indicateur technicalPassed peut être vrai alors que legalReady reste faux : clarifier les droits de distribution et la titularité du code avant publication. Aucun changement automatique de licence n'est effectué.
+`npm run audit:licenses` vérifie les ressources, notices et archives exactes. `licenseDistributionReady` est le contrôle utilisé par le build de publication. Le champ général `legalReady` ne remplace ni une décision juridique ni la revue des conditions d'hébergement ; son état ne signifie pas que le choix GPL serait encore en attente. Les anciens constats de droits propriétaires non résolus sont historiques.
 
-## Portée de l’audit du moteur 4.0.0
+## Portée de l’audit du moteur combiné 4.1.0
 
 `npm run audit:clinical` contrôle maintenant les deux références sur le moteur combiné actuel : 7 652 cas OMS 2006, 3 093 cas de noyau OMS 2007 et 880 entrées en jours. Une preuve OMS 2007 manquante/altérée ou une différence donne un statut technique en échec ; `clinicalReady: false` ne devient pas une validation professionnelle. Les oracles indépendants sont conservés localement, non téléchargés au lancement et exclus de la sélection Git actuelle. Cette commande nécessite donc le dossier local complet, comme les tests. [Preuves et commandes](../../.local/audit/2026-10-19/audit-combine/rapport.md).
 
@@ -26,7 +26,7 @@ La licence du code original n'a pas été établie. Conserver les licences tierc
 4. Exécuter `npm run prepare:public`. Il produit un **nouveau** dossier sous `.local/public-builds/`, sans écraser un ancien paquet. Il copie uniquement les ressources actives du manifeste, le worker, le manifeste de release et les en-têtes statiques préparés. Aucun dossier `audit/`, export patient, classeur, dépendance Node ou ancien module de démonstration n'est inclus.
 5. Exécuter `node tools/scripts/prepare-public.cjs --verify .local/public-builds/<dossier-produit>`. Archiver le résultat et la release SHA-256. Ce contrôle refuse un fichier ajouté, absent ou altéré ; il ne certifie ni la médecine, ni la propriété du code, ni les droits sur un compte distant. Les dossiers `TEST-NE-PAS-PUBLIER-*` créés par les tests sont des preuves, certaines volontairement altérées ; ne jamais les publier. Utiliser uniquement le nouveau dossier produit par la commande de préparation avec `verified: true`.
 
-Ces commandes préparent des fichiers locaux. **Aucune ne publie le site.** Procédure d'ouverture : [PREPARATION_PUBLICATION.md](../maintenance/PREPARATION_PUBLICATION.md).
+Ces commandes préparent des fichiers locaux. **Aucune ne publie le site.** Un push sur `main` déclenche en revanche automatiquement Vercel ; traiter ce push comme une publication. Procédure : [PREPARATION_PUBLICATION.md](../maintenance/PREPARATION_PUBLICATION.md).
 
 ## Protection de l'administration
 
@@ -36,7 +36,7 @@ Les empreintes SHA-256/SRI contrôlent la cohérence des fichiers avec la page r
 
 ## Déploiement, mise à jour et retour arrière
 
-Après validations et feu vert de publication, distribuer les octets du paquet vérifié en une version complète. Désactiver toute transformation automatique des fichiers JavaScript/CSS. Conserver l'ancienne version et l'adresse stable. Vérifier HTTPS, en-têtes, identité de release reçue et protection réelle des droits de publication.
+La publication actuelle a été autorisée par le titulaire. Vercel est relié à `main` ; chaque push sur cette branche déclenche le build contrôlé et la publication sur https://zscore-niger.vercel.app/. Les préversions restent protégées. Contrôler le SHA Git, l'état READY et les octets réellement servis à chaque livraison. Désactiver toute transformation automatique des fichiers JavaScript/CSS. Conserver l'ancienne version et l'adresse stable. Vérifier HTTPS, en-têtes, identité de release reçue et protection réelle des droits de publication.
 
 Dans l'application, une version téléchargée attend l'adoption. **Sauvegarder et mettre à jour** conserve d'abord le travail, puis active la version ; les autres onglets doivent être sauvegardés et fermés. Une incohérence doit laisser l'ancienne version disponible. Une correction/retour arrière est préparée comme une autre version complète, sans effacer caches, journaux ou archives. Confirmer la version après adoption ; remettre des fichiers sur le serveur ne remplace pas automatiquement les sessions déjà ouvertes.
 
@@ -46,7 +46,7 @@ Ne pas changer d'adresse sans prévoir le déplacement volontaire des sauvegarde
 
 Le sélecteur de fichiers et le retour de focus après confirmation/annulation sont vérifiés sur PC dans les trois langues ; les parcours physiques Android restent distincts. [Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md).
 
-Les dossiers restent dans le navigateur ; sauvegarder le code du serveur ne sauvegarde pas le travail des utilisateurs. Rappeler l'export complet sur support indépendant. Les fichiers sont en clair, sans synchronisation patient dans le cloud. Une copie locale et son original restent sur le même appareil ; les deux peuvent être perdus avec celui-ci.
+Les dossiers restent dans le navigateur ; sauvegarder le code du serveur ne sauvegarde pas le travail des utilisateurs. Rappeler l'export complet sur support indépendant. Le format complet courant est `.zscore`, avec une option chiffrée `.zscore.enc` par mot de passe. Les anciens formats JSON ne sont plus acceptés. Seul le fichier exporté chiffré est protégé : données du navigateur, imports préparés, sauvegardes ordinaires, CSV et PDF restent en clair, sans synchronisation patient dans le cloud. Aucun mot de passe n'est conservé et il n'existe pas de récupération si celui-ci est perdu. Une copie locale et son original restent sur le même appareil ; les deux peuvent être perdus avec celui-ci.
 
 Demander un cas fictif reproductible, version, appareil/navigateur, date, message et étapes. Conserver les preuves ; ne pas collecter un historique réel par défaut. Avant un import ou une récupération, consulter l'aperçu et garder l'export original. Le même fichier importé peut être signalé ; des exports différents du même travail ne constituent pas nécessairement le même fichier.
 
