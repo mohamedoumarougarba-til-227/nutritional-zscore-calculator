@@ -3,8 +3,8 @@
   "version": "4.1.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3423344,
-  "sha256": "2b88cd8b16beb91e50d2856e63ba54b1ebfe4b9a421c536c520b299c0f06648d",
+  "bytes": 3423483,
+  "sha256": "b0e0a2e9f103349851b2cd8834e622f3508502fa5c9b3b3cd51712fdac5c3718",
   "files": [
     {
       "file": ".gitattributes",
@@ -58,13 +58,13 @@
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
-      "bytes": 15977,
-      "sha256": "1badf3757fb75bd001f99d2743390714215fb4d0dbeb025ead6f6fec81393f25"
+      "bytes": 16054,
+      "sha256": "0196318dc3edac0633f916c464a97b042a9ece8318f3c1b62b54b8e8f9147608"
     },
     {
       "file": "docs/maintenance/SYNCHRONISATION_GIT.md",
-      "bytes": 5241,
-      "sha256": "4cd7f7aa7a3a668053dc0b1de67f449e26b21f45b1da54b90acfadfdf81a013a"
+      "bytes": 5303,
+      "sha256": "d735ef6b3ec62e9e4542a8edba7be0fdb9a20b0ca0ad7836d31a1e2d0528f075"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",

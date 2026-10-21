@@ -30,7 +30,7 @@ Le projet `zscore-niger` (`prj_NDSyq5yfLyYBhmzHXPpTkjm3DzjG`), dans l’équipe 
 
 Construction : Node 24.x, commande `node tools/scripts/vercel-build.cjs`, installation npm désactivée, sortie `dist`. Le build vérifie les sources/notices GPL et la cohérence du paquet avant distribution. Une modification de documentation incluse dans les sources exige aussi `node tools/scripts/build-release.cjs`, car elle change l’archive correspondante et son empreinte.
 
-L’alias prévu est `https://zscore-niger.vercel.app`. La protection par authentification Vercel est conservée. Une liaison Git réussie ne prouve pas à elle seule le déploiement automatique : contrôler un déploiement dont la source est `git`, le SHA exact du commit poussé, l’état `READY`, puis les ressources réellement servies. Les preuves de ce contrôle restent sous `.local/audit/`, hors dépôt.
+L’alias prévu est `https://zscore-niger.vercel.app`. La production est accessible au public sans connexion Vercel ; l’authentification reste active pour les préversions. Une liaison Git réussie ne prouve pas à elle seule le déploiement automatique : contrôler un déploiement dont la source est `git`, le SHA exact du commit poussé, l’état `READY`, puis les ressources réellement servies. Les preuves de ce contrôle restent sous `.local/audit/`, hors dépôt.
 
 Les réglages `gitProviderOptions.createDeployments` et `disableRepositoryDispatchEvents` concernent les événements/statuts GitHub ; ils ne doivent pas être confondus avec une validation du déclenchement des builds Vercel.
 
