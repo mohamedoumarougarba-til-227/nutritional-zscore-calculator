@@ -509,7 +509,10 @@
     "settingsHelp": "Ces préférences sont conservées dans ce navigateur et ne modifient pas vos dossiers.",
     "exportActions": "Exporter",
     "newVisitShort": "Nouvelle visite",
-    "viewVersionsShort": "Voir les versions"
+    "viewVersionsShort": "Voir les versions",
+    "detailsShort": "Détails",
+    "zscoreLabel": "Z-score",
+    "zscoreHelp": "Z = 0 correspond à la médiane de la référence OMS pour cet indicateur. Une valeur négative se situe en dessous, une valeur positive au-dessus."
   },
   "en": {
     "brand": "Z-score Niger",
@@ -1021,7 +1024,10 @@
     "settingsHelp": "These preferences are saved in this browser and do not change your records.",
     "exportActions": "Export",
     "newVisitShort": "New visit",
-    "viewVersionsShort": "View versions"
+    "viewVersionsShort": "View versions",
+    "detailsShort": "Details",
+    "zscoreLabel": "Z-score",
+    "zscoreHelp": "Z = 0 is the median of the WHO reference for this indicator. A negative value is below it; a positive value is above it."
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1533,6 +1539,9 @@
     "settingsHelp": "تُحفظ هذه التفضيلات في هذا المتصفح ولا تغيّر ملفات الأطفال.",
     "exportActions": "تصدير",
     "newVisitShort": "زيارة جديدة",
-    "viewVersionsShort": "عرض النسخ"
+    "viewVersionsShort": "عرض النسخ",
+    "detailsShort": "التفاصيل",
+    "zscoreLabel": "درجة Z",
+    "zscoreHelp": "تمثل Z = 0 وسيط مرجع منظمة الصحة العالمية لهذا المؤشر. تقع القيمة السالبة دونه والقيمة الموجبة فوقه."
   }
 }

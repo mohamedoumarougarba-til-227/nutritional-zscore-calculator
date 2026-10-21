@@ -3,7 +3,7 @@ const NutritionUI=typeof module!=='undefined'&&module.exports?require('./service
 const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 class WorkspaceApp {
-    static version = '5.2.0';
+    static version = '5.2.1';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
@@ -337,7 +337,7 @@ class WorkspaceApp {
               <footer class="compact-footer"><a class="legal-footer-link" href="${this.prefs.language==='ar'?'legal-ar.html':this.prefs.language==='en'?'legal-en.html':'legal.html'}" target="_blank" rel="noopener noreferrer">${this.t('legalNoticeLink')}</a><span>v${WorkspaceApp.version}</span><span data-offline-status>${this.t(this.offlineState)}</span><span class="about-label">${this.t('aboutShort')}</span>${this.toolButton('information','info','show-info',{attrs:'id="app-info-button" data-info="appInfo"'})}</footer>
             </main></div>`;
         this.observeHeader();
-        this.updateConnection(); this.updateSaveStatus(); this.updateToast();
+        this.updateConnection(); this.updateSaveStatus(); this.updateToast(); this.syncImportNotice();
         if (this.page === 'history') this.renderHistoryList();
         if (this.page === 'history') this.refreshCapacity();
         if (this.page === 'single' && this.state.single?.result) this.renderFollowup().catch(error=>console.warn('Follow-up read failed',error));
@@ -391,12 +391,12 @@ class WorkspaceApp {
         if (!entry?.result) return `${this.resultHeadingHTML()}<div class="empty"><div class="empty-symbol" aria-hidden="true">${this.icon('chart')}</div><h3>${this.t('blank')}</h3><p>${this.t('resultsIntro')}</p></div>`;
         const { child, result } = entry;
         const status=`<div class="result-status"><strong>${this.esc(child.name || child.caseId || this.t('unknown'))}</strong><span class="badge">${this.esc(this.t(result.status))}</span></div>`;
-        const notices=`${stale ? `<p class="notice warn" role="status">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn">${this.t('importedResult')}</p>` : ''}`;
+        const notices=`${stale ? `<p class="notice warn" role="status">${this.t('stale')}</p>` : ''}${result.imported ? `<p class="notice warn${preview?'':' import-print-notice'}">${this.t('importedResult')}</p>` : ''}`;
         const indicators=WorkspaceApp.resultIndicators(result).map(key => {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
             const category = v?.classification;
             const severe = /Severe|severe|obesity|bmiBelow3|bmiAbove3/.test(category || '');
-            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score">${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
+            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score" aria-label="${this.esc(this.t('zscoreLabel')+' : '+(hasValue?this.number(v.zscore):this.t('notCalculated')))}" title="${this.esc(this.t('zscoreHelp'))}"><span class="score-prefix" aria-hidden="true">Z</span> ${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
           }).join('');
         const warnings=`${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}`;
         const measures=`<div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>`;
@@ -407,7 +407,7 @@ class WorkspaceApp {
     }
     nutritionHTML(child,result) {
         const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
-        return `<section class="nutrition-result ${n.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(n.orientation)?'clinical-urgent':''}" aria-label="${label('clinicalSection')}"><h3>${label('screeningTitle')}</h3><strong>${label(n.category)}</strong>${n.criteria?.length?`<p>${n.criteria.map(label).join(' · ')}</p>`:''}<p><b>${label('orientationTitle')}</b> — ${label(n.orientation)}</p><p>${label('muac')} : ${n.muacMm===null?this.t('unknown'):this.number(n.muacMm,1)+' mm'} · ${label(n.muac)}</p>${n.reasons.length?`<p>${n.reasons.map(k=>label(k)).join(' · ')}</p>`:''}<details><summary>${label('assessmentDetails')}</summary><p>${label('clinicalHelp')}</p>${n.missing.length?`<p>${label('assessmentMissing')} : ${n.missing.map(k=>label(k)).join(', ')}</p>`:''}<p>${label('clinicalReference')} : ${this.esc(n.reference)} · v${n.version}</p><a href="https://www.who.int/publications/i/item/9789240082830" target="_blank" rel="noopener noreferrer">OMS 2023</a> · <a href="https://www.who.int/publications/i/item/9789240122840" target="_blank" rel="noopener noreferrer">OMS / UNICEF 2026</a></details></section>`;
+        return `<section class="nutrition-result ${n.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(n.orientation)?'clinical-urgent':''}" aria-label="${label('clinicalSection')}"><h3>${label('screeningTitle')}</h3><strong>${label(n.category)}</strong>${n.criteria?.length?`<p>${n.criteria.map(label).join(' · ')}</p>`:''}<p><b>${label('orientationTitle')}</b> — ${label(n.orientation)}</p>${n.reasons.length?`<p>${n.reasons.map(k=>label(k)).join(' · ')}</p>`:''}<details class="screening-details"><summary title="${label('assessmentDetails')}">${label('detailsShort')}</summary><p>${label('muac')} : ${n.muacMm===null?this.t('unknown'):this.number(n.muacMm,1)+' mm'} · ${label(n.muac)}</p><p>${label('clinicalHelp')}</p>${n.missing.length?`<p>${label('assessmentMissing')} : ${n.missing.map(k=>label(k)).join(', ')}</p>`:''}<p>${label('clinicalReference')} : ${this.esc(n.reference)} · v${n.version}</p><a href="https://www.who.int/publications/i/item/9789240082830" target="_blank" rel="noopener noreferrer">OMS 2023</a> · <a href="https://www.who.int/publications/i/item/9789240122840" target="_blank" rel="noopener noreferrer">OMS / UNICEF 2026</a></details></section>`;
     }
     lotModels(){
         if(!this.engine?.older)return [LotAnalysis.build(this.state.batch,this.engine?.data.referenceVersion)];
@@ -593,12 +593,34 @@ class WorkspaceApp {
     async saveImmediate(reason='automatic',force=false) { clearTimeout(this.saveTimer); this.checkpoint(false); await this.queueSave(reason,force); }
     updateSaveStatus() { document.querySelectorAll('[data-save-state]').forEach(el=>{ el.textContent=this.t(this.saveState==='saved'?'savedShort':this.saveState);el.title=this.t(this.saveState);el.setAttribute('aria-label',this.t(this.saveState)); el.classList.toggle('error',this.saveState==='unsaved'); }); }
     formError(prefix,key) { const el=document.getElementById(prefix+'-error'); if(el){ el.textContent=this.t(key)===key?this.t('error'):this.t(key); el.hidden=false; el.focus({preventScroll:true}); el.scrollIntoView({block:'nearest'}); } else this.toast(key,true); }
+    syncImportNotice() {
+        const result=this.page==='single'?this.state.single?.result:null;
+        if(!result?.imported){clearTimeout(this.importNoticeTimer);this.importNoticeResult=null;this.importNoticeOpen=false;}
+        else if(this.importNoticeResult!==result){
+            clearTimeout(this.importNoticeTimer);this.importNoticeResult=result;this.importNoticeOpen=true;
+            this.importNoticeTimer=setTimeout(()=>this.dismissImportNotice(),7000);
+        }
+        this.updateImportNotice();
+    }
+    updateImportNotice() {
+        const notice=document.getElementById('import-toast');if(!notice)return;
+        notice.hidden=!this.importNoticeOpen;
+        notice.querySelector('[data-import-notice-text]').textContent=this.t('importedResult');
+        notice.querySelector('button').title=this.t('close');
+    }
+    dismissImportNotice() {
+        clearTimeout(this.importNoticeTimer);this.importNoticeOpen=false;
+        const notice=document.getElementById('import-toast');
+        if(notice?.contains(document.activeElement))document.getElementById('results-title')?.focus({preventScroll:true});
+        this.updateImportNotice();
+    }
     updateToast(){const el=document.getElementById('toast');if(el){el.textContent=this.toastKey?(this.t(this.toastKey)===this.toastKey?this.t('error'):this.t(this.toastKey)):'';el.setAttribute('role',this.toastIsError?'alert':'status');}}
     toast(key,error=false) { this.toastKey=key;this.toastIsError=error;this.updateToast();clearTimeout(this.toastTimer);this.toastTimer=setTimeout(()=>{this.toastKey=null;this.updateToast();},6500); }
     async action(action,button) {
         this.readForms();
         button.closest?.('.export-menu')?.removeAttribute('open');
-        if(action==='toggle-sidebar'){this.prefs.navCollapsed=!this.prefs.navCollapsed;this.persistPreferences();this.applyPreferences();this.render('sidebar-button');}
+        if(action==='dismiss-import-notice')this.dismissImportNotice();
+        else if(action==='toggle-sidebar'){this.prefs.navCollapsed=!this.prefs.navCollapsed;this.persistPreferences();this.applyPreferences();this.render('sidebar-button');}
         else if(action==='open-select')this.openChoice(button.id,'field',button.dataset.select);
         else if(action==='choice-value')this.chooseValue(button.dataset.value);
         else if(action==='show-info')this.showInfo(button.dataset.info,button.id);

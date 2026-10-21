@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.2.0",
+  "version": "5.2.1",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3329243,
-  "sha256": "9b447680674aacc29eece1dd311512432d9d73f70fe4defb7aa12b99c4fb87bf",
+  "bytes": 3334779,
+  "sha256": "c3ef2aa4a99f70e10c9a62a1da343b89c2c08daf4ea7e7fe97e0b15fc7275f42",
   "files": [
     {
       "file": ".gitattributes",
@@ -29,7 +29,7 @@
     {
       "file": "README.md",
       "bytes": 5190,
-      "sha256": "b5af504dd1c85ce1dce073d753f4395c9d4731efd29c625963423710a5c27df0"
+      "sha256": "38ed17b14ba148bd73c2f9ea13cfb7096c0509cb6a8befa04718b9ca05eed6f0"
     },
     {
       "file": "SOURCE-README.txt",
@@ -48,8 +48,8 @@
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 8467,
-      "sha256": "58c85ea10828dbb92186e32ec1e4325e33e7660fe50cfeaac7dac9d906311a2f"
+      "bytes": 8826,
+      "sha256": "0f58fa42a071c7fe8b242618ec71b84b5dc05c188016571d04b8516de514257f"
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
@@ -158,8 +158,8 @@
     },
     {
       "file": "src/css/workspace.css",
-      "bytes": 49847,
-      "sha256": "12ce7c4ddac1187dacd476749541a399778b0e336786019adcaed199ebe7caec"
+      "bytes": 52350,
+      "sha256": "f6b9052ffd3285a6a6e7b7b1dbc879a98b2920c9e9360979df8bcb597934f928"
     },
     {
       "file": "src/data/LICENSE-TIL.txt",
@@ -178,8 +178,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 123329,
-      "sha256": "2fdd69ea5680be725fa9b2c6edb3c599864f518c9f4d935ab0d5a895380f7f6c"
+      "bytes": 124036,
+      "sha256": "edc98b05fc100abc83176c19900cdacbc1741fb4570dbc203c579bd76484f2fe"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -203,13 +203,13 @@
     },
     {
       "file": "src/index.html",
-      "bytes": 2900,
-      "sha256": "dc058ad01aa4d931baa9527a0a7608bac833ee27a3729ad354c1af65835d2c34"
+      "bytes": 3282,
+      "sha256": "4d39508910ce3d714f983e612e524b76a8118ab2145309405a92fd5de614212c"
     },
     {
       "file": "src/js/components/growth-chart.js",
-      "bytes": 13814,
-      "sha256": "175950963f793bb0c915a7aee9462e16ce3242c9f3d816e2205101606ca801be"
+      "bytes": 13830,
+      "sha256": "3764f0ef78716a191fd4ed1a2be68e41ef82400928a98e45d72dc6ec2d5e5230"
     },
     {
       "file": "src/js/components/lot-analysis.js",
@@ -273,8 +273,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 105776,
-      "sha256": "591cf031938de67f56c54f412c1ea1e1b93ded2f2e5a2c9cb1434d1d3ee08b6e"
+      "bytes": 107345,
+      "sha256": "50d17ab2f0dd15deb0c4ddfce89788658004709f95be5b5001f0323563e03793"
     },
     {
       "file": "src/js/workspace-bootstrap.js",

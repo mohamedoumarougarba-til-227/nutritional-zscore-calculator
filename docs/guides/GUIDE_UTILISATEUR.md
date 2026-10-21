@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.2.0
+# Guide utilisateur — Z-score Niger 5.2.1
 
 ## Démarrer
 
@@ -14,7 +14,7 @@ Cliquer **Calculer**. **Sauvegarder** conserve une version explicite ; la sauveg
 
 ### Tableau de bord après calcul
 
-Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et références à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats.
+Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et références à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats. Pour un résultat importé, un avis de sept secondes rappelle qu’il est conservé sans recalcul ; cliquer dessus le ferme. L’indication d’import reste consultable dans les valeurs et références et les rapports. Le bouton **Détails**, en haut à droite de la synthèse, donne accès aux données manquantes, au PB détaillé et aux sources cliniques.
 
 Les groupes de courbes se déplient à la demande. Les trois courbes de croissance se répartissent sur trois colonnes lorsque la largeur suffit. Les quatre graphiques d’évolution des Z-scores tiennent sur une seule ligne lorsque l’espace le permet ; leur largeur s’adapte à la fenêtre et ils passent sur plusieurs lignes sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les détails du calcul et références sont ouverts par défaut. **Voir les versions**, près de « Mesures calculées », ouvre les sauvegardes filtrées sur ce dossier. Les courbes restent repliées par défaut. Les actions des résultats sont regroupées ; lorsque la largeur manque, PDF et CSV sont accessibles dans **Exporter**. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
 
