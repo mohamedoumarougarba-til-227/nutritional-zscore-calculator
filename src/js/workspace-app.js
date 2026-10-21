@@ -3,7 +3,7 @@ const NutritionUI=typeof module!=='undefined'&&module.exports?require('./service
 const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 class WorkspaceApp {
-    static version = '5.1.0';
+    static version = '5.1.1';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';

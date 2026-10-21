@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.1.0",
+  "version": "5.1.1",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 3321545,
-  "sha256": "224722dd83ffa44fef03d9bb5d8f8054c0e8a288a4129e2e5faec84e8d9be9d9",
+  "bytes": 3321659,
+  "sha256": "e63bfd488c3459ff650eae57a99a296247a17801f50871c392f0b6ade12d9500",
   "files": [
     {
       "file": ".gitattributes",
@@ -29,7 +29,7 @@
     {
       "file": "README.md",
       "bytes": 5190,
-      "sha256": "9975956c1e9289e5209e6f84f4010cb9e5a4cef092fa1fd3674ff9ec04abbec9"
+      "sha256": "8eec8e7278f7a758dadce0a55ee9690b62f724d54c273864326481d178b5a904"
     },
     {
       "file": "SOURCE-README.txt",
@@ -48,8 +48,8 @@
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 7881,
-      "sha256": "445b2db4f4fab0f502fafeb87946dede3c53f1e1accdd4ad365b68e6d7f3fd5d"
+      "bytes": 8071,
+      "sha256": "a934d8539917b30d9ddc8110c839d486fc8603e04a89b124d943c4e7d9433641"
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
@@ -158,8 +158,8 @@
     },
     {
       "file": "src/css/workspace.css",
-      "bytes": 44591,
-      "sha256": "c2ea93c0c832957b682947dc6cdd8cc57cbecb36dbdf6586393ce3ef5123d449"
+      "bytes": 44703,
+      "sha256": "93e21d918f4a8479ce8f7440f7f9d8a5d6f8c2245f9428d5a2a39cb8e67679fa"
     },
     {
       "file": "src/data/LICENSE-TIL.txt",
@@ -208,8 +208,8 @@
     },
     {
       "file": "src/js/components/growth-chart.js",
-      "bytes": 14002,
-      "sha256": "851edccbbc37e971d2d76b251ff596e5e310eb0e639309634e80b0ef21a06a8e"
+      "bytes": 13814,
+      "sha256": "175950963f793bb0c915a7aee9462e16ce3242c9f3d816e2205101606ca801be"
     },
     {
       "file": "src/js/components/lot-analysis.js",
@@ -274,7 +274,7 @@
     {
       "file": "src/js/workspace-app.js",
       "bytes": 104522,
-      "sha256": "5c2620dc715f12b32cbdc74a90532a0ad8b30e4b9b2de83d5db70413ed7bf087"
+      "sha256": "21b9f2b84ae72533d8146fa2d20d94bcae6349357111a3e1dfa3ac47f87b498c"
     },
     {
       "file": "src/js/workspace-bootstrap.js",

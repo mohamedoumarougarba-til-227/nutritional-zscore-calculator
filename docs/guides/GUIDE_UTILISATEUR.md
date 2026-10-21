@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.1.0
+# Guide utilisateur — Z-score Niger 5.1.1
 
 ## Démarrer
 
@@ -16,7 +16,7 @@ Cliquer **Calculer**. **Sauvegarder** conserve une version explicite ; la sauveg
 
 Après un calcul réussi, la saisie se replie et les résultats utilisent toute la largeur. Sur grand écran : synthèse et indicateurs à gauche, mesures calculées et visites du dossier à droite. **Modifier les mesures** rouvre les champs sans effacer les valeurs ; **Afficher les résultats** revient à la vue large. Une modification conserve l'ancien résultat avec un avertissement jusqu'au prochain calcul. **Sauvegarder** reste disponible dans la vue résultats.
 
-Les groupes de courbes se déplient à la demande. Les graphiques se répartissent sur trois colonnes lorsque la largeur suffit, deux ou une sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les mesures techniques, références et visites restent consultables dans leurs sections dépliables. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
+Les groupes de courbes se déplient à la demande. Les trois courbes de croissance se répartissent sur trois colonnes lorsque la largeur suffit. Les quatre graphiques d’évolution des Z-scores tiennent sur une seule ligne lorsque l’espace le permet ; leur largeur s’adapte à la fenêtre et ils passent sur plusieurs lignes sur les écrans plus petits. Chaque graphique peut aussi être replié séparément. Les mesures techniques, références et visites restent consultables dans leurs sections dépliables. Une petite fenêtre ou l'ouverture de toutes les courbes peut nécessiter un défilement ; aucun résultat ou avertissement clinique n'est tronqué pour tenir artificiellement sur un écran.
 
 ### Lire les indicateurs
 
