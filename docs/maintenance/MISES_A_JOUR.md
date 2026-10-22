@@ -1,5 +1,9 @@
 # Préparer et adopter une mise à jour
 
+## Boutons nommés sur mobile - 5.2.2, 22 octobre 2026
+
+Sur mobile, un bouton Actions fixé en bas ouvre une grille compacte avec icônes et libellés courts. Calcul/ajout, sauvegarde, exports, impression, nouvelle visite et modification utilisent les mêmes commandes que sur ordinateur. Les boutons Reprendre et Nouveau restent en haut, réduits à des cibles de 44 px ; le titre reste sur une ligne et les deux états sont regroupés dessous. Le menu d’export pouvant sortir de l’écran est retiré. Le moteur et les données enregistrées ne changent pas. Les contrôles navigateur restent distincts des essais physiques TECNO.
+
 ## Complément de vérification — 19 octobre 2026, 4.0.0 inchangée
 
 [Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md) : confirmation d’import et reprise du clavier vérifiées dans les trois langues ; annulation/aperçu restituent le focus. Les courbes OMS 2007 arabes sont dépliées et inspectées à 320 px. Aucun runtime modifié ; la suite de 187 tests précédente reste le dernier passage complet, sans répétition inutile. Les nouveaux essais physiques et la revue métier ne sont pas acquis par ce contrôle PC.

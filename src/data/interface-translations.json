@@ -512,7 +512,13 @@
     "viewVersionsShort": "Voir les versions",
     "detailsShort": "Détails",
     "zscoreLabel": "Z-score",
-    "zscoreHelp": "Z = 0 correspond à la médiane de la référence OMS pour cet indicateur. Une valeur négative se situe en dessous, une valeur positive au-dessus."
+    "zscoreHelp": "Z = 0 correspond à la médiane de la référence OMS pour cet indicateur. Une valeur négative se situe en dessous, une valeur positive au-dessus.",
+    "resumeCompact": "Reprendre",
+    "newWorkCompact": "Nouveau",
+    "exportPDFCompactLabel": "Exporter PDF",
+    "exportCSVCompactLabel": "Exporter CSV",
+    "editCompact": "Modifier",
+    "mobileActions": "Actions"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -1027,7 +1033,13 @@
     "viewVersionsShort": "View versions",
     "detailsShort": "Details",
     "zscoreLabel": "Z-score",
-    "zscoreHelp": "Z = 0 is the median of the WHO reference for this indicator. A negative value is below it; a positive value is above it."
+    "zscoreHelp": "Z = 0 is the median of the WHO reference for this indicator. A negative value is below it; a positive value is above it.",
+    "resumeCompact": "Resume",
+    "newWorkCompact": "New work",
+    "exportPDFCompactLabel": "Export PDF",
+    "exportCSVCompactLabel": "Export CSV",
+    "editCompact": "Edit",
+    "mobileActions": "Actions"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1542,6 +1554,12 @@
     "viewVersionsShort": "عرض النسخ",
     "detailsShort": "التفاصيل",
     "zscoreLabel": "درجة Z",
-    "zscoreHelp": "تمثل Z = 0 وسيط مرجع منظمة الصحة العالمية لهذا المؤشر. تقع القيمة السالبة دونه والقيمة الموجبة فوقه."
+    "zscoreHelp": "تمثل Z = 0 وسيط مرجع منظمة الصحة العالمية لهذا المؤشر. تقع القيمة السالبة دونه والقيمة الموجبة فوقه.",
+    "resumeCompact": "استئناف",
+    "newWorkCompact": "عمل جديد",
+    "exportPDFCompactLabel": "تصدير PDF",
+    "exportCSVCompactLabel": "تصدير CSV",
+    "editCompact": "تعديل",
+    "mobileActions": "الإجراءات"
   }
 }
