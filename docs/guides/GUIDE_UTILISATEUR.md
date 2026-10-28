@@ -1,4 +1,11 @@
-# Guide utilisateur — Z-score Niger 5.2.2
+# Guide utilisateur — Z-score Niger 5.4.0
+
+## Profil américain explicite — sources 5.5.0 / moteur 4.3.0
+
+Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).
+
+Contrôles numériques et modèles de sortie testés sur données fictives ; la vérification navigateur, RTL visuel, accessibilité et impression ne sont pas présumées réalisées. Pas de publication implicite de ces sources locales.
+
 
 ## Démarrer
 
@@ -43,7 +50,7 @@ La **synthèse du dépistage** est séparée des **indicateurs de croissance**. 
 
 Ajouter les mesures à gauche, voir les fiches à droite. Le tableau présente huit lignes par page avec plage de résultats, numéros et flèches. Les exports et impressions portent sur tout le lot, pas uniquement la page visible.
 
-Ouvrir **Importer ou coller un CSV** pour choisir le fichier ou coller les lignes. Télécharger le modèle. Colonnes possibles : name, caseId, ageMode, ageYears, ageMonths, ageDays, birthDate, measurementDate, weight, height, gender (M/F), position (L/H), oedema (n/y), muac et observations cliniques. Pour leurs valeurs techniques, consulter le code du modèle ou le [guide PB](../references/EVALUATION_NUTRITIONNELLE.md). Tout le fichier est validé avant ajout ; un fichier invalide n’ajoute aucune ligne. Limites CSV : 2 Mo et 500 lignes.
+Ouvrir **Importer ou coller un CSV** pour choisir le fichier ou coller les lignes. Télécharger le modèle. Colonnes possibles : name, caseId, ageMode, ageYears, ageMonths, ageDays, birthDate, measurementDate, weight, height, gender (M/F), position (L/H), oedema (n/y), muac et observations cliniques. Pour leurs valeurs techniques, consulter le code du modèle ou le [guide PB](../references/EVALUATION_NUTRITIONNELLE.md). Tout le fichier est validé avant ajout ; un fichier invalide n’ajoute aucune ligne. Limites CSV : 50 Mio et 50 000 lignes de données. Le lot actif contient au maximum 5 000 fiches. Au-delà, l’import crée automatiquement plusieurs travaux dans Sauvegardes et ouvre le premier lot. Tous les travaux sont ajoutés ensemble : un échec d’enregistrement n’en conserve pas seulement une partie. Les colonnes personnalisées ouvrent un assistant : vérifier les correspondances, les unités de poids/taille/PB, les dates et le codage des œdèmes. Les colonnes non utilisées peuvent être ignorées ; une réponse obligatoire absente doit être renseignée dans le fichier, jamais supposée négative. Une ligne erronée est signalée pour correction avant ajout. Le calcul des grands lots progresse par tranches sans extrapoler les références scientifiques.
 
 Sous le tableau, **Résumé du lot** décrit les fiches et leurs résultats utilisables, avec dénominateur propre à chaque indicateur. Une visite répétée reste une fiche ; ce n’est pas une estimation de prévalence ou un nombre de patients distincts. **Rapport agrégé / DHIS2** exporte des comptes sans noms ni identifiants et prépare, avec un profil validé, un fichier pour le destinataire. Aucun envoi automatique : voir [interopérabilité](../references/INTEROPERABILITE.md).
 
@@ -60,3 +67,8 @@ Pour un transfert A → B : exporter sur A, déplacer le fichier sur un support 
 ## Aide et limites
 
 Les icônes d’information ouvrent une aide proche du champ ; les listes restent ancrées à leur bouton. L’information générale et les mentions sont accessibles en bas. Les sorties FR/EN/AR conservent les unités et références. Les libellés OMS ne constituent ni une prescription ni une certification par l’OMS ou l’UNICEF. Le soignant confirme l’examen, l’orientation, le suivi et les règles nationales applicables.
+## Mesures complémentaires facultatives — 5.4.0
+
+Dans la saisie, ouvrir **Mesures complémentaires** pour renseigner le périmètre crânien (cm) et les plis tricipital et sous-scapulaire (mm), uniquement si la mesure a été réalisée correctement. Le PB (mm) de l’évaluation clinique est réutilisé pour PB/âge ; ne pas le saisir deux fois. Avant 60 mois, le périmètre crânien est calculable dès la naissance, PB/âge et plis dès 91 jours. Hors du domaine, la mesure reste conservée et le score est indiqué non calculé.
+
+Les résultats complémentaires repliables, les courbes, le CSV et les notes PDF conservent leur référence. Les positions −2/+2 Z ne sont pas des diagnostics et ne remplacent pas les seuils absolus du dépistage PB. Voir [Méthode](../references/METHODE.md).

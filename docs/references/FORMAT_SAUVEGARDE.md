@@ -4,7 +4,7 @@ L’application exporte et importe uniquement la sauvegarde complète `.zscore`,
 
 ## Vérification et restauration
 
-Le fichier est un flux UTF-8 de lignes JSON : en-tête `zscore-niger-stream` version 1, enregistrements, marqueur final avec comptes et empreinte chaînée SHA-256. Magasins : children, results, sessions, settings. Résultats : schéma 4 ; espaces de travail : version 1 ; domaine d’âge : version 2. Ces versions désignent des objets différents d’un même format courant.
+Le fichier est un flux UTF-8 de lignes JSON : en-tête `zscore-niger-stream` version 1, enregistrements, marqueur final avec comptes et empreinte chaînée SHA-256. Magasins : children, results, sessions, settings. Résultats : schéma 4 ; espaces de travail : version 1 ; domaine d’âge : version 2 pour les visites OMS, version 3 pour le profil américain explicitement enregistré. Le contexte de profil par résultat est versionné 1 ; il conserve le profil, la précision d’âge et l’âge déclaré. Ces versions désignent des objets différents d’un même format courant.
 
 Tout le contenu est vérifié avant aperçu : structure, limites, identifiants, liens, résultats, PB, orientation et empreinte. La confirmation ajoute des copies avec nouveaux identifiants, sans remplacer l’historique. L’ajout IndexedDB est atomique. Une erreur, un fichier tronqué ou une modification après aperçu annulent l’ajout.
 
@@ -23,3 +23,7 @@ Tous les blocs doivent être authentifiés avant préparation de l’import. Une
 Cette option protège le fichier téléchargé, pas la session ouverte, le stockage navigateur, les imports préparés, les PDF ou CSV. Le profil navigateur et les supports doivent être protégés. JavaScript ne permet pas de garantir l’effacement physique de toute copie de chaîne en mémoire. Aucune certification de sécurité indépendante n’est revendiquée.
 
 Références : [OWASP, stockage cryptographique](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html), [dérivation PBKDF2](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
+
+## Profil de croissance — raccordement technique en cours
+
+Le moteur combiné 4.3.0 et les validateurs acceptent les nouvelles visites américaines et leurs résultats CDC dans le même flux version 1, sans réécrire les visites OMS existantes. Le choix de ce profil dans l’interface, les courbes et les exports restent à raccorder avant son activation utilisateur. Les versions plus anciennes de l’application peuvent refuser les nouveaux objets plutôt que les interpréter comme des mesures OMS. La lecture de résultats enregistrés ne recalcule pas leurs valeurs à partir des tables ; le contrôle vérifie leur structure, leurs liens et leur cohérence interne, sans certifier les mesures médicales.

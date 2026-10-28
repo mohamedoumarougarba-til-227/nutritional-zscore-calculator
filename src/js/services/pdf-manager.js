@@ -1,4 +1,5 @@
 /** Local reports of stored results. Never recalculate, write history or parse patient text as HTML. */
+const SupplementaryPDF=typeof module!=='undefined'&&module.exports?require('./supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
 class PDFManager {
     static fontPaths = ['vendor/pdf/Amiri-Regular.ttf', 'vendor/pdf/Amiri-Bold.ttf'];
     static async loadFonts(fetcher = fetch, pins = JSON.parse(document.querySelector('meta[name="zscore-data-integrity"]')?.content || '{}')) {
@@ -21,7 +22,7 @@ class PDFManager {
         return text.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\r\n?/g, '\n');
     }
     static model(entries, { language = 'fr', translations, stale = false } = {}) {
-        if (!Array.isArray(entries) || !entries.length || entries.length > 500 || !['fr', 'en', 'ar'].includes(language) || !translations?.[language]) throw new Error('pdfInvalid');
+        if (!Array.isArray(entries) || !entries.length || entries.length > 5000 || !['fr', 'en', 'ar'].includes(language) || !translations?.[language]) throw new Error('pdfInvalid');
         const t = key => {const own=table=>table&&Object.hasOwn(table,key)&&typeof table[key]==='string'?table[key]:'';return this.clean(own(translations[language])||own(translations.fr)||key);};
         const number = (value, digits) => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : t('unknown');
         const indicators = ['weightForAge','heightForAge','weightForHeight','bmiForAge'].filter(key=>entries.some(e=>(e.result?.applicableIndicators||['weightForAge','heightForAge','weightForHeight','bmiForAge']).includes(key)));
@@ -42,12 +43,23 @@ class PDFManager {
             if (typeof r?.correctedHeight === 'number') measures.push(field('adjustedHeight', number(r.correctedHeight, 1) + ' ' + t('unitCm')));
             if (r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi)) measures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const notes = [];
+            for(const key of SupplementaryPDF.fields)if(SupplementaryPDF.present(c[key]))measures.push(field(key,number(c[key],1)));
+            if(r?.additionalGrowth){notes.push(t('additionalResults')+' · '+r.additionalGrowth.referenceVersion);for(const [key,v] of Object.entries(r.additionalGrowth.indicators)){const score=Number.isFinite(v.zscore)?'Z = '+number(v.zscore,2)+(typeof v.percentile==='number'?' | P '+number(v.percentile,1):'')+' | '+t(v.classification):t(v.error);notes.push(t(key)+' : '+number(v.measure,1)+' '+v.unit+' | '+score+(v.flagged?' | '+t('flagged'):''));}}
             if(c.muac!==undefined&&c.muac!=='')measures.push(field('muac',number(c.muac,1)+' mm'));
             if(r?.nutrition)notes.push(t(r.nutrition.category),...(r.nutrition.criteria||[]).map(t),t(r.nutrition.muac),t(r.nutrition.orientation),...r.nutrition.reasons.map(t),t('clinicalReference')+' : '+r.nutrition.reference+' v'+r.nutrition.version,...(r.nutrition.missing.length?[t('assessmentMissing')+' : '+r.nutrition.missing.map(t).join(', ')]:[]));
             let provenance=null;
             if (!r) notes.push(t('pdfUncalculated'));
             else {
-                if (r.schemaVersion===4) notes.push(t('bmiReportHelp'));
+                if (r.schemaVersion===4) notes.push(t(r.referenceFamily==='CDC2000'?'cdcCoverage':'bmiReportHelp'));
+                if(r.profileContext){
+                    measures.push(field('growthProfile',t('profileUS')),field('reportedAgeMonths',number(r.profileContext.reportedAgeInMonths,3)),field('calculationAgeMonths',number(r.ageInMonths,3)),field('agePrecision',t(r.profileContext.agePrecision)));
+                    notes.push(t('profileUS')+' | '+t('reportedAgeMonths')+' : '+number(r.profileContext.reportedAgeInMonths,3)+' | '+t('calculationAgeMonths')+' : '+number(r.ageInMonths,3)+' | '+t(r.profileContext.agePrecision));
+                }
+                if(r.referenceFamily==='CDC2000'){
+                    notes.push(t('cdcInterpretation'));
+                    for(const key of ['weightForAge','heightForAge','bmiForAge'])if(r[key]?.method)notes.push(t(key)+' | '+r[key].method+' | '+t('modifiedZscore')+' : '+number(r[key].modifiedZscore,3));
+                    if(Number.isFinite(r.bmiForAge?.percentOfP95))notes.push(t('percentOfP95')+' : '+number(r.bmiForAge.percentOfP95,1)+' %');
+                }
                 if(r.schemaVersion===4&&r.referenceFamily==='WHO2007')notes.push(t('coverage2007'));
                 if (r.imported) notes.push(t('importedResult'));
                 notes.push(...(Array.isArray(r.warnings) ? r.warnings.map(t) : []));
@@ -115,7 +127,7 @@ class PDFManager {
         doc.text=(value,x,y,options={})=>drawText(Array.isArray(value)?value.map(visual):visual(value),x,y,{...options,isInputVisual:true,isOutputVisual:true,isOutputRtl:false});
         // Display unsupported characters explicitly rather than silently losing identity text.
         const glyph = doc.getFont().metadata.characterToGlyph.bind(doc.getFont().metadata);
-        const safe = value => Array.from(this.clean(value), char => char === '\n' || glyph(char.codePointAt(0)) ? char : '[U+' + char.codePointAt(0).toString(16).toUpperCase() + ']').join('')
+        const safe = value => Array.from(this.clean(value), char => char === '\n' || glyph(char.codePointAt(0)) ? char : ({'≥':'>=','≤':'<='}[char] || '[U+' + char.codePointAt(0).toString(16).toUpperCase() + ']')).join('')
             .replace(/\b\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?\b/g, value => '\u200E'+value+'\u200E');
         const width = doc.internal.pageSize.getWidth(), height = doc.internal.pageSize.getHeight(), margin = 12;
         const compact=batch&&options.layout==='compact';

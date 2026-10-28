@@ -1,5 +1,8 @@
 /** Additive local history for the current workspace format only. */
 const NutritionHistory=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
+const SupplementaryHistory=typeof module!=='undefined'&&module.exports?require('./supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
+const ProfileHistory=typeof module!=='undefined'&&module.exports?require('./growth-profile.js').GrowthProfile:GrowthProfile;
+const CDCHistory=typeof module!=='undefined'&&module.exports?require('./cdc-result-validation.js').CDCResultValidation:CDCResultValidation;
 class HistoryManager {
     constructor(storage) {
         this.storage = storage;
@@ -12,7 +15,7 @@ class HistoryManager {
     static clone(data) { return JSON.parse(JSON.stringify(data)); }
     static hasWork(workspace) {
         const meaningfulDraft = draft => draft && (
-            ['caseId', 'name', 'ageYears', 'ageMonths', 'ageDays', 'birthDate', 'weight', 'height', 'gender', 'position'].some(k => draft[k] !== '' && draft[k] !== undefined && draft[k] !== null)
+            ['caseId', 'name', 'ageYears', 'ageMonths', 'ageDays', 'birthDate', 'weight', 'height', 'gender', 'position',...SupplementaryHistory.fields].some(k => draft[k] !== '' && draft[k] !== undefined && draft[k] !== null)
             || NutritionHistory.inputFields.some(k=>draft[k]!==undefined&&draft[k]!==null&&draft[k]!=='') || draft.oedema === 'y' || ['days', 'dates'].includes(draft.ageMode)
             || !!draft.measurementDate && draft.measurementDate !== ClinicalEngine.today()
         );
@@ -152,9 +155,10 @@ class HistoryManager {
     }
     static checkChild(child) {
         if (!child || typeof child.id !== 'string' || !child.id || child.id.length > 200 || typeof child.name !== 'string' || child.name.length > 100) throw new Error('importInvalid');
-        if(child.ageDomainVersion!==2)throw new Error('importVersion');
-        const extended=child.ageDomainVersion===2;
-        NutritionHistory.normalize(child);
+        if(child.ageDomainVersion!==(ProfileHistory.read(child)==='us'?3:2))throw new Error('importVersion');
+        const extended=true;
+        NutritionHistory.normalize(child);SupplementaryHistory.normalize(child);
+        if(SupplementaryHistory.fields.some(k=>SupplementaryHistory.present(child[k])&&typeof child[k]!=='number'))throw Error('importInvalid');
         if(child.muac!==undefined&&child.muac!==''&&typeof child.muac!=='number')throw new Error('importInvalid');
         for (const [key, min, max] of [['weight', 50, extended?300000:100000], ['height', 30, extended?250:150]]) ClinicalEngine.numeric(child[key], min, max, 'importInvalid');
         if (!['M', 'F'].includes(child.gender)) throw new Error('importInvalid');
@@ -164,9 +168,13 @@ class HistoryManager {
     static checkPair(child,result){
         if(result)NutritionHistory.check(child,result);
         if(!result)return;
+        SupplementaryHistory.check(child,result.additionalGrowth,ClinicalEngine);
         if(result.schemaVersion!==4)throw new Error('importVersion');
         if(!result.nutrition||result.nutrition.version!==1)throw new Error('importInvalid');
-        if(child.ageDomainVersion!==2||result.ageInMonths!==child.totalAgeMonths||result.referenceFamily!==(child.totalAgeMonths<60?'WHO2006':'WHO2007'))throw new Error('importInvalid');
+        const profile=ProfileHistory.read(child);
+        if(child.ageDomainVersion!==(profile==='us'?3:2)||ProfileHistory.checkContext(result)!==profile||result.ageInMonths!==ProfileHistory.calculationAge(child)||result.referenceFamily!==ProfileHistory.family(child))throw new Error('importInvalid');
+        if(profile==='us'&&Object.entries(ProfileHistory.context(child)).some(([key,value])=>result.profileContext[key]!==value))throw Error('importInvalid');
+        if(result.referenceFamily==='CDC2000')CDCHistory.checkPair(child,result);
     }
     static checkResult(result, children) {
         if (!result || typeof result.id !== 'string' || !result.id || result.id.length > 200 || !children.has(result.childId)) throw new Error('importInvalid');
@@ -175,6 +183,8 @@ class HistoryManager {
         if (result.warnings !== undefined && (!Array.isArray(result.warnings) || result.warnings.length > 50 || result.warnings.some(w => typeof w !== 'string' || w.length > 200))) throw new Error('importInvalid');
         if(result.schemaVersion!==4)throw new Error('importVersion');
         if(!result.nutrition||result.nutrition.version!==1)throw new Error('importInvalid');
+        ProfileHistory.checkContext(result);
+        if(result.referenceFamily==='CDC2000'){CDCHistory.check(result);return;}
         if (result.percentileVersion !== undefined && result.percentileVersion !== 1) throw new Error('importVersion');
         if (result.percentileVersion === 1 && result.schemaVersion!==4) throw new Error('importInvalid');
         const keys = ClinicalEngine.resultIndicators(result);

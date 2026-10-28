@@ -2,8 +2,10 @@
 const NutritionUI=typeof module!=='undefined'&&module.exports?require('./services/nutrition-assessment.js').NutritionAssessment:globalThis.NutritionAssessment;
 const SecureBackup=typeof module!=='undefined'&&module.exports?require('./services/encrypted-backup.js').EncryptedBackup:globalThis.EncryptedBackup;
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
+const SupplementaryUI=typeof module!=='undefined'&&module.exports?require('./services/supplementary-growth.js').SupplementaryGrowth:globalThis.SupplementaryGrowth;
+const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/growth-profile.js').GrowthProfile:globalThis.GrowthProfile;
 class WorkspaceApp {
-    static version = '5.2.2';
+    static version = '5.5.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
@@ -22,8 +24,10 @@ class WorkspaceApp {
         this.prefs = { language: ['fr', 'en', 'ar'].includes(prefs.language) ? prefs.language : localStorage.getItem('zscore-app-language') || 'fr', theme: ['light', 'dark', 'system'].includes(prefs.theme) ? prefs.theme : 'system' };
         if (!['fr', 'en', 'ar'].includes(this.prefs.language)) this.prefs.language = 'fr';
         this.prefs.navCollapsed = prefs.navCollapsed === true;
+        this.prefs.growthProfile = prefs.growthProfile === 'us' ? 'us' : 'who';
+        this.state = this.emptyWorkspace();
     }
-    emptyDraft() { return { caseId: '', name: '', ageMode: 'months', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: '' }; }
+    emptyDraft(growthProfile=this.prefs?.growthProfile||'who') { return { caseId: '', name: '', ageMode: 'months', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: '', growthProfile }; }
     emptyWorkspace() { return { version: 1, draft: this.emptyDraft(), batchDraft: this.emptyDraft(), single: null, batch: [], paste: '', mode: 'single', stale: false }; }
     t(key) { const own=table=>table&&Object.hasOwn(table,key)&&typeof table[key]==='string'?table[key]:'';return own(this.translations?.[this.prefs.language])||own(this.translations?.fr)||String(key??''); }
     esc(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -86,14 +90,16 @@ class WorkspaceApp {
     number(value, digits = 2) { return Number(value).toLocaleString(this.prefs.language, { minimumFractionDigits: digits, maximumFractionDigits: digits }); }
     async init() {
         try {
-            const paths=['data/interface-translations.json','data/who-manifest.json','data/who-official.json','data/who-2007-manifest.json','data/who-2007.json'];
+            const paths=['data/interface-translations.json','data/who-manifest.json','data/who-official.json','data/who-2007-manifest.json','data/who-2007.json','data/who-additional-manifest.json','data/who-additional.json','data/cdc-growth-manifest.json','data/cdc-growth.json'];
             const responses=await Promise.all(paths.map(path=>fetch(path)));
             const {texts,hashes}=await ReleaseGuard.verifyData(paths,responses);
             this.translations=JSON.parse(texts[0]);
             const manifest=JSON.parse(texts[1]),text=texts[2];
             if(hashes[2]!==manifest.sha256)throw new Error('referenceInvalid');
             const olderManifest=JSON.parse(texts[3]);if(hashes[4]!==olderManifest.sha256)throw new Error('referenceInvalid');
-            this.engine = new GrowthEngine(JSON.parse(text),JSON.parse(texts[4])); this.manifest = manifest;this.olderManifest=olderManifest;
+            const additionalManifest=JSON.parse(texts[5]);if(hashes[6]!==additionalManifest.sha256)throw Error('referenceInvalid');
+            const cdcManifest=JSON.parse(texts[7]);if(hashes[8]!==cdcManifest.sha256)throw Error('referenceInvalid');
+            this.engine = new GrowthEngine(JSON.parse(text),JSON.parse(texts[4]),JSON.parse(texts[6]),JSON.parse(texts[8])); this.manifest = manifest;this.olderManifest=olderManifest;this.cdcManifest=cdcManifest;
             await this.storage.initialize(); this.sessions = await this.history.catalog();
             if(ReleaseGuard.failed)throw new Error('releaseInvalid');
             this.applyPreferences(); this.render(); this.events();
@@ -153,13 +159,17 @@ class WorkspaceApp {
         };
         return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths[name] || ''}</svg>`;
     }
-    actionLabelHTML(key) {
+    actionLabelHTML(key, desktopFormat = false) {
         const compactKey={resumeWork:'resumeCompact',newWork:'newWorkCompact',exportPDF:'exportPDFCompactLabel',exportCSV:'exportCSVCompactLabel',pdfShort:'exportPDFCompactLabel',csvShort:'exportCSVCompactLabel',editMeasures:'editCompact',showResults:'resultsTitle'}[key];
-        return `<span class="action-label" aria-hidden="true">${compactKey?`<span class="action-text-wide">${this.esc(this.t(key))}</span><span class="action-text-compact">${this.esc(this.t(compactKey))}</span>`:this.esc(this.t(key))}</span>`;
+        const text=compactKey?`<span class="action-text-wide">${this.esc(this.t(key))}</span><span class="action-text-compact">${this.esc(this.t(compactKey))}</span>`:this.esc(this.t(key));
+        if(!desktopFormat)return `<span class="action-label" aria-hidden="true">${text}</span>`;
+        const desktopKey={exportPDF:'desktopExportFormat',exportCSV:'desktopExportFormat',importCSV:'desktopChooseFormat',csvTemplateShort:'desktopTemplateFormat',lotExport:'desktopSummaryFormat',lotExportOlder:'desktopSummaryOlderFormat'}[key];
+        return `<span class="action-label format-action-label" aria-hidden="true"><span class="format-original-label">${text}</span><span class="format-desktop-label">${desktopKey?this.esc(this.t(desktopKey)):''}</span></span>`;
     }
     toolButton(label, icon, action = '', {disabled=false, primary=false, attrs='', submit=false, showLabel=false, labelKey=label} = {}) {
         const name=this.esc(this.t(label));
-        return `<button type="${submit?'submit':'button'}" class="icon-button${primary?' primary':''}${showLabel?' action-with-label':''}"${action?` data-action="${action}"`:''} title="${name}" aria-label="${name}" ${disabled?'disabled':''} ${attrs}>${this.icon(icon)}${showLabel?this.actionLabelHTML(labelKey):''}</button>`;
+        const desktopFormat=showLabel&&['pdf','csv'].includes(icon)&&['exportPDF','exportCSV','pdfShort','csvShort','csvTemplateShort','lotExport','lotExportOlder'].includes(labelKey);
+        return `<button type="${submit?'submit':'button'}" class="icon-button${primary?' primary':''}${showLabel?' action-with-label':''}${desktopFormat?' desktop-format-action':''}"${action?` data-action="${action}"`:''} title="${name}" aria-label="${name}" ${disabled?'disabled':''} ${attrs}>${this.icon(icon)}${showLabel?this.actionLabelHTML(labelKey,desktopFormat):''}</button>`;
     }
     infoButton(key, label, id = 'info-' + key) {
         return `<button type="button" id="${id}" class="field-info" data-action="show-info" data-info="${key}" aria-expanded="false" aria-controls="info-popup" aria-label="${this.esc(this.t('helpAbout')+' '+this.t(label))}">${this.icon('info')}</button>`;
@@ -246,9 +256,10 @@ class WorkspaceApp {
         document.getElementById('mobile-actions-button')?.setAttribute('aria-expanded','true');d.showModal();
     }
     setPreference(kind, value) {
-        const allowed = {language:['fr','en','ar'],theme:['system','light','dark']};
+        const allowed = {language:['fr','en','ar'],theme:['system','light','dark'],growthProfile:['who','us']};
         if (!Object.hasOwn(allowed,kind) || !allowed[kind].includes(value)) return;
         this.readForms(); this.prefs[kind] = value; this.persistPreferences(); this.applyPreferences();
+        if(kind==='growthProfile')for(const key of ['draft','batchDraft'])if(!HistoryManager.hasWork({draft:this.state[key]}))this.state[key]=this.emptyDraft(value);
         document.getElementById('header-dialog').close(); this.render(kind + '-button');
     }
     enhanceSelects() {
@@ -285,9 +296,9 @@ class WorkspaceApp {
         this.closeChoice();
         const button=document.getElementById(buttonId);if(!button)return;
         const select=selectId?document.getElementById(selectId):null;
-        if(!select&&!['language','theme'].includes(kind))return;
+        if(!select&&!['language','theme','growthProfile'].includes(kind))return;
         const names={fr:'Français',en:'English',ar:'العربية'};
-        const options=select?[...select.options].map(o=>({value:o.value,label:o.textContent,disabled:o.disabled})):(kind==='language'?['fr','en','ar']:['system','light','dark']).map(value=>({value,label:kind==='language'?names[value]:this.t(value)}));
+        const options=select?[...select.options].map(o=>({value:o.value,label:o.textContent,disabled:o.disabled})):(kind==='language'?['fr','en','ar']:kind==='growthProfile'?['who','us']:['system','light','dark']).map(value=>({value,label:kind==='language'?names[value]:this.t(kind==='growthProfile'?value==='us'?'profileUS':'profileWHO':value)}));
         const current=select?select.value:this.prefs[kind],popup=this.choicePopup();
         popup.dir=document.documentElement.dir||'ltr';popup.setAttribute('aria-label',select?(document.getElementById(select.id+'-label')?.textContent||''):this.t(kind));
         popup.innerHTML=options.map(o=>`<button type="button" role="option" aria-selected="${o.value===current}" tabindex="${o.value===current?'0':'-1'}" data-action="choice-value" data-value="${this.esc(o.value)}" ${o.disabled?'disabled':''}>${kind==='theme'?this.icon(o.value):''}<span${kind==='language'?` lang="${o.value}" dir="auto"`:''}>${this.esc(o.label)}</span>${o.value===current?this.icon('check'):''}</button>`).join('');
@@ -370,11 +381,19 @@ class WorkspaceApp {
     }
     settingsHTML() {
         const names={fr:'Français',en:'English',ar:'العربية'};
-        return `<section class="card settings-card" aria-label="${this.esc(this.t('settings'))}"><p class="hint">${this.t('settingsHelp')}</p><div class="settings-grid">${['language','theme'].map(kind=>`<div class="setting-row"><label id="${kind}-label" for="${kind}-button">${this.t(kind)}</label><button id="${kind}-button" class="choice-trigger" data-action="header-panel" data-kind="${kind}" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-labelledby="${kind}-label ${kind}-value">${this.icon(kind==='language'?'language':this.prefs.theme)}<span class="choice-value" id="${kind}-value"${kind==='language'?' dir="auto"':''}>${this.esc(kind==='language'?names[this.prefs.language]:this.t(this.prefs.theme))}</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>`).join('')}</div></section>`;
+        return `<section class="card settings-card" aria-label="${this.esc(this.t('settings'))}"><p class="hint">${this.t('settingsHelp')}</p><div class="settings-grid">${['language','theme','growthProfile'].map(kind=>`<div class="setting-row"><label id="${kind}-label" for="${kind}-button">${this.t(kind)}</label><button id="${kind}-button" class="choice-trigger" data-action="header-panel" data-kind="${kind}" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-labelledby="${kind}-label ${kind}-value">${this.icon(kind==='language'||kind==='growthProfile'?'language':this.prefs.theme)}<span class="choice-value" id="${kind}-value"${kind==='language'?' dir="auto"':''}>${this.esc(kind==='language'?names[this.prefs.language]:this.t(kind==='growthProfile'?this.prefs.growthProfile==='us'?'profileUS':'profileWHO':this.prefs.theme))}</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>`).join('')}</div><p class="hint">${this.t('growthProfileHelp')}</p></section>`;
     }
     resultHeadingHTML(entry) {
         const child=entry?.child;
         return `<div class="results-heading-group"><h2 id="results-title" class="flow-focus" tabindex="-1">${this.t('resultsTitle')}</h2>${child?`<div class="result-status"><strong><bdi>${this.esc(child.name || child.caseId || this.t('unknown'))}</bdi></strong>${entry.result.status!=='complete'?`<span class="badge">${this.esc(this.t(entry.result.status))}</span>`:''}</div>${this.infoButton('centileHelp','percentileLabel')}`:''}</div>`;
+    }
+    profileDetailsHTML(child,result) {
+        if(!child?.growthProfile&&!result?.profileContext)return '';
+        const e=v=>this.esc(v),t=k=>e(this.t(k)),context=result?.profileContext;
+        const policy=child.growthProfile==='us'||context?.profile==='us'?'profileUS':'profileWHO';
+        const ages=context?`<p>${t('reportedAgeMonths')} : ${e(this.number(context.reportedAgeInMonths,3))} · ${t('calculationAgeMonths')} : ${e(this.number(result.ageInMonths,3))} · ${t('agePrecision')} : ${t(context.agePrecision)}</p>`:'';
+        const methods=result?.referenceFamily==='CDC2000'?`<p>${t('cdcInterpretation')}</p>${['weightForAge','heightForAge','bmiForAge'].filter(k=>result[k]?.method).map(k=>`<p>${t(k)} : ${e(result[k].method)} · ${t('modifiedZscore')} : ${e(this.number(result[k].modifiedZscore,3))}</p>`).join('')}${Number.isFinite(result.bmiForAge?.percentOfP95)?`<p>${t('percentOfP95')} : ${e(this.number(result.bmiForAge.percentOfP95,1))} %</p>`:''}`:'';
+        return `<div class="profile-context"><p>${t('growthProfile')} : ${t(policy)}</p>${ages}${methods}</div>`;
     }
     resultActionsHTML(child) {
         const exports=()=>`${this.toolButton('exportPDF','pdf','export-pdf',{disabled:this.pdfBusy,showLabel:true})}${this.toolButton('exportCSV','csv','csv-results',{showLabel:true})}`;
@@ -391,11 +410,11 @@ class WorkspaceApp {
             <div class="field">${label('ageMode','ageHint')}<select id="${prefix}-ageMode" name="ageMode" aria-describedby="${prefix}-ageMode-hint">${['months','dates','days'].map(mode => `<option value="${mode}" ${data.ageMode === mode ? 'selected' : ''}>${this.t(mode)}</option>`).join('')}</select><p id="${prefix}-ageMode-hint" class="sr-only">${this.t('ageHint')}</p></div>
             <div class="age-fields" data-age="months" ${data.ageMode !== 'months' ? 'hidden' : ''}>${field('ageYears','number','min="0" max="19" step="1" inputmode="numeric"')}${field('ageMonths','number','min="0" max="11" step="1" inputmode="numeric"')}</div>
             <div class="age-fields" data-age="dates" ${data.ageMode !== 'dates' ? 'hidden' : ''}>${field('birthDate','date',`max="${ClinicalEngine.today()}"`)}</div>
-            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number','min="0" max="6970" step="1" inputmode="numeric"')}</div>
+            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number',`min="0" max="${data.growthProfile==='us'?7304:6970}" step="1" inputmode="numeric"`)}</div>
             ${field('measurementDate','date',`max="${ClinicalEngine.today()}"`)}
             ${field('weight','number','min="50" max="300000" step="1" inputmode="decimal"','weightHint')}${field('height','number','min="30" max="250" step="0.1" inputmode="decimal"')}
             ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['','unknown'],['n','no'],['y','yes']])}${select('position',[['','choose'],['L','lying'],['H','standing']],'positionHint')}
-            </div><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t('clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
+            </div><details class="reference-profile"><summary>${this.t(data.growthProfile==='us'?'profileUS':'profileWHO')}</summary><p class="hint">${this.t('growthProfileHelp')}</p>${select('growthProfile',[['who','profileWHO'],['us','profileUS']])}</details><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t('clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><details class="additional-fields"${SupplementaryUI.fields.some(k=>SupplementaryUI.present(data[k]))?' open':''}><summary>${this.t('additionalMeasures')}</summary><p class="hint">${this.t('additionalMeasureHelp')}</p><div class="form-grid">${field('headCircumference','number','min="25" max="64" step="0.1" inputmode="decimal"')}${field('tricepsSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}${field('subscapularSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
     }
     singleHTML() {
         const hasResult=!!this.state.single?.result, dashboard=hasResult&&!this.singleEditing;
@@ -410,15 +429,20 @@ class WorkspaceApp {
         const indicators=WorkspaceApp.resultIndicators(result).map(key => {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
             const category = v?.classification;
-            const severe = /Severe|severe|obesity|bmiBelow3|bmiAbove3/.test(category || '');
-            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton('bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score" aria-label="${this.esc(this.t('zscoreLabel')+' : '+(hasValue?this.number(v.zscore):this.t('notCalculated')))}" title="${this.esc(this.t('zscoreHelp'))}"><span class="score-prefix" aria-hidden="true">Z</span> ${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
+            const severe = /Severe|severe|obesity|Obesity|bmiBelow3|bmiAbove3/.test(category || '');
+            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin','cdcHealthyWeight','cdcBetween3And97'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton(result.referenceFamily==='CDC2000'?'cdcInterpretation':'bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score" aria-label="${this.esc(this.t('zscoreLabel')+' : '+(hasValue?this.number(v.zscore):this.t('notCalculated')))}" title="${this.esc(this.t('zscoreHelp'))}"><span class="score-prefix" aria-hidden="true">Z</span> ${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
           }).join('');
-        const warnings=`${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}${result.referenceFamily==='WHO2007'?`<p class="hint">${this.t('coverage2007')}</p>`:''}`;
-        const measures=`<div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p></div>`;
-        if(preview)return `${status}${notices}${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${indicators}${warnings}${measures}`;
+        const warnings=`${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}${['WHO2007','CDC2000'].includes(result.referenceFamily)?`<p class="hint">${this.t(result.referenceFamily==='CDC2000'?'cdcCoverage':'coverage2007')}</p>`:''}`;
+        const measures=`<div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p>${this.profileDetailsHTML(child,result)}</div>`;
+        if(preview)return `${status}${notices}${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3>${indicators}${this.additionalResultsHTML(result)}${warnings}${measures}`;
         const value=v=>this.esc(v??this.t('unknown'));
         const pairs=[['measurementDate',this.calendarDate(child.measurementDate)],['ageDays',child.ageDays],['weight',this.number(child.weight,0)],['height',this.number(child.height,1)],['gender',this.t(child.gender==='M'?'male':'female')],['muac',result.nutrition?.muacMm==null?this.t('unknown'):this.number(result.nutrition.muacMm,1)+' mm']];
-        return `<div class="dashboard-toolbar">${this.resultHeadingHTML(entry)}${this.resultActionsHTML(child)}</div>${notices}<div class="result-overview"><section class="result-clinical" aria-label="${this.esc(this.t('growthResults'))}">${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3><div class="indicator-grid">${indicators}</div>${warnings}</section><section class="result-record"><div class="record-heading"><h3>${this.t('measurementSummary')}</h3>${child.caseId?`<button class="btn" data-action="view-case" data-case-id="${value(child.caseId)}" title="${this.esc(this.t('viewCaseVersions'))}">${this.icon('history')}<span>${this.t('viewVersionsShort')}</span></button>`:''}</div><dl class="measurement-snapshot">${pairs.map(([key,v])=>`<div><dt>${this.t(key)}</dt><dd>${value(v)}</dd></div>`).join('')}</dl><details class="calculation-details" open><summary>${this.t('calculationDetails')}</summary>${measures}</details><div data-single-visits>${child.caseId?'':`<p class="hint">${this.t('caseWithoutId')}</p>`}</div></section></div><section class="dashboard-charts" aria-label="${this.esc(this.t('chartsDashboard'))}"><h3>${this.t('chartsDashboard')}</h3><div data-single-charts></div></section>`;
+        return `<div class="dashboard-toolbar">${this.resultHeadingHTML(entry)}${this.resultActionsHTML(child)}</div>${notices}<div class="result-overview"><section class="result-clinical" aria-label="${this.esc(this.t('growthResults'))}">${this.nutritionHTML(child,result)}<h3 class="growth-heading">${this.t('growthResults')}</h3><div class="indicator-grid">${indicators}</div>${this.additionalResultsHTML(result)}${warnings}</section><section class="result-record"><div class="record-heading"><h3>${this.t('measurementSummary')}</h3>${child.caseId?`<button class="btn" data-action="view-case" data-case-id="${value(child.caseId)}" title="${this.esc(this.t('viewCaseVersions'))}">${this.icon('history')}<span>${this.t('viewVersionsShort')}</span></button>`:''}</div><dl class="measurement-snapshot">${pairs.map(([key,v])=>`<div><dt>${this.t(key)}</dt><dd>${value(v)}</dd></div>`).join('')}</dl><details class="calculation-details" open><summary>${this.t('calculationDetails')}</summary>${measures}</details><div data-single-visits>${child.caseId?'':`<p class="hint">${this.t('caseWithoutId')}</p>`}</div></section></div><section class="dashboard-charts" aria-label="${this.esc(this.t('chartsDashboard'))}"><h3>${this.t('chartsDashboard')}</h3><div data-single-charts></div></section>`;
+    }
+    additionalResultsHTML(result) {
+        const extra=result?.additionalGrowth;if(!extra)return '';
+        const e=v=>this.esc(v),t=k=>e(this.t(k));
+        return `<details class="additional-results"><summary>${t('additionalResults')}</summary><p class="hint">${t('additionalResultHelp')}</p><dl class="measurement-snapshot">${Object.entries(extra.indicators).map(([key,v])=>`<div><dt>${t(key)}</dt><dd>${e(this.number(v.measure,1))} ${e(v.unit)} · ${Number.isFinite(v.zscore)?'Z '+e(this.number(v.zscore)):'—'}${this.percentileHTML(v,result)}</dd><p>${t(v.error||v.classification)}${v.flagged?' · '+t('flagged'):''}</p></div>`).join('')}</dl><p class="meta">${t('referenceVersion')} : ${e(extra.referenceVersion)}</p></details>`;
     }
     nutritionHTML(child,result) {
         const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
@@ -426,13 +450,13 @@ class WorkspaceApp {
     }
     lotModels(){
         if(!this.engine?.older)return [LotAnalysis.build(this.state.batch,this.engine?.data.referenceVersion)];
-        const family=e=>e.result?.referenceFamily||(e.child.totalAgeMonths>=60?'WHO2007':'WHO2006');
-        return [['WHO2006',this.engine.data.referenceVersion],['WHO2007',this.engine.older.data.referenceVersion]].flatMap(([key,reference])=>{const entries=this.state.batch.filter(e=>family(e)===key);return entries.length?[LotAnalysis.build(entries,reference,{family:key})]:[];});
+        const family=e=>e.result?.referenceFamily||ProfileUI.family(e.child);
+        return [['WHO2006',this.engine.data.referenceVersion],['WHO2007',this.engine.older.data.referenceVersion],...(this.engine.cdc?[['CDC2000',this.engine.cdc.data.referenceVersion]]:[])].flatMap(([key,reference])=>{const entries=this.state.batch.filter(e=>family(e)===key);return entries.length?[LotAnalysis.build(entries,reference,{family:key,additionalReference:this.engine.additional?.data.referenceVersion})]:[];});
     }
     lotSummaryHTML(options={}){return this.lotModels().map(model=>LotAnalysis.html(model,this,options)).join('');}
     batchHTML() {
         const view=this.batchView(),disabled=!view.total;
-        return `<div class="workspace-grid batch-workspace"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('addBatch','plus','',{primary:true,submit:true,showLabel:true,attrs:'form="batch-form"'})}</div></div>${this.formHTML('batch',this.state.batchDraft,true)}<section class="csv-tools" aria-labelledby="csv-tools-toggle"><div class="csv-tools-heading"><div class="csv-heading-label"><button type="button" class="csv-tools-toggle" id="csv-tools-toggle" data-action="toggle-csv" aria-expanded="${!!this.state.paste}" aria-controls="csv-tools-body csv-heading-actions"><span>${this.t('csvTools')}</span></button>${this.infoButton('csvHelp','csvTools','csv-help-button')}</div><div id="csv-heading-actions" class="toolbar compact-toolbar csv-heading-actions"${this.state.paste?'':' hidden'}><label class="icon-button action-with-label file-label" title="${this.esc(this.t('importCSV'))}">${this.icon('csv')}<span class="action-label">${this.t('importCSV')}</span><input class="file-input" type="file" id="csv-file" aria-label="${this.esc(this.t('importCSV'))}" accept=".csv,text/csv"></label>${this.toolButton('csvTemplate','csv','csv-template',{showLabel:true,labelKey:'csvTemplateShort'})}</div></div><div id="csv-tools-body" class="csv-tools-body"${this.state.paste?'':' hidden'}><div class="field"><label for="paste-data">${this.t('pasteLabel')}</label><textarea id="paste-data" rows="3">${this.esc(this.state.paste)}</textarea></div><button id="csv-parse-button" class="btn" data-action="parse-csv">${this.t('parseCSV')}</button></div></section></section>
+        return `<div class="workspace-grid batch-workspace"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('addBatch','plus','',{primary:true,submit:true,showLabel:true,attrs:'form="batch-form"'})}</div></div>${this.formHTML('batch',this.state.batchDraft,true)}<section class="csv-tools" aria-labelledby="csv-tools-toggle"><div class="csv-tools-heading"><div class="csv-heading-label"><button type="button" class="csv-tools-toggle" id="csv-tools-toggle" data-action="toggle-csv" aria-expanded="${!!this.state.paste}" aria-controls="csv-tools-body csv-heading-actions"><span>${this.t('csvTools')}</span></button>${this.infoButton('csvHelp','csvTools','csv-help-button')}</div><div id="csv-heading-actions" class="toolbar compact-toolbar csv-heading-actions"${this.state.paste?'':' hidden'}><label class="icon-button action-with-label file-label desktop-format-action" title="${this.esc(this.t('importCSV'))}">${this.icon('csv')}${this.actionLabelHTML('importCSV',true)}<input class="file-input" type="file" id="csv-file" aria-label="${this.esc(this.t('importCSV'))}" accept=".csv,text/csv"></label>${this.toolButton('csvTemplate','csv','csv-template',{showLabel:true,labelKey:'csvTemplateShort'})}</div></div><div id="csv-tools-body" class="csv-tools-body"${this.state.paste?'':' hidden'}><div class="field"><label for="paste-data">${this.t('pasteLabel')}</label><textarea id="paste-data" rows="3">${this.esc(this.state.paste)}</textarea></div><p id="csv-progress" role="status" aria-live="polite"></p><button id="csv-parse-button" class="btn" data-action="parse-csv">${this.t('parseCSV')}</button></div></section></section>
           <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
     }
     preparePrint() {
@@ -446,7 +470,7 @@ class WorkspaceApp {
         const note = key => `<div class="${compact&&key==='withinReference'?'sr-only':'item-sub'}">${this.esc(this.t(key))}</div>`;
         const cell = (key,value) => `<td role="cell"${indicators.includes(key)?' class="score"':''}><span class="cell-label" aria-hidden="true">${this.esc(this.t(key))}</span><div class="cell-value">${value}</div></td>`;
         return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
-            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${this.esc(child.muac??'—')} mm</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p></details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
+            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${this.esc(child.muac??'—')} mm</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p></details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${this.additionalResultsHTML(result)}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
             return `<tr role="row">${cell('name',identity)}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
                 const value=key==='bmiForAge'&&result?.schemaVersion!==4?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
                 const category=value?.classification;
@@ -515,8 +539,8 @@ class WorkspaceApp {
         return `<section class="card full quick-guide" aria-labelledby="quick-guide-title"><h2 id="quick-guide-title">${this.t('quickGuideTitle')}</h2>${['Measure','Resume','Transfer','Offline','Reports'].map(topic=>`<details><summary>${this.t('quickGuide'+topic)}</summary><p>${this.t('quickGuide'+topic+'Text')}</p></details>`).join('')}</section>`;
     }
     referencesHTML() {
-        const links = [['sourceClinical2023','https://www.who.int/publications/i/item/9789240082830'],['sourceClinical2026','https://www.who.int/publications/i/item/9789240122840'],['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt'],['sourceWHO2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],['sourceLicense2007','data/LICENSE-anthroplus.txt']];
-        return `<div class="reference-grid">${this.quickGuideHTML()}<section class="card full"><span class="eyebrow">OMS / WHO · 2006 / 2007</span><h2>${this.t('references')}</h2><div class="source-links">${links.map(([k,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${this.t(k)} ↗</a>`).join('')}</div><p>${this.t('referenceBoth')}</p><p class="meta">${this.esc(this.manifest.referenceVersion)}<br>SHA-256 : ${this.manifest.sha256}</p>${this.olderManifest?`<p class="meta">${this.esc(this.olderManifest.referenceVersion)}<br>SHA-256 : ${this.olderManifest.sha256}</p>`:''}</section>${[['scope','scopeText'],['method','methodText'],['measurementHelp','measurementHelpText'],['privacyTitle','privacyText'],['validationTitle','validationText']].map(([title,text])=>`<section class="card"><h2>${this.t(title)}</h2><p>${this.t(text)}</p></section>`).join('')}<section class="card"><h2>${this.t('updateCurrent').replace('{version}',WorkspaceApp.version)}</h2><button class="btn" data-action="check-update" ${this.offlineRegistration?'':'disabled'}>${this.t('updateCheck')}</button></section></div>`;
+        const links = [['sourceClinical2023','https://www.who.int/publications/i/item/9789240082830'],['sourceClinical2026','https://www.who.int/publications/i/item/9789240122840'],['sourceWHO','https://www.who.int/tools/child-growth-standards/standards'],['sourceAnthro','https://www.who.int/toolkits/child-growth-standards/software'],['sourceClassification','https://www.who.int/data/nutrition/nlis/info/malnutrition-in-children/'],['sourceCode','https://github.com/WorldHealthOrganization/anthro/tree/'+this.engine.data.sourceCommit+'/data-raw/growthstandards'],['sourceLicense','data/LICENSE-anthro.txt'],['sourceWHO2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],['sourceLicense2007','data/LICENSE-anthroplus.txt'],['sourceCDC','https://www.cdc.gov/growthcharts/cdc-data-files.htm'],['sourceCDC2022','https://www.cdc.gov/growthcharts/extended-bmi-data-files.htm']];
+        return `<div class="reference-grid">${this.quickGuideHTML()}<section class="card full"><span class="eyebrow">OMS / WHO · 2006 / 2007 · CDC 2000 / 2022</span><h2>${this.t('references')}</h2><div class="source-links">${links.map(([k,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${this.t(k)} ↗</a>`).join('')}</div><p>${this.t('referenceBoth')}</p><p class="meta">${this.esc(this.manifest.referenceVersion)}<br>SHA-256 : ${this.manifest.sha256}</p>${this.olderManifest?`<p class="meta">${this.esc(this.olderManifest.referenceVersion)}<br>SHA-256 : ${this.olderManifest.sha256}</p>`:''}${this.cdcManifest?`<p class="meta">${this.esc(this.cdcManifest.referenceVersion)}<br>SHA-256 : ${this.cdcManifest.sha256}</p>`:''}</section>${[['scope','scopeText'],['method','methodText'],['measurementHelp','measurementHelpText'],['privacyTitle','privacyText'],['validationTitle','validationText']].map(([title,text])=>`<section class="card"><h2>${this.t(title)}</h2><p>${this.t(text)}</p></section>`).join('')}<section class="card"><h2>${this.t('updateCurrent').replace('{version}',WorkspaceApp.version)}</h2><button class="btn" data-action="check-update" ${this.offlineRegistration?'':'disabled'}>${this.t('updateCheck')}</button></section></div>`;
     }
     events() {
         this.choicePopup();
@@ -552,8 +576,9 @@ class WorkspaceApp {
             try {
                 if (event.target.id === 'single-form') { this.state.single = this.engine.calculate(this.state.draft); this.state.draft.visitId = this.state.single.child.visitId; this.state.stale = false; await this.saveImmediate('calculated'); this.singleEditing=false; this.render('results-title'); }
                 else if (event.target.id === 'batch-form') {
+                    if(this.csvBusy||this.csvReading||this.batchComputing)return;
                     const child = GrowthEngine.normalize(this.state.batchDraft);
-                    if (this.state.batch.length >= 500) throw new Error('batchLimit');
+                    if (this.state.batch.length >= CSVManager.batchSize) throw new Error('batchLimit');
                     this.state.batch.push({ child, result: null }); this.batchPage=Math.floor((this.state.batch.length-1)/8);this.state.batchDraft = this.emptyDraft(); await this.saveImmediate('automatic'); this.render('batch-caseId');
                 }
             } catch (error) { this.formError(event.target.id.startsWith('batch') ? 'batch' : 'single',error.message); }
@@ -569,6 +594,11 @@ class WorkspaceApp {
             if (event.target.name === 'ageMode') {
                 const form = event.target.closest('form'); form.querySelectorAll('[data-age]').forEach(div => { div.hidden = div.dataset.age !== event.target.value; });
                 this.readForms(); this.scheduleSave();
+            } else if (event.target.name === 'growthProfile') {
+                this.readForms();const form=event.target.closest('form'),prefix=form.id==='single-form'?'single':'batch';
+                document.getElementById(prefix+'-ageDays').max=event.target.value==='us'?'7304':'6970';
+                const summary=form.querySelector('.reference-profile summary');if(summary)summary.textContent=this.t(event.target.value==='us'?'profileUS':'profileWHO');
+                this.scheduleSave();
             } else if (event.target.id === 'backup-file') {
                 const file = event.target.files[0]; if (file) await this.previewImport(file); event.target.value = '';
             } else if (event.target.id === 'csv-file') {
@@ -675,16 +705,23 @@ class WorkspaceApp {
         else if(action==='new-visit'){
             const child = this.state.single?.child;if(!child?.caseId)return;
             await this.saveImmediate('beforeNew');this.state=this.emptyWorkspace();this.singleEditing=false;
-            Object.assign(this.state.draft,{caseId:child.caseId,name:child.name,gender:child.gender,birthDate:child.birthDate || '',ageMode:child.birthDate?'dates':child.ageMode || 'months'});
+            Object.assign(this.state.draft,{caseId:child.caseId,name:child.name,gender:child.gender,birthDate:child.birthDate || '',ageMode:child.birthDate?'dates':child.ageMode || 'months',growthProfile:child.growthProfile||'who'});
             this.page='single';await this.saveImmediate('automatic');this.render('single-caseId');
         }
         else if(action==='view-case'){this.search=button.dataset.caseId;this.historyPage=0;this.sessions=await this.history.catalog();this.page='history';this.render('history-search');}
         else if(action==='calculate-batch'){
-            button.disabled=true;
-            try { const entries=this.state.batch.map(e=>this.engine.calculate(e.child)); this.state.batch=entries; await this.saveImmediate('calculated'); this.render('batch-results-title'); }
-            finally {button.disabled=false;}
+            if(this.batchComputing||this.csvBusy||this.csvReading)return;
+            button.disabled=true;const workspace=this.state,entries=[];this.batchComputing=true;
+            try { for(let i=0;i<workspace.batch.length;i++){if(this.state!==workspace||this.page!=='batch')return;entries.push(this.engine.calculate(workspace.batch[i].child));if(i%100===99)await new Promise(resolve=>setTimeout(resolve,0));}if(this.state!==workspace||this.page!=='batch')return;workspace.batch=entries;await this.saveImmediate('calculated');this.render('batch-results-title'); }
+            finally {this.batchComputing=false;button.disabled=false;}
         }
         else if(action==='parse-csv') await this.addCSV(this.state.paste);
+        else if(action==='csv-confirm'){
+            const pending=this.pendingCSV;if(!pending||pending.workspace!==this.state||pending.epoch!==this.renderEpoch||this.page!=='batch'){this.pendingCSV=null;this.toast('csvCancelled');return;}
+            const mapping={};for(const field of CSVManager.fields){const value=document.getElementById('csv-map-'+field)?.value;if(value)mapping[field]=value;}
+            const options={mapping};for(const key of ['weightUnit','heightUnit','muacUnit','dateFormat','oedemaCodes'])options[key]=document.getElementById('csv-'+key).value;
+            try{CSVManager.options(pending.text,options);}catch(_){this.toast('csvMappingInvalid',true);return;}await this.addCSV(pending.text,options);
+        }
         else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema,muac\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n,130\r\n','zscore-modele.csv','text/csv');
         else if(action==='reporting')this.reportingDialog();
         else if(action==='download-report')this.downloadReport(false);
@@ -777,9 +814,21 @@ class WorkspaceApp {
             const control=document.getElementById(id);if(control)control.disabled=!!(this.csvBusy||this.csvReading);
         }
     }
+    csvMappingDialog(text,info){
+        this.pendingCSV={text,workspace:this.state,epoch:this.renderEpoch};
+        const select=(id,label,values,selected)=>`<div class="field"><label for="${id}">${this.esc(label)}</label><select id="${id}">${values.map(([v,label])=>`<option value="${this.esc(v)}"${v===selected?' selected':''}>${this.esc(label)}</option>`).join('')}</select></div>`;
+        const mappedFields=list=>list.map(field=>select('csv-map-'+field,this.t(field),[['',this.t('csvIgnore')],...info.headers.map(h=>[h,h])],info.mapping[field]||'')).join('');
+        const fields=mappedFields(CSVManager.fields.filter(field=>!NutritionUI.inputFields.includes(field)||field==='muac'));
+        const clinical=NutritionUI.inputFields.filter(field=>field!=='muac');
+        const unit=(key,label,values,selected)=>select('csv-'+key,this.t(label),values,selected);
+        const sample=`<div class="table-scroll"><table><caption>${this.t('csvSample')}</caption><thead><tr>${info.headers.map(h=>`<th scope="col">${this.esc(h)}</th>`).join('')}</tr></thead><tbody>${info.sample.map(row=>`<tr>${row.map(v=>`<td>${this.esc(v.length>200?v.slice(0,200)+'…':v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+        const units=unit('weightUnit','csvWeightUnit',[['',this.t('csvChooseUnit')],['g','g'],['kg','kg']],info.weightUnit)+unit('heightUnit','csvHeightUnit',[['cm','cm'],['m','m'],['mm','mm']],'cm')+unit('muacUnit','csvMuacUnit',[['mm','mm'],['cm','cm']],info.muacUnit)+unit('dateFormat','csvDateFormat',[['iso','YYYY-MM-DD'],['dmy','DD/MM/YYYY'],['mdy','MM/DD/YYYY']],'iso')+unit('oedemaCodes','oedema',[['text',this.t('csvOedemaText')],['who12','1 = '+this.t('yes')+' ; 2 = '+this.t('no')],['zeroone','0 = '+this.t('no')+' ; 1 = '+this.t('yes')]],'text');
+        this.dialog('csvMapping',`<p>${this.t('csvMappingHelp')}</p><p>${this.t('growthProfile')} : ${this.t(this.state.batchDraft.growthProfile==='us'?'profileUS':'profileWHO')}</p>${sample}<div class="form-grid">${units}${fields}</div><details${clinical.some(field=>info.mapping[field])?' open':''}><summary>${this.t('clinicalSection')}</summary><div class="form-grid">${mappedFields(clinical)}</div></details><p id="csv-dialog-status" role="alert"></p>`,`<button class="btn primary" data-action="csv-confirm">${this.t('parseCSV')}</button>`);
+        document.getElementById('workspace-dialog').classList.add('csv-mapping-dialog');
+    }
     async readCSVFile(file){
-        if(this.csvBusy||this.csvReading)return;
-        if(file.size>2_000_000){this.toast('csvTooLarge',true);return;}
+        if(this.csvBusy||this.csvReading||this.batchComputing)return;
+        if(file.size>CSVManager.maxBytes){this.toast('csvTooLarge',true);return;}
         const workspace=this.state,epoch=this.renderEpoch;
         this.csvReading=true;this.updateCSVControls();let text;
         try{text=await file.text();}
@@ -788,21 +837,36 @@ class WorkspaceApp {
         if(this.state!==workspace||this.page!=='batch'||this.renderEpoch!==epoch){this.toast('csvCancelled');return;}
         await this.addCSV(text);
     }
-    async addCSV(text){
-        if(this.csvBusy||this.csvReading)return;
+    async addCSV(text,options=null){
+        if(this.csvBusy||this.csvReading||this.batchComputing)return;
         this.readForms();
-        let children;
-        try{children=CSVManager.parse(text,{extended:!!this.engine?.older});if(this.state.batch.length+children.length>500)throw new Error('batchLimit');}
-        catch(error){this.toast(['batchLimit','csvTooLarge'].includes(error.message)?error.message:'csvInvalid',true);return;}
         const workspace=this.state,epoch=this.renderEpoch;
         const current=()=>this.state===workspace&&this.renderEpoch===epoch&&this.page==='batch';
+        try{const info=CSVManager.inspect(text);if(!options&&info.needsMapping){this.csvMappingDialog(text,info);return;}}
+        catch(error){this.toast(error.message==='csvTooLarge'?'csvTooLarge':'csvInvalid',true);return;}
         this.csvBusy=true;this.updateCSVControls();
-        this.state.batch.push(...children.map(child=>({child,result:null})));this.batchPage=Math.floor((this.state.batch.length-1)/8);this.state.paste='';
-        try{await this.saveImmediate('imported');if(current()){this.render('batch-results-title');this.toast('added');}}
+        let children;
+        try{
+            const growthProfile=this.state.batchDraft.growthProfile||'who';
+            children=!options&&text.length<100000?CSVManager.parse(text,{extended:!!this.engine?.older,growthProfile}):await CSVManager.parseAsync(text,{...options,extended:!!this.engine?.older,growthProfile,cancelled:()=>!current(),progress:count=>{const target=document.getElementById('csv-progress');if(target)target.textContent=this.t('csvChecking')+' '+this.number(count,0);}});
+        }catch(error){this.csvBusy=false;this.updateCSVControls();if(current()){this.toast(['csvTooLarge','csvRowsLimit','csvMappingInvalid','csvCancelled'].includes(error.message)?error.message:'csvInvalid',true);const target=globalThis.document?.getElementById('csv-dialog-status')||globalThis.document?.getElementById('csv-progress');if(target&&error.csvLine)target.textContent=this.t('csvErrorLine').replace('{line}',error.csvLine)+' · '+this.t(error.message);}return;}
+        try{
+            if(options)document.getElementById('workspace-dialog')?.close();
+            const entries=children.map(child=>({child,result:null}));
+            if(workspace.batch.length+entries.length<=CSVManager.batchSize){workspace.batch.push(...entries);this.state.paste='';this.batchPage=Math.floor((workspace.batch.length-1)/8);await this.saveImmediate('imported');}
+            else{
+                // One durable transaction: no partially-created series on quota/collision failure.
+                const all=[...workspace.batch,...entries],records=HistoryManager.emptyArchive();let first;
+                for(let start=0;start<all.length;start+=CSVManager.batchSize){const next=HistoryManager.clone({...workspace,batch:all.slice(start,start+CSVManager.batchSize),paste:'',mode:'batch'});if(start)next.single=null;const snapshot=this.history.makeSnapshot(next,'imported');snapshot.name=`CSV ${ClinicalEngine.today()} · ${start+1}–${Math.min(start+CSVManager.batchSize,all.length)}`;HistoryManager.checkWorkspace(next);records.sessions.push(snapshot);if(!first)first=next;}
+                await this.history.storage.addArchive(records);
+                if(current()){this.state=first;this.history.lastSaved=JSON.stringify(first);this.batchPage=0;this.saveState='saved';this.pendingCSV=null;this.csvBusy=false;this.render('batch-results-title');this.toast('csvSplit');return;}
+            }
+            this.pendingCSV=null;if(current()){this.render('batch-results-title');this.toast('added');}
+        }
         catch(error){if(current()){this.render('batch-results-title');this.toast('unsaved',true);}}
         finally{this.csvBusy=false;this.updateCSVControls();}
     }
-    dialog(title,html,buttons='') {const d=document.getElementById('workspace-dialog');d.innerHTML=`<div class="dialog-top"><h2 id="dialog-title">${this.t(title)}</h2><button class="btn" data-action="close-dialog" aria-label="${this.t('close')}">×</button></div><div class="dialog-body" role="region" aria-labelledby="dialog-title" tabindex="0">${html}</div><div class="toolbar">${buttons}<button class="btn" data-action="close-dialog">${this.t('close')}</button></div>`;if(!d.open)d.showModal();}
+    dialog(title,html,buttons='') {const d=document.getElementById('workspace-dialog');d.classList?.toggle('csv-mapping-dialog',title==='csvMapping');d.innerHTML=`<div class="dialog-top"><h2 id="dialog-title">${this.t(title)}</h2><button class="btn" data-action="close-dialog" aria-label="${this.t('close')}">×</button></div><div class="dialog-body" role="region" aria-labelledby="dialog-title" tabindex="0">${html}</div><div class="toolbar">${buttons}<button class="btn" data-action="close-dialog">${this.t('close')}</button></div>`;if(!d.open)d.showModal();}
     async previewSession(row){
         const epoch=this.renderEpoch,request=this.previewRequest=(this.previewRequest||0)+1;let session;
         try{session=await this.history.version(row);}catch(_){if(request===this.previewRequest)this.toast('historyReadFailed',true);return;}
@@ -816,9 +880,9 @@ class WorkspaceApp {
     previewDraft(draft, mode) {
         if (!draft || !HistoryManager.hasWork({[mode === 'batch' ? 'batchDraft' : 'draft']:draft})) return '';
         const ageFields = draft.ageMode === 'dates' ? ['birthDate'] : draft.ageMode === 'days' ? ['ageDays'] : ['ageYears','ageMonths'];
-        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema',...NutritionUI.inputFields];
+        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema','growthProfile',...NutritionUI.inputFields,...SupplementaryUI.fields];
         const labels = { gender:{M:'male',F:'female'}, position:{L:'lying',H:'standing'}, oedema:{n:'no',y:'yes'} };
-        const value = key => key === 'ageMode' ? this.t(draft[key]) : labels[key]?.[draft[key]] ? this.t(labels[key][draft[key]]) : draft[key];
+        const value = key => key === 'growthProfile' ? this.t(draft[key]==='us'?'profileUS':'profileWHO') : key === 'ageMode' ? this.t(draft[key]) : labels[key]?.[draft[key]] ? this.t(labels[key][draft[key]]) : draft[key];
         return `<h3>${this.t('draft')} · ${this.t(mode)}</h3><div class="preview-grid">${fields.filter(k=>draft[k]!==''&&draft[k]!==undefined&&draft[k]!==null).map(k=>`<dl><dt>${this.t(k)}</dt><dd>${this.esc(value(k))}</dd></dl>`).join('')}</div>`;
     }
     async restore(session){
@@ -831,7 +895,7 @@ class WorkspaceApp {
             if(entry.result){entry.result.id='result_'+crypto.randomUUID();entry.result.childId=entry.child.id;}
         }
         if(workspace.single && !Object.keys(workspace.draft||{}).length)workspace.draft={...workspace.single.child};
-        workspace.draft={...this.emptyDraft(),...workspace.draft};workspace.batchDraft={...this.emptyDraft(),...workspace.batchDraft};
+        workspace.draft={...this.emptyDraft('who'),...workspace.draft};workspace.batchDraft={...this.emptyDraft('who'),...workspace.batchDraft};
         if(workspace.single?.child?.visitId && !workspace.draft.visitId)workspace.draft.visitId=workspace.single.child.visitId;
         delete workspace.draft.id;delete workspace.batchDraft.id;
         // Save the restored copy before changing any live fields.
@@ -857,7 +921,7 @@ class WorkspaceApp {
         }catch(error){if(prepared?.format==='stream')this.transfers().release(prepared);if(request!==this.importRequest)return;this.preparedImport=null;this.toast(error instanceof SyntaxError||error instanceof TypeError?'importInvalid':error.message,true);}
         finally{if(request===this.importRequest)this.transferStatus();}
     }
-    chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older].filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(!engines.length)engines=[this.engine.young||this.engine];return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('');}
+    chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older,this.engine.cdc].filter(Boolean).filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(!engines.length)engines=[this.engine.young||this.engine];const additional=entries.filter(e=>e.result?.additionalGrowth);return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('')+(this.engine.additional&&additional.length?GrowthChart.referenceHTML(additional,this.engine.additional,this)+GrowthChart.html(additional,this.engine.additional.data.referenceVersion,this):'');}
     async renderFollowup(){
         const entry=this.state.single,child=entry?.child,epoch=this.renderEpoch;if(!entry?.result)return;
         const {entries,identityConflict}=child.caseId?await this.history.caseVisits(child.caseId,child.gender,child.birthDate):{entries:[entry],identityConflict:false};

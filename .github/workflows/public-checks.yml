@@ -1,0 +1,43 @@
+name: Public checks
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: public-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  public-checks:
+    name: Public checks (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 24]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Public file inclusion
+        run: npm run check:public -- --tracked
+      - name: Public tests (no npm installation)
+        run: npm test
+      - name: Independent numerical comparisons
+        run: npm run verify:public
+      - name: Committed release integrity
+        run: npm run check:release
+      - name: Technical licence and provenance checks
+        run: npm run audit:licenses
+      - name: Rebuild must reproduce the committed files
+        run: |
+          npm run build:release
+          git diff --exit-code
+      - name: Prepare a local package without deployment
+        run: npm run prepare:public

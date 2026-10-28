@@ -52,5 +52,13 @@
   "vendor/pdf/report-provenance.json",
   "js/services/nutrition-assessment.js",
   "js/services/encrypted-backup.js",
-  "js/services/reporting-export.js"
+  "js/services/reporting-export.js",
+  "js/services/supplementary-growth.js",
+  "data/who-additional.json",
+  "data/who-additional-manifest.json",
+  "js/services/growth-profile.js",
+  "js/services/reference-cdc.js",
+  "js/services/cdc-result-validation.js",
+  "data/cdc-growth-manifest.json",
+  "data/cdc-growth.json"
 ]

@@ -1,17 +1,20 @@
 {
   "name": "nutritional-zscore-calculator",
-  "version": "0.1.0",
+  "version": "5.5.0",
   "private": true,
-  "description": "Calcul nutritionnel local : aucune dépendance d’exécution, tests IndexedDB dédiés",
+  "description": "Calcul de croissance OMS local-first FR/EN/AR, sans compte ni dependance reseau du moteur",
   "scripts": {
     "build:release": "node tools/scripts/build-release.cjs",
     "check:release": "node tools/scripts/build-release.cjs --check",
     "prepare:public": "node tools/scripts/prepare-public.cjs",
     "prestart": "node tools/scripts/build-release.cjs --check",
     "start": "node tools/scripts/serve.cjs",
-    "test": "node --test tools/tests/*.test.cjs",
+    "test": "node tools/scripts/test-public.cjs",
     "audit:clinical": "node tools/scripts/clinical-audit.cjs",
-    "audit:licenses": "node tools/scripts/audit-licenses.cjs"
+    "audit:licenses": "node tools/scripts/audit-licenses.cjs",
+    "verify:public": "node tools/verification/verify.cjs",
+    "test:private": "node tools/scripts/test-public.cjs --private",
+    "check:public": "node tools/scripts/check-public-files.cjs"
   },
   "engines": {
     "node": ">=20"
