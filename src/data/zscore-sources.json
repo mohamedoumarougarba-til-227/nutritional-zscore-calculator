@@ -3,8 +3,8 @@
   "version": "5.5.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 7856904,
-  "sha256": "c2e7c880128cd435b1cd582fafed946a487782e691c0aa784d58462715f2f526",
+  "bytes": 7857652,
+  "sha256": "459718defd777b2b7332680fd79d2110af2103907cdf39d1e12e22a9a909e78c",
   "files": [
     {
       "file": ".gitattributes",
@@ -74,17 +74,17 @@
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "4cca7eff09d879cbbd8af56adb64c6efe46ea491fbf6754bd397528db64a7625"
+      "sha256": "d293cf0593ff7af1e039c220ffd2baaf0aeff90366ee424eec04be2a7b050d00"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 11614,
-      "sha256": "9cbb8564490c125d5d02ec74b4ef9896eb613302deb51be3116781ed4f9d2652"
+      "bytes": 11715,
+      "sha256": "925460a98b3f9934cd5845bc4d9f8a067b06ac6bff823769f158bc5c589c72a2"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
-      "bytes": 4747,
-      "sha256": "3cb8beb68e2e68ba5a253e5bb80a17c6d64ac456345b23d70508393d0178feb5"
+      "bytes": 5078,
+      "sha256": "f4ab4c9a6a797cf9c4d4af644cb0c97845b072c963bb32091632aa12ebb24d9d"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
@@ -118,8 +118,8 @@
     },
     {
       "file": "docs/references/CDC.md",
-      "bytes": 9968,
-      "sha256": "17c39b5e3b76a9bb885bf068fe1f0a402832d04f1c294c61dd850bba68cb24b8"
+      "bytes": 9951,
+      "sha256": "95a8e012dcd0d94cf902440f04e290863cefe132f2b328c61f2dbd53b4b9bbe3"
     },
     {
       "file": "docs/references/DISTRIBUTION_GPL.md",
@@ -153,8 +153,8 @@
     },
     {
       "file": "docs/references/METHODE.md",
-      "bytes": 6482,
-      "sha256": "1c547ec31c20aef37caead6aebd26df9745609e6d694fcf52e86f6f225aaab3a"
+      "bytes": 6815,
+      "sha256": "40408724177418b48f813f84e3c08c7cfd97699ec4ae3edd4524704e161db261"
     },
     {
       "file": "docs/references/REFERENCES_NATIONALES.md",

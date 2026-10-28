@@ -49,8 +49,8 @@
     "data/LICENSE-TIL.txt": "b1148b5fbd10dfdd1efd7625fdb0959887b1e302b1f8b9a015b59468a5a77f39",
     "data/who-data-sources.zip": "b1af0334e74603f1825193f2a8d0bd1cffcce285fe0ad422e14541150a760b37",
     "data/who-data-sources.json": "641eb776f3dee5894bb19649c55c79ed38060d1346c61e8e917a65c5bafbd8cc",
-    "data/zscore-sources.zip": "c2e7c880128cd435b1cd582fafed946a487782e691c0aa784d58462715f2f526",
-    "data/zscore-sources.json": "36a7a8eb8b47879a5e3ab5171c34bf617a8f8559898ee95adb968e85234d02f3",
+    "data/zscore-sources.zip": "459718defd777b2b7332680fd79d2110af2103907cdf39d1e12e22a9a909e78c",
+    "data/zscore-sources.json": "5ba7baf7c7c8412a685cde20c05626b1d39d040ac17ab15ad47921d4d627abbb",
     "vendor/pdf/NOTICE-report.txt": "62737eead55cce21047c84826116418612d79ee09ee686d25ae4279ba528b4e0",
     "vendor/pdf/report-provenance.json": "3772c55fc0cea5d50363d27dcad524f3aa0481c7831a514ff43cbed5e67c8652",
     "js/services/nutrition-assessment.js": "cdaeb5dd1b53c02dd9007424ea77ba2c9fb736eb9529a101b9053cbc7a4b5212",
@@ -66,5 +66,5 @@
     "data/cdc-growth.json": "4423bc2e03d8196e1b7115b3f4d0fd1b023d550aed48553336b826b609b8c4fa"
   },
   "workerTemplateSHA256": "7e6d76e432dcb20618d0ce00607945c9abd0a9a8d5dcd1cbd4f164d2380f35c7",
-  "id": "2b4fbda3cda3fba9d02668cb5da3646b5a83b78568ee5cd142fffc264637450e"
+  "id": "e82d979e6d28c40b2625a2cbb47721f0e9c45a6883cc5378cfa18419eca1eb52"
 }

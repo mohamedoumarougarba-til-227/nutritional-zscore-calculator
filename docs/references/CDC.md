@@ -56,7 +56,7 @@ Source : Centers for Disease Control and Prevention (CDC), National Center for H
 
 `growthProfile: 'us'` est explicite dans les nouvelles mesures ; l’absence de ce champ conserve le profil OMS. Le moteur combiné utilise un quatrième argument pour recevoir les tables CDC. Une demande CDC sans ces données est refusée plutôt que calculée avec OMS. Les mesures américaines utilisent `ageDomainVersion: 3` et le résultat conserve `profileContext` version 1, son âge déclaré et sa précision. Le résultat conserve le schéma 4 et la sauvegarde reste le flux version 1 ; les visites OMS sans contexte restent lisibles avec leur domaine d’âge 2.
 
-Le validateur distingue les catégories CDC, le Z modifié, la méthode IMC d’origine/étendue et les centiles. Il contrôle les liens avec l’âge et la position de la mesure et refuse un résultat CDC présenté comme OMS. Ces contrôles arithmétiques ne réexécutent pas les tables sur les visites importées et ne constituent pas une certification du contenu. Six tests publics supplémentaires couvrent la bascule, la précision d’âge, le mélange de références, les altérations et la sauvegarde/chiffrement.
+Le validateur distingue les catégories CDC, le Z modifié, la méthode IMC d’origine/étendue et les centiles. Il contrôle les liens avec l’âge et la position de la mesure et refuse un résultat CDC présenté comme OMS. Ces contrôles arithmétiques ne réexécutent pas les tables sur les visites importées et ne constituent pas une certification du contenu. Les tests publics couvrent la bascule, la précision d’âge, le mélange de références, les altérations et la sauvegarde/chiffrement.
 
 
 ## Réglages, imports, courbes et sorties

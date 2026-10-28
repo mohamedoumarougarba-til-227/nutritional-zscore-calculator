@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.4.0
+# Guide utilisateur — Z-score Niger 5.5.0
 
 ## Profil américain explicite — sources 5.5.0 / moteur 4.3.0
 
@@ -15,7 +15,7 @@ L’application calcule localement, sans compte ni transmission des dossiers. Ut
 
 ## Calcul individuel
 
-Saisir identifiant et pseudonyme facultatifs, âge, date de mesure, poids **en grammes**, longueur/taille **en cm**, sexe, position et œdèmes bilatéraux. Les œdèmes doivent être renseignés explicitement : aucune absence n’est présumée. Les dates connues sont préférables à l’âge estimé. Le mois moyen OMS compte 30,4375 jours. Le calcul sélectionne OMS 2006 avant 60 mois moyens, OMS 2007 de 60 à moins de 229 mois.
+Saisir identifiant et pseudonyme facultatifs, âge, date de mesure, poids **en grammes**, longueur/taille **en cm**, sexe, position et œdèmes bilatéraux. Les œdèmes doivent être renseignés explicitement : aucune absence n’est présumée. Les dates connues sont préférables à l’âge estimé. Le mois moyen OMS compte 30,4375 jours. Avec le profil OMS, le calcul sélectionne OMS 2006 avant 60 mois moyens, OMS 2007 de 60 à moins de 229 mois. Le profil américain suit les règles distinctes décrites en tête de ce guide.
 
 Cliquer **Calculer**. **Sauvegarder** conserve une version explicite ; la sauvegarde automatique protège aussi le travail commencé. L’état à droite du titre distingue prêt, en cours, enregistré et échec. Une mesure changée après calcul rend le résultat à recalculer. Les actions PDF, CSV et impression utilisent les valeurs enregistrées, avec leur référence et date de calcul.
 

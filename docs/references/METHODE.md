@@ -36,7 +36,7 @@ Les œdèmes doivent être renseignés : l’inconnu n’est pas transformé en 
 
 Le PB absolu et l’évaluation clinique sont séparés du PB/âge. Pour les 6 à moins de 60 mois moyens : PB strictement inférieur à 115 mm, puis de 115 à moins de 125 mm, avec combinaison des critères et observations disponibles selon l’aide OMS documentée. Le PB/âge et les autres indicateurs complémentaires affichent seulement une position par rapport à −2/+2 Z ; ils ne modifient pas ces seuils ni la synthèse clinique et ne posent pas de diagnostic.
 
-Les centiles utilisent le score avant arrondi, dans le domaine −3 à +3. `P 12,4` est une position dans la distribution de référence, pas une probabilité de maladie. Les valeurs manquantes, signalées ou issues d’une autre référence ne sont pas reliées artificiellement dans les courbes.
+Les centiles OMS utilisent le score avant arrondi, dans le domaine −3 à +3. Le profil CDC suit ses méthodes LMS/IMC étendu et la fonction normale décrites dans [CDC](CDC.md), avec centile indisponible s’il s’arrondit à 0 ou 100 ; la limite OMS −3/+3 ne lui est pas appliquée. `P 12,4` est une position dans la distribution de référence, pas une probabilité de maladie. Les valeurs manquantes, signalées ou issues d’une autre référence ne sont pas reliées artificiellement dans les courbes.
 
 Les résultats enregistrés conservent leur référence et version ; leur lecture, impression et export ne les recalculent pas. Les agrégats décrivent des fiches de mesure et non automatiquement des enfants uniques ou une population représentative. Voir [DHIS2 préparatoire](INTEROPERABILITE.md).
 
@@ -44,4 +44,4 @@ Les résultats enregistrés conservent leur référence et version ; leur lectur
 
 `npm test` couvre un socle public synthétique ; `npm run verify:public` compare les sorties numériques à des attentes conservées séparément. Les cas complémentaires utilisent une évaluation Python Decimal indépendante des tables TSV, explicitement distincte d’une exécution du paquet R OMS. La suite privée, la relecture métier et les essais physiques ont des portées différentes. Aucune certification OMS, gouvernementale ou clinique n’est revendiquée.
 
-Les références CDC et spécialisées recherchées restent décrites dans [le relevé](REFERENTIELS_COMPLEMENTAIRES.md) ; leur disponibilité documentaire n’implique pas leur activation. Les décisions de soins, l’orientation locale et les traitements relèvent du professionnel et du protocole applicable.
+Le [profil américain OMS/CDC](CDC.md) est raccordé explicitement aux sources 5.5.0. Les autres références spécialisées restent décrites dans [le relevé](REFERENTIELS_COMPLEMENTAIRES.md) et [INTERGROWTH](INTERGROWTH.md) ; leur préparation documentaire ou numérique n’implique pas leur activation. Les décisions de soins, l’orientation locale et les traitements relèvent du professionnel et du protocole applicable.
