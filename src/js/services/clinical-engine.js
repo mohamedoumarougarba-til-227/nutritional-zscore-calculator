@@ -6,7 +6,7 @@ class ClinicalEngine {
     static version = '4.1.0';
     static indicators = ['weightForAge', 'heightForAge', 'weightForHeight', 'bmiForAge'];
     static resultIndicators(result) { return this.indicators.slice(); }
-    static applicable(family,age) { return family==='WHO2006'?this.indicators.slice():family==='CDC2000'||age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
+    static applicable(family,age) { if(family==='INTERGROWTH2015')return ['weightForAge','heightForAge'];return family==='WHO2006'?this.indicators.slice():family==='CDC2000'||age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
     constructor(data) {
         if (data?.schemaVersion !== 1 || !data.referenceVersion) throw new Error('referenceInvalid');
         for (const key of ['weightForAge', 'heightForAge', 'weightForLength', 'weightForHeight', 'bmiForAge']) {
@@ -48,6 +48,7 @@ class ClinicalEngine {
     }
 
     static normalize(raw, { forArchive = false, extended = false } = {}) {
+        if(raw?.growthProfile==='intergrowth'){const adapter=typeof module!=='undefined'&&module.exports?require('./intergrowth-result.js').IntergrowthResult:IntergrowthResult;return adapter.normalize(raw);}
         const profile=ProfileCore.read(raw),maximumMonths=extended?(profile==='us'?240:229):60;
         const ageMode = raw.ageMode || 'months';
         if (raw.measurementDate !== undefined && raw.measurementDate !== '') {

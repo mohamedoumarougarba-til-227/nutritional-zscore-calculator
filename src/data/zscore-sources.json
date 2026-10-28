@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.5.0",
+  "version": "5.6.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 7857652,
-  "sha256": "459718defd777b2b7332680fd79d2110af2103907cdf39d1e12e22a9a909e78c",
+  "bytes": 7905531,
+  "sha256": "27a1fc51cd2e45320a9f62f9cd3eaba1eb456df41c6747fd7254b17e990c7a70",
   "files": [
     {
       "file": ".gitattributes",
@@ -33,8 +33,8 @@
     },
     {
       "file": ".gitignore",
-      "bytes": 9134,
-      "sha256": "a8d64f515a7f774f459a0d1f3c660c05ac065ad94e00904c369e3d809ba3bf24"
+      "bytes": 9377,
+      "sha256": "435432b4cccd531b8e992c6c2812511b054472cdb6ce27b0d5595ecb2c300939"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -48,13 +48,13 @@
     },
     {
       "file": "NOTICE.md",
-      "bytes": 3431,
-      "sha256": "4e86dd8fe6f8ab2838df33dfe1c866a7a997cbd37b35bdffdc68878dbc2b0202"
+      "bytes": 3489,
+      "sha256": "43cb4cfa8276d48044e6c5d3ef0e70bd1c277bdfaf5b0ef05f7252629bfcb4fd"
     },
     {
       "file": "README.md",
-      "bytes": 9094,
-      "sha256": "67b0736fb12c85e48fe17eaf00cd3f4343ff2ab415ca851bf41f611458e9f868"
+      "bytes": 9282,
+      "sha256": "ea4eb5bbca0720595be087fc3dd2a006d94b86f0c0510e40dfcde3e80d706ecc"
     },
     {
       "file": "SECURITY.md",
@@ -68,23 +68,23 @@
     },
     {
       "file": "docs/README.md",
-      "bytes": 2770,
-      "sha256": "82ad3316b8147cdf82e35232b88a2189d2eba241b30f8cf6a39605204bd2b03b"
+      "bytes": 2749,
+      "sha256": "75a69e8d358db8c1fe607dbf5ecadcf8fd0f8d357b76179c93d24506e602e31b"
     },
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "d293cf0593ff7af1e039c220ffd2baaf0aeff90366ee424eec04be2a7b050d00"
+      "sha256": "77a4609566bf0be7b9a34296f34329d86f2b5c58e0acdba6c28d903551f5becf"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 11715,
-      "sha256": "925460a98b3f9934cd5845bc4d9f8a067b06ac6bff823769f158bc5c589c72a2"
+      "bytes": 12513,
+      "sha256": "62f6175b659961a121a36ed051e145eed0f528459825dd3750b7c85e3e13d03f"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
-      "bytes": 5078,
-      "sha256": "f4ab4c9a6a797cf9c4d4af644cb0c97845b072c963bb32091632aa12ebb24d9d"
+      "bytes": 5195,
+      "sha256": "0eed3802ab38022e23af2eed932ee9376efbc5c7ee1b850591dbc457d6a38ac8"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
@@ -93,8 +93,8 @@
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
-      "bytes": 28850,
-      "sha256": "9817d2d2645e31f1fed454857d7a16c985f07d5b638c49c88d854871922b9b26"
+      "bytes": 29509,
+      "sha256": "f816439f87e1bb195fb8dec1bad8047049165a556ebf4945d45f51b02c888b4f"
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
@@ -138,13 +138,13 @@
     },
     {
       "file": "docs/references/FORMAT_SAUVEGARDE.md",
-      "bytes": 4152,
-      "sha256": "1d1d23c8d221c06b993ed211f5100300118119bf97ee6c736e21dd43c1dffbf9"
+      "bytes": 4476,
+      "sha256": "fdf92bc3a30e25c93b838a6de83eafad00af6ce666373fa70eb83ba7c8fe3d50"
     },
     {
       "file": "docs/references/INTERGROWTH.md",
-      "bytes": 9552,
-      "sha256": "01309119da7febe5cf73ada08a0b5fb4c7e33cb448065b0716a30c26f11dbab9"
+      "bytes": 6845,
+      "sha256": "0ac9ef212217b18687ef911a9d464e982be84cd965ac02bf5e1cab743dd540a7"
     },
     {
       "file": "docs/references/INTEROPERABILITE.md",
@@ -153,8 +153,8 @@
     },
     {
       "file": "docs/references/METHODE.md",
-      "bytes": 6815,
-      "sha256": "40408724177418b48f813f84e3c08c7cfd97699ec4ae3edd4524704e161db261"
+      "bytes": 6879,
+      "sha256": "482415421e2ef3621a1def442d45522fe4a118cbc34b65ac3089a2bb574217f1"
     },
     {
       "file": "docs/references/REFERENCES_NATIONALES.md",
@@ -163,18 +163,18 @@
     },
     {
       "file": "docs/references/REFERENTIELS_COMPLEMENTAIRES.md",
-      "bytes": 6303,
-      "sha256": "ef5d5b9a44894a0e0b67542879f84e393403a8a7e28df8f196ed25c89653e535"
+      "bytes": 6624,
+      "sha256": "c43c364e7c8effb823f9e97c7edcf7c55ac9829193b066d6ff89f8cc3c721f85"
     },
     {
       "file": "package-lock.json",
       "bytes": 720,
-      "sha256": "9c9ff86498815f57cd3faaa63f6f8cbf298f81caec14675f8cfed24d41ceaf49"
+      "sha256": "a9e52bb48ca33903b9c45583a4b158be66ba7f2761aba7197078285356b9df39"
     },
     {
       "file": "package.json",
       "bytes": 983,
-      "sha256": "bda2b39c4379befd8d5ca8a7989641ead9b3712cba987c9ef98558e0f885de4a"
+      "sha256": "a25ef2f37e3e5be9ae836411ec88d1689cc79cdf97d2ba1684cc6382706a42d4"
     },
     {
       "file": "src/assets/icons/icon-128.png",
@@ -253,8 +253,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 146872,
-      "sha256": "5dd0859a3f9c5ba561d4cff572dfcddb73fbab668f4eb9e2692bbdb84097d9f8"
+      "bytes": 158082,
+      "sha256": "1f55dd98c649a251b94668aa34c54a303d7941c050726c7b0b41b132384d0341"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -288,18 +288,18 @@
     },
     {
       "file": "src/index.html",
-      "bytes": 3622,
-      "sha256": "e5a595a22f3c3d0a39f17b2619c1d4b1e65948c2f323a80100b9be1ec13e8cc6"
+      "bytes": 3882,
+      "sha256": "3eddb95591a3113af5adbb07349a1bb6cfebb340bd62bf62238b9225c0e8c1a1"
     },
     {
       "file": "src/js/components/growth-chart.js",
-      "bytes": 17591,
-      "sha256": "f46f300196453b9f7d13854025741d8f379610f1bbf6d042fd13582fd91eecb6"
+      "bytes": 20136,
+      "sha256": "976d8210cefa043e0236ac3e3cc1c7db460c5d6dd18d74b2bf588b5a17ad23cd"
     },
     {
       "file": "src/js/components/lot-analysis.js",
-      "bytes": 9476,
-      "sha256": "d0f9d6b146d5f4f6f857f425ace77ea4785a0f8e3222b11cec09da1e4b6a9792"
+      "bytes": 10326,
+      "sha256": "e2f4bb7a075d4a6a45d3a83b5748444e8442e0e68897c91f8d8c5b7b358c8077"
     },
     {
       "file": "src/js/services/cdc-result-validation.js",
@@ -308,13 +308,13 @@
     },
     {
       "file": "src/js/services/clinical-engine.js",
-      "bytes": 13289,
-      "sha256": "711099fda2368144769c6e27838ef8534bffce422c09291608469acb406a4800"
+      "bytes": 13566,
+      "sha256": "95d324a672a73e0d769a9b9aa99a6fbc266852a5dfdecd6f5304b1366c12708d"
     },
     {
       "file": "src/js/services/csv-manager.js",
-      "bytes": 12031,
-      "sha256": "0dea4c6bafb764c1317f4afb902c96f614bd6e3651b0b1ce54541846fe91a207"
+      "bytes": 13264,
+      "sha256": "312a6466d6d1d54257a2f63a52a9108c6b48fd32375b948dcd946e0f24749e5f"
     },
     {
       "file": "src/js/services/encrypted-backup.js",
@@ -323,28 +323,38 @@
     },
     {
       "file": "src/js/services/growth-engine.js",
-      "bytes": 4922,
-      "sha256": "198621dedac777b75ad69f60c42a58adcc0709628bb08b9a676bd2f48d9d57e7"
+      "bytes": 5151,
+      "sha256": "39b077b2b5e85f18414b6632ac50256830574b6ed4e32571bba438e910693f37"
     },
     {
       "file": "src/js/services/growth-profile.js",
-      "bytes": 1873,
-      "sha256": "febcc6d3c8c15b06ccc172a28296bfacd73f2cc7d8ebaddafd8e6f17d13d2173"
+      "bytes": 2678,
+      "sha256": "f57e9888e0c24c70889feaea5b05803dc81b43270e240528bbbdec4f9e42d313"
     },
     {
       "file": "src/js/services/history-manager.js",
-      "bytes": 19299,
-      "sha256": "0460fcd59c79fa18d18ff06e27c1abb339eed0de1ba52bb9e7d35a767206ebcb"
+      "bytes": 19803,
+      "sha256": "9c332a13949abd2d18eaa86086aeb51796b67bc840361bd400aa7aaedb596bda"
+    },
+    {
+      "file": "src/js/services/intergrowth-result.js",
+      "bytes": 6497,
+      "sha256": "3210fcd480b2cf297f4b750169e9e883962131f976f9097e19ebb762666b29d9"
+    },
+    {
+      "file": "src/js/services/intergrowth-visit.js",
+      "bytes": 11346,
+      "sha256": "00e4761b607ac628cc96e191732a95866ccd95496fefe4ecfc9a251ea342dae8"
     },
     {
       "file": "src/js/services/nutrition-assessment.js",
-      "bytes": 4951,
-      "sha256": "cdaeb5dd1b53c02dd9007424ea77ba2c9fb736eb9529a101b9053cbc7a4b5212"
+      "bytes": 5428,
+      "sha256": "6bee38d6e67f2d0c67cc1ca4c066e8db7e48f8093c5919008c6eb5ce02b81568"
     },
     {
       "file": "src/js/services/pdf-manager.js",
-      "bytes": 19062,
-      "sha256": "eba26b463c819d579af8c734bd71412b827b139cc5c8fa7417d4b41f68d7a447"
+      "bytes": 20118,
+      "sha256": "820efa8623089921f3f3df94121a8bba26526c3a18598e96b3f91822cd0e7535"
     },
     {
       "file": "src/js/services/reference-2007.js",
@@ -357,9 +367,14 @@
       "sha256": "06aa91ca511de2d1ef277b793580c16cbf10ec106cf8a1784d3f4e6a46167657"
     },
     {
+      "file": "src/js/services/reference-intergrowth.js",
+      "bytes": 2674,
+      "sha256": "a4be3bcf57afb60c8fec905cde0ca5b32f424dad930de2543fbc69b6cad7604b"
+    },
+    {
       "file": "src/js/services/reporting-export.js",
-      "bytes": 4542,
-      "sha256": "564c46dd475f120000385e9485f60cee12df4ecaac15a3b85e63dc239ac496f2"
+      "bytes": 4575,
+      "sha256": "cd883354e58a9b062bf2245c2c01fe79889996105742a5de557246b58eae6344"
     },
     {
       "file": "src/js/services/storage-manager.js",
@@ -378,8 +393,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 122001,
-      "sha256": "c3c2842de37379dad4be0a8e9e3f2255decf5b8cec728a3cd4384a4dc04ceefe"
+      "bytes": 126371,
+      "sha256": "6bb914b1a609e0f86866afaf19a6733bf16ea6b8c325bf17f30b38f2949649ed"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -448,8 +463,8 @@
     },
     {
       "file": "tools/git-sync-allowlist.json",
-      "bytes": 8496,
-      "sha256": "1f19cedfce7703952b46ebd533b147efadb9b6ee77a2f3f626e3eff7a2dc715c"
+      "bytes": 8688,
+      "sha256": "db8c38002ac35f27012925c03d70c81babd197d96e42f03b8faafc28efa1af49"
     },
     {
       "file": "tools/public-tests/cdc.test.cjs",
@@ -457,14 +472,19 @@
       "sha256": "396a7ef84145ca6cee28b0cd9917aeaad8df49d3c2b450ce322f95835250bddd"
     },
     {
+      "file": "tools/public-tests/intergrowth-routing.test.cjs",
+      "bytes": 15103,
+      "sha256": "00e6df1b322e9cd070fd888a4df03a63451d92b2cde1de8008ed16cd6ff0576d"
+    },
+    {
       "file": "tools/public-tests/intergrowth-visit.test.cjs",
-      "bytes": 9264,
-      "sha256": "813dcdebbecf8b34c8fd4cfe00554c4fc2acfa62c6eae5d98d30c7a2c41b5404"
+      "bytes": 9445,
+      "sha256": "19e98aea36d93a64889456a2609adb4e3137c0bb1a03f4df7b77a0c4264eabed"
     },
     {
       "file": "tools/public-tests/intergrowth.test.cjs",
-      "bytes": 4699,
-      "sha256": "b792d56f5b3bd6ea096b66352941ad20e40148021ec8f36af13064038ce76e2f"
+      "bytes": 4804,
+      "sha256": "2cee4cfcc4368fcc55f6e4fae4242ba2b94a91f69b743a29feb1c25d8d70f402"
     },
     {
       "file": "tools/public-tests/profiles.test.cjs",
@@ -518,8 +538,8 @@
     },
     {
       "file": "tools/reference/intergrowth/postnatal.cjs",
-      "bytes": 2574,
-      "sha256": "4d0db3685efe5310c20a821d3f6942cdd051cc39005fe8f752c166f9c5ee26a5"
+      "bytes": 93,
+      "sha256": "6d03f9220834d6465a5461814fa74341ebf31db5d757446787264e9c37878c9a"
     },
     {
       "file": "tools/reference/intergrowth/provenance.json",
@@ -528,8 +548,8 @@
     },
     {
       "file": "tools/reference/intergrowth/visit.cjs",
-      "bytes": 10466,
-      "sha256": "58b1d4af3e31e91cedcaafd57d49f4b7e7c99a877ccb0b893b45f099d888900a"
+      "bytes": 89,
+      "sha256": "c7acdf855645c98d3eed2f5477901c581cb8030fd690261130143bc3d7021919"
     },
     {
       "file": "tools/reference/pdf-report/color.js",
@@ -753,8 +773,8 @@
     },
     {
       "file": "tools/scripts/audit-licenses.cjs",
-      "bytes": 11105,
-      "sha256": "36b822c2d2b5156e7f432d7b03fc43621694ab4fa1993282c1e41a71a679c8cb"
+      "bytes": 11108,
+      "sha256": "9f184cdb6cbb1afc904bef70cfefeb338341937ddab6463b4e3c8e8ab96d852f"
     },
     {
       "file": "tools/scripts/build-additional-verification.py",
@@ -838,8 +858,8 @@
     },
     {
       "file": "tools/scripts/offline-assets.json",
-      "bytes": 1957,
-      "sha256": "8616c1e8e6d6c7ac7dbae2545c561c4d0a9702e1b28bb5c2830e3cc724a67507"
+      "bytes": 2076,
+      "sha256": "29fe4f7118a7b8d73df8322f37317cad031d5248888f26e4616d3d85a51ea184"
     },
     {
       "file": "tools/scripts/prepare-public.cjs",

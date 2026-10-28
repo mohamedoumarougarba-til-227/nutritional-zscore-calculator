@@ -24,7 +24,8 @@ class NutritionAssessment {
         return values;
     }
     static assess(child, result) {
-        const age=child.totalAgeMonths, eligible=age>=6&&age<60;
+        const age=child.totalAgeMonths, eligible=child.growthProfile!=='intergrowth'&&age>=6&&age<60;
+        if(child.growthProfile==='intergrowth')return {version:this.version,reference:'INTERGROWTH2015-postnatal-context',muacMm:typeof child.muac==='number'?child.muac:null,muac:'muacAgeUnsupported',category:'intergrowthNoScreening',orientation:this.dangerFields.some(key=>child[key]==='y')?'orientationUrgent':'intergrowthClinicalReview',criteria:[],reasons:this.dangerFields.some(key=>child[key]==='y')?['dangerPresent']:[],missing:[]};
         const pb=typeof child.muac==='number'?child.muac:null;
         const muac=pb===null?'muacMissing':!eligible?'muacAgeUnsupported':pb<115?'muacSevere':pb<125?'muacModerate':'muacNotLow';
         const wh=result?.weightForHeight;

@@ -28,7 +28,7 @@ class ReportingExport {
         for(const {child:c,result:r}of entries){
             if(this.measurementPeriod(c?.measurementDate)!==period){excluded++;continue;}
             counts.rows++;
-            const eligible=Number.isFinite(c.totalAgeMonths)&&c.totalAgeMonths>=6&&c.totalAgeMonths<60;
+            const eligible=c.growthProfile!=='intergrowth'&&Number.isFinite(c.totalAgeMonths)&&c.totalAgeMonths>=6&&c.totalAgeMonths<60;
             if(eligible)counts.eligible6to59++;
             const n=r?.nutrition;
             if(n?.version!==1){unassessed++;if(eligible){counts.nutritionIncomplete++;if(c.muac===undefined||c.muac==='')counts.muacMissing++;}continue;}

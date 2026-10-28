@@ -6,7 +6,9 @@ Application web gratuite et sans compte pour calculer les indicateurs de croissa
 
 *Offline-first WHO / CDC growth Z-score calculator — local records, FR/EN/AR, no account.*
 
-Version des sources de l’interface : **5.5.0** ; moteur combiné : **4.3.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
+Version des sources de l’interface : **5.6.0** ; moteur combiné : **4.4.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
+
+Un [profil INTERGROWTH postnatal](docs/references/INTERGROWTH.md) explicite ajoute poids, longueur couchée et périmètre crânien selon le PMA exact 27–64 semaines, sans catégories cliniques OMS transposées.
 
 Le calcul, les sauvegardes, les courbes et les résumés de lots restent locaux ; aucun serveur de dossiers patients n’est configuré. Un seul format de sauvegarde complète est pris en charge : `.zscore`, avec protection facultative `.zscore.enc`. L’application comprend PB et aide à l’orientation OMS 6–59 mois, observations cliniques explicites et export agrégé préparatoire DHIS2 sans envoi automatique. Les recommandations proposées restent distinctes des décisions et prescriptions du soignant.
 
@@ -36,7 +38,7 @@ Les bibliothèques PDF et polices nécessaires hors ligne sont intégrées à sr
 - tools/scripts/ : outils de construction et de vérification.
 - tools/reference/who/ : provenance et cinq tables OMS brutes nécessaires à la construction.
 - tools/reference/who2007/ : provenance, licence et trois tables OMS 2007 pour les plus grands.
-- tools/reference/intergrowth/ : équations postnatales, code GPL épinglé et [limites de la préparation](docs/references/INTERGROWTH.md), sans activation dans l’application.
+- tools/reference/intergrowth/ : équations postnatales, code GPL épinglé et [profil postnatal explicite et limites](docs/references/INTERGROWTH.md).
 - tools/tests/ : tests locaux, exclus de Git à la demande du propriétaire.
 - tools/public-tests/ : socle public synthétique, autonome et redistribuable.
 - tools/verification/ : comparaisons numériques publiques avec provenance.

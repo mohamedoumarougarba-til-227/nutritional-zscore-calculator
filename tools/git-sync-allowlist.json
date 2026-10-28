@@ -193,6 +193,10 @@
     "docs/references/INTERGROWTH.md",
     "tools/reference/intergrowth/visit.cjs",
     "tools/public-tests/intergrowth-visit.test.cjs",
-    "tools/public-tests/reporting.test.cjs"
+    "tools/public-tests/reporting.test.cjs",
+    "src/js/services/reference-intergrowth.js",
+    "src/js/services/intergrowth-visit.js",
+    "src/js/services/intergrowth-result.js",
+    "tools/public-tests/intergrowth-routing.test.cjs"
   ]
 }

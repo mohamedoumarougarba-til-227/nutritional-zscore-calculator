@@ -1,4 +1,5 @@
 /** Historical plots of stored Z-scores. No recalculation, interpolation or patient transmission. */
+const IntergrowthChart=typeof module!=='undefined'&&module.exports?require('../services/reference-intergrowth.js').IntergrowthPostnatal:IntergrowthPostnatal;
 const SupplementaryChart=typeof module!=='undefined'&&module.exports?require('../services/supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
 class GrowthChart {
     static indicator(result,key){return SupplementaryChart.definitions[key]?result?.additionalGrowth?.indicators?.[key]:result?.[key];}
@@ -11,6 +12,7 @@ class GrowthChart {
         return Number.isFinite(value)&&value>0?value:null;
     }
     static referenceModel(entries, engine) {
+        if(engine?.data?.referenceVersion===IntergrowthChart.reference)return this.intergrowthReferenceModel(entries);
         if(engine?.data?.referenceVersion?.startsWith('CDC-'))return this.cdcReferenceModel(entries,engine);
         const sexes=new Set(entries.map(e=>e.child?.gender));
         if(sexes.size!==1 || !['M','F'].includes([...sexes][0]) || !engine?.data?.tables) return null;
@@ -43,6 +45,23 @@ class GrowthChart {
             return {key,curves,points,omitted:entries.length-points.length,min:Math.max(0,low-pad),max:high+pad,xMin:older?60*month:0,xMax:older?upper*month:60*month,older};
         });
         return {sex,reference,total:entries.length,panels:panels.filter(p=>!older||p.key!=='weightForAge'||entries.some(e=>e.result?.referenceVersion===reference&&e.result.ageInMonths<121)),older};
+    }
+    static intergrowthReferenceModel(entries) {
+        const sexes=new Set(entries.map(e=>e.child?.gender));if(sexes.size!==1||!['M','F'].includes([...sexes][0]))return null;
+        const sex=[...sexes][0],reference=IntergrowthChart.reference;
+        const panels=['weightForAge','heightForAge','headCircumferenceForAge'].map(key=>{
+            const coreKey=key==='heightForAge'?'lengthForAge':key;
+            const curves=[-3,-2,0,2,3].map(z=>({z,segments:[Array.from({length:260},(_,i)=>({day:189+i,value:IntergrowthChart.measurement(coreKey,sex,189+i,z)})).filter(p=>Number.isFinite(p.value)&&p.value>0)]}));
+            const points=entries.flatMap((entry,index)=>{
+                const r=entry.result,v=this.indicator(r,key),a=r?.intergrowthContext?.age;
+                if(r?.referenceFamily!=='INTERGROWTH2015'||r.referenceVersion!==reference||v?.reference!==reference||!Number.isFinite(v.zscore)||v.error||!Number.isInteger(a?.postmenstrualDays)||a.postmenstrualDays<189||a.postmenstrualDays>448||!Number.isFinite(v.measure)||v.measure<=0)return [];
+                return [{index,day:a.postmenstrualDays,date:entry.child.measurementDate,value:v.measure,estimated:false,imported:!!r.imported}];
+            });
+            const values=[...curves.flatMap(c=>c.segments.flatMap(s=>s.map(p=>p.value))),...points.map(p=>p.value)];
+            const {low,high}=values.reduce((r,v)=>({low:Math.min(r.low,v),high:Math.max(r.high,v)}),{low:Infinity,high:-Infinity}),pad=Math.max((high-low)*.08,.5);
+            return {key,curves,points,omitted:entries.length-points.length,min:Math.max(0,low-pad),max:high+pad,xMin:189,xMax:448,ig:true};
+        });
+        return {sex,reference,total:entries.length,panels,ig:true};
     }
     static cdcReferenceModel(entries,engine) {
         const sexes=new Set(entries.map(e=>e.child?.gender));
@@ -84,17 +103,17 @@ class GrowthChart {
                 const value=panel.min+(panel.max-panel.min)*i/4,y=xy({day:0,value},panel).y;
                 return `<line x1="48" y1="${y}" x2="366" y2="${y}" class="chart-grid"/><text x="42" y="${y+5}" text-anchor="end" class="chart-label">${e(n(value))}</text>`;
             }).join('');
-            const ticks=(panel.cdc?[24,72,120,168,216,240]:panel.older?(panel.key==='weightForAge'?[60,72,84,96,108,120]:[60,96,132,168,204,228]):[0,12,24,36,48,60]).map(month=>`<text x="${xy({day:month*30.4375,value:panel.min},panel).x}" y="224" text-anchor="middle" class="chart-label">${e(n(panel.older?month/12:month,0))}</text>`).join('');
+            const ticks=panel.ig?[27,32,40,48,56,64].map(week=>`<text x="${xy({day:week*7,value:panel.min},panel).x}" y="224" text-anchor="middle" class="chart-label">${e(n(week,0))}</text>`).join(''):(panel.cdc?[24,72,120,168,216,240]:panel.older?(panel.key==='weightForAge'?[60,72,84,96,108,120]:[60,96,132,168,204,228]):[0,12,24,36,48,60]).map(month=>`<text x="${xy({day:month*30.4375,value:panel.min},panel).x}" y="224" text-anchor="middle" class="chart-label">${e(n(panel.older?month/12:month,0))}</text>`).join('');
             const paths=panel.curves.map(curve=>curve.segments.map(segment=>`<polyline class="reference-line reference-z${Math.abs(curve.z)}" points="${segment.map(p=>{const c=xy(p,panel);return c.x.toFixed(2)+','+c.y.toFixed(2);}).join(' ')}"/>`).join('')).join('')+this.referenceLabels(panel).map(label=>`<line x1="366" y1="${label.actual}" x2="372" y2="${label.y}" class="chart-grid"/><text x="376" y="${label.y+5}" class="chart-label">${label.z>0?'+':''}${label.z}</text>`).join('');
             const points=panel.points.map(p=>{
                 const c=xy(p,panel),label=e(ui.calendarDate(p.date)+' · '+n(p.value,2)+' '+unit+(p.estimated?' · '+t('referenceEstimated'):'')+(p.imported?' · '+t('importedResult'):'')),attrs=`class="reference-point ${p.imported?'reference-imported':''}"`;
                 return p.estimated?`<rect x="${c.x-4}" y="${c.y-4}" width="8" height="8" ${attrs}><title>${label}</title></rect>`:`<circle cx="${c.x}" cy="${c.y}" r="4.5" ${attrs}><title>${label}</title></circle>`;
             }).join('');
-            return `<details class="chart-tile" open><summary>${e(title)}</summary><figure class="growth-chart reference-chart"><figcaption class="sr-only">${e(title)}</figcaption><p class="hint">${e(summary)}</p><svg viewBox="0 0 420 258" role="img" aria-label="${e(title+' · '+summary)}">${grid}${ticks}${paths}${points}<text x="207" y="249" text-anchor="middle" class="chart-label">${e(t(panel.older?'referenceAgeAxisYears':'referenceAgeAxis'))}</text></svg></figure></details>`;
+            return `<details class="chart-tile" open><summary>${e(title)}</summary><figure class="growth-chart reference-chart"><figcaption class="sr-only">${e(title)}</figcaption><p class="hint">${e(summary)}</p><svg viewBox="0 0 420 258" role="img" aria-label="${e(title+' · '+summary)}">${grid}${ticks}${paths}${points}<text x="207" y="249" text-anchor="middle" class="chart-label">${e(t(panel.ig?'intergrowthPmaWeeks':panel.older?'referenceAgeAxisYears':'referenceAgeAxis'))}</text></svg></figure></details>`;
         }).join('');
         const pointIndexes=model.panels.map(panel=>new Map(panel.points.map(p=>[p.index,p])));
-        const table=`<div class="table-scroll"><table><caption class="sr-only">${e(t('referenceMeasurements'))}</caption><thead><tr><th scope="col">${e(t('measurementDate'))}</th><th scope="col">${e(t('days'))}</th>${model.panels.map(p=>`<th scope="col">${e(t(p.key)+' · '+units[p.key])}</th>`).join('')}</tr></thead><tbody>${entries.map((entry,index)=>`<tr><th scope="row">${e(ui.calendarDate(entry.child?.measurementDate))}</th><td>${Number.isInteger(entry.child?.ageDays)?e(n(entry.child.ageDays,0)):'—'}</td>${pointIndexes.map(points=>{const point=points.get(index);return `<td>${point?e(n(point.value,2)):'— '+e(t('referenceOmitted'))}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
-        return `<details class="growth-charts reference-charts"><summary>${e(t(model.cdc?'cdcChartTitle':model.reference.startsWith('WHO-child-additional-')?'additionalChartTitle':model.older?'referenceChartTitleOlder':'referenceChartTitle'))}</summary><p class="hint">${e(t(model.cdc?'cdcChartHelp':model.reference.startsWith('WHO-child-additional-')?'additionalResultHelp':model.older?'referenceChartHelpOlder':'referenceChartHelp'))}</p><div class="chart-panels">${panels}</div><details><summary>${e(t('referenceMeasurements'))}</summary>${table}</details></details>`;
+        const table=`<div class="table-scroll"><table><caption class="sr-only">${e(t('referenceMeasurements'))}</caption><thead><tr><th scope="col">${e(t('measurementDate'))}</th><th scope="col">${e(t(model.ig?'postmenstrualDays':'days'))}</th>${model.panels.map(p=>`<th scope="col">${e(t(p.key)+' · '+units[p.key])}</th>`).join('')}</tr></thead><tbody>${entries.map((entry,index)=>`<tr><th scope="row">${e(ui.calendarDate(entry.child?.measurementDate))}</th><td>${Number.isInteger(model.ig?entry.result?.intergrowthContext?.age.postmenstrualDays:entry.child?.ageDays)?e(n(model.ig?entry.result.intergrowthContext.age.postmenstrualDays:entry.child.ageDays,0)):'—'}</td>${pointIndexes.map(points=>{const point=points.get(index);return `<td>${point?e(n(point.value,2)):'— '+e(t('referenceOmitted'))}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
+        return `<details class="growth-charts reference-charts"><summary>${e(t(model.ig?'intergrowthChartTitle':model.cdc?'cdcChartTitle':model.reference.startsWith('WHO-child-additional-')?'additionalChartTitle':model.older?'referenceChartTitleOlder':'referenceChartTitle'))}</summary><p class="hint">${e(t(model.ig?'intergrowthDescriptive':model.cdc?'cdcChartHelp':model.reference.startsWith('WHO-child-additional-')?'additionalResultHelp':model.older?'referenceChartHelpOlder':'referenceChartHelp'))}</p><div class="chart-panels">${panels}</div><details><summary>${e(t('referenceMeasurements'))}</summary>${table}</details></details>`;
     }
     static build(entries, referenceVersion) {
         const dated = entries.map(entry => {
@@ -103,7 +122,7 @@ class GrowthChart {
             return {entry,day};
         });
         const additional=referenceVersion.startsWith('WHO-child-additional-');
-        const keys = additional?Object.keys(SupplementaryChart.definitions).filter(k=>entries.some(e=>this.indicator(e.result,k))):referenceVersion.startsWith('CDC-')?['weightForAge','heightForAge','bmiForAge']:['weightForAge','heightForAge','weightForHeight',...(entries.some(e=>e.result?.schemaVersion===4)?['bmiForAge']:[])].filter(key=>entries.some(e=>e.result?.schemaVersion!==4||e.result.applicableIndicators.includes(key)));
+        const keys = referenceVersion===IntergrowthChart.reference?['weightForAge','heightForAge','headCircumferenceForAge']:additional?Object.keys(SupplementaryChart.definitions).filter(k=>entries.some(e=>this.indicator(e.result,k))):referenceVersion.startsWith('CDC-')?['weightForAge','heightForAge','bmiForAge']:['weightForAge','heightForAge','weightForHeight',...(entries.some(e=>e.result?.schemaVersion===4)?['bmiForAge']:[])].filter(key=>entries.some(e=>e.result?.schemaVersion!==4||e.result.applicableIndicators.includes(key)));
         const panels = keys.map(key => {
             const points = dated.filter(({entry,day}) => {
                 const r = entry.result, v = this.indicator(r,key);

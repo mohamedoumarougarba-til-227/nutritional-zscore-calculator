@@ -4,7 +4,7 @@ class CSVManager {
     static maxBytes = 50 * 1024 * 1024;
     static maxRows = 50000;
     static batchSize = 5000;
-    static fields = ['name', 'caseId', 'ageYears', 'ageMonths', 'ageDays', 'ageMode', 'birthDate', 'measurementDate', 'weight', 'height', 'gender', 'position', 'oedema', 'growthProfile', ...NutritionCSV.inputFields,...SupplementaryCSV.fields];
+    static fields = ['name', 'caseId', 'ageYears', 'ageMonths', 'ageDays', 'ageMode', 'birthDate', 'measurementDate', 'weight', 'height', 'gender', 'position', 'oedema', 'growthProfile','postmenstrualDays','gestationalAgeWeeks','gestationalAgeDays', ...NutritionCSV.inputFields,...SupplementaryCSV.fields];
     static aliases = {name:['nom','nomprenom','nompseudo','pseudonyme'],caseId:['dossier','identifiant','identifiantdossier','id'],ageYears:['annees','ageannees','years'],ageMonths:['mois','agemois','months'],ageDays:['jours','agejours','days'],ageMode:['modeage'],birthDate:['datedenaissance','datenaissance','naissance','dob'],measurementDate:['datedemesure','datemesure','date'],weight:['poids','poidsg','poidskg','weightg','weightkg'],height:['taille','longueur','taillecm','heightcm'],gender:['sexe','sex'],position:['positiondemesure','mesureposition'],oedema:['oedeme','oedemes','oedemesbilateraux','edema'],muac:['pb','pbmm','pbcm','muacmm','muaccm'],headCircumference:['perimetrecranien','perimetrecraniencm','headc','headcircumferencecm'],tricepsSkinfold:['plitricipital','plitricipitalmm','triskin','tricepsmm'],subscapularSkinfold:['plisousscapulaire','plisousscapulairemm','subskin','subscapularmm']};
     static headerKey(value) { return String(value).normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/œ/g,'oe').replace(/[^a-z0-9]/g,''); }
     static separator(text) {
@@ -37,7 +37,7 @@ class CSVManager {
     static options(text,options={}) {
         const info=this.inspect(text),mapping=options.mapping||Object.fromEntries(info.headers.filter(h=>this.fields.includes(h)).map(h=>[h,h]));
         const selected=Object.values(mapping).filter(Boolean);
-        if(Object.keys(mapping).some(k=>!this.fields.includes(k))||selected.some(h=>!info.headers.includes(h))||new Set(selected).size!==selected.length||['weight','height','gender','position','oedema'].some(k=>!mapping[k]))throw Error('csvMappingInvalid');
+        if(Object.keys(mapping).some(k=>!this.fields.includes(k))||selected.some(h=>!info.headers.includes(h))||new Set(selected).size!==selected.length||['gender'].some(k=>!mapping[k]))throw Error('csvMappingInvalid');
         if(!options.mapping&&info.headers.some(h=>!this.fields.includes(h)))throw Error('csvMappingInvalid');
         const units={weightUnit:options.weightUnit??'g',heightUnit:options.heightUnit??'cm',muacUnit:options.muacUnit??'mm',dateFormat:options.dateFormat??'iso',oedemaCodes:options.oedemaCodes??'text'};
         if(!['g','kg'].includes(units.weightUnit)||!['cm','m','mm'].includes(units.heightUnit)||!['mm','cm'].includes(units.muacUnit)||!['iso','dmy','mdy'].includes(units.dateFormat)||!['text','who12','zeroone'].includes(units.oedemaCodes))throw Error('csvMappingInvalid');
@@ -50,15 +50,15 @@ class CSVManager {
             // A row can explicitly select its reference policy. Never infer it from language or units.
             raw.growthProfile=raw.growthProfile||options.growthProfile||'who';
             const numeric=value=>{const v=String(value).replace(/[\s\u00a0\u202f]/g,'').replace(',','.');if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(v))throw Error('csvInvalid');return Number(v);};
-            for(const k of ['weight','height','muac','ageYears','ageMonths','ageDays',...SupplementaryCSV.fields])if(raw[k]!==undefined&&raw[k]!=='')raw[k]=numeric(raw[k]);
-            raw.weight*=options.weightUnit==='kg'?1000:1;raw.height*=options.heightUnit==='m'?100:options.heightUnit==='mm'?.1:1;
+            for(const k of ['weight','height','muac','ageYears','ageMonths','ageDays','postmenstrualDays','gestationalAgeWeeks','gestationalAgeDays',...SupplementaryCSV.fields])if(raw[k]!==undefined&&raw[k]!=='')raw[k]=numeric(raw[k]);
+            if(raw.weight!==undefined&&raw.weight!=='')raw.weight*=options.weightUnit==='kg'?1000:1;if(raw.height!==undefined&&raw.height!=='')raw.height*=options.heightUnit==='m'?100:options.heightUnit==='mm'?.1:1;
             if(raw.muac!==undefined&&raw.muac!=='')raw.muac*=options.muacUnit==='cm'?10:1;
             const key=v=>this.headerKey(v||'');
             raw.gender=({m:'M',male:'M',masculin:'M',garcon:'M',homme:'M','1':'M',f:'F',female:'F',feminin:'F',fille:'F',femme:'F','2':'F'})[key(raw.gender)]||raw.gender;
             raw.position=({l:'L',lying:'L',supine:'L',couche:'L',longueur:'L',h:'H',standing:'H',debout:'H',taille:'H'})[key(raw.position)]||raw.position;
             raw.oedema=(options.oedemaCodes==='who12'?{'1':'y','2':'n'}:options.oedemaCodes==='zeroone'?{'0':'n','1':'y'}:{n:'n',non:'n',no:'n',y:'y',oui:'y',yes:'y'})[key(raw.oedema)]||raw.oedema;
             for(const k of ['birthDate','measurementDate'])if(raw[k]&&options.dateFormat!=='iso'){const a=raw[k].match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/);if(!a)throw Error('dateInvalid');raw[k]=`${a[3]}-${(options.dateFormat==='dmy'?a[2]:a[1]).padStart(2,'0')}-${(options.dateFormat==='dmy'?a[1]:a[2]).padStart(2,'0')}`;}
-            if(!raw.ageMode)raw.ageMode=raw.birthDate?'dates':raw.ageDays!==undefined?'days':'months';
+            if(!raw.ageMode)raw.ageMode=raw.growthProfile==='intergrowth'&&raw.postmenstrualDays!==undefined?'pma':raw.birthDate?'dates':raw.ageDays!==undefined?'days':'months';
             return ClinicalEngine.normalize(raw,{extended:!!options.extended});
         }catch(error){error.csvLine=line;throw error;}
     }
@@ -84,12 +84,13 @@ class CSVManager {
         const additionalKeys=Object.keys(SupplementaryCSV.definitions),additionalColumns=['zscore','zscoreRaw','percentile','percentileStatus','flagged','error','reference'];
         const header = ['name', 'caseId', 'visitId', 'ageMode', 'ageDays', 'measurementDate', 'weight_g', 'height_cm', 'gender', 'position', 'oedema', ...keys, ...keys.map(k => k + '_flag'), 'status', 'reference', 'engineVersion', 'calculatedAt', 'bmi_kg_m2', 'bmiForAge', 'bmiForAge_flag', 'bmiForAge_error',...percentileKeys.map(k=>k+'_zscore_raw'),...percentileKeys.map(k=>k+'_percentile'),...percentileKeys.map(k=>k+'_percentile_status'),'reference_family','age_in_months',...percentileKeys.map(k=>k+'_not_applicable'),...NutritionCSV.inputFields,'nutrition_category','nutrition_orientation','nutrition_reference','nutrition_version','nutrition_missing','nutrition_criteria',...SupplementaryCSV.fields,...additionalKeys.flatMap(k=>additionalColumns.map(c=>k+'_'+c))];
         const rows = entries.map(({child:c, result:r}) => [c.name, c.caseId, c.visitId, c.ageMode, c.ageDays, c.measurementDate, c.weight, c.height, c.gender, c.position, c.oedema,
-            ...keys.map(k => r?.[k]?.zscore), ...keys.map(k => r?.[k]?.flagged ? 1 : 0), r?.status || 'not-calculated', r?.referenceVersion || 'unknown', r?.engineVersion || '', r?.calculatedAt,
+            ...keys.map(k => r?.[k]?.zscore), ...keys.map(k => r?.referenceFamily==='INTERGROWTH2015'?'':r?.[k]?.flagged ? 1 : 0), r?.status || 'not-calculated', r?.referenceVersion || 'unknown', r?.engineVersion || '', r?.calculatedAt,
             r?.schemaVersion===4?r.bmi:'',r?.schemaVersion===4?r.bmiForAge?.zscore:'',r?.schemaVersion===4&&typeof r.bmiForAge?.zscore==='number'?(r.bmiForAge.flagged?1:0):'',r?.schemaVersion===4?r.bmiForAge?.error:'',
             ...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.zscoreRaw:''),...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.percentile:''),...percentileKeys.map(k=>r?.percentileVersion===1?r[k]?.percentileStatus:''),r?.referenceFamily||'',r?.ageInMonths??'',...percentileKeys.map(k=>r?.schemaVersion===4?(r[k]?.notApplicable?1:0):''),...NutritionCSV.inputFields.map(k=>c[k]??''),r?.nutrition?.category,r?.nutrition?.orientation,r?.nutrition?.reference,r?.nutrition?.version,r?.nutrition?.missing.join('|'),r?.nutrition?.criteria?.join('|'),...SupplementaryCSV.fields.map(k=>c[k]??''),...additionalKeys.flatMap(k=>additionalColumns.map(field=>r?.additionalGrowth?.indicators?.[k]?.[field]??''))]);
         const contextColumns=['growth_profile','reported_age_months','age_precision','age_years','age_months',...percentileKeys.flatMap(k=>[k+'_method',k+'_modified_zscore']),...['p5','p85','p95','percentOfP95','originalZscoreRaw','sigma'].map(k=>'bmiForAge_'+k)];
-        header.push(...contextColumns);
+        header.push(...contextColumns,'postmenstrual_days','gestational_age_weeks','gestational_age_days','birth_gestation_days','intergrowth_core_version','headCircumferenceForAge_method','headCircumferenceForAge_chart_range','intergrowth_clinical_eligibility_assessed',...['weightForAge','heightForAge','headCircumferenceForAge'].map(k=>k+'_biological_plausibility_assessed'));
         entries.forEach(({child:c,result:r},i)=>rows[i].push(c.growthProfile||'who',r?.profileContext?.reportedAgeInMonths??c.totalAgeMonths??'',r?.profileContext?.agePrecision||(c.ageMode==='months'?'completedMonths':'exact'),c.ageYears??'',c.ageMonths??'',...percentileKeys.flatMap(k=>[r?.[k]?.method??'',r?.[k]?.modifiedZscore??'']),...['p5','p85','p95','percentOfP95','originalZscoreRaw','sigma'].map(k=>r?.bmiForAge?.[k]??'')));
+        entries.forEach(({child:c,result:r},i)=>rows[i].push(c.postmenstrualDays??'',c.gestationalAgeWeeks??'',c.gestationalAgeDays??'',r?.intergrowthContext?.age.birthGestationDays??'',r?.intergrowthContext?.coreVersion??'',r?.additionalGrowth?.indicators.headCircumferenceForAge?.method??'',r?.additionalGrowth?.indicators.headCircumferenceForAge?.chartRange??'',r?.intergrowthContext?.clinicalEligibilityAssessed??'',...['weightForAge','heightForAge','headCircumferenceForAge'].map(k=>(k==='headCircumferenceForAge'?r?.additionalGrowth?.indicators[k]:r?.[k])?.biologicalPlausibilityAssessed??'')));
         return '\uFEFF' + [header, ...rows].map(row => row.map(CSVManager.cell).join(',')).join('\r\n');
     }
 }

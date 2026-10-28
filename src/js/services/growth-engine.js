@@ -6,12 +6,13 @@ const SupplementaryEngine=typeof module!=='undefined'&&module.exports?require('.
 const GrowthPolicy=typeof module!=='undefined'&&module.exports?require('./growth-profile.js').GrowthProfile:GrowthProfile;
 const GrowthCDC=typeof module!=='undefined'&&module.exports?require('./reference-cdc.js').CDCReference:globalThis.CDCReference;
 class GrowthEngine {
-    static version='4.3.0';
+    static version='4.4.0';
     constructor(young,older,additional,cdc){this.young=new GrowthClinicalCore(young);this.older=new GrowthOlderCore(older);this.data=young;if(additional)this.additional=new SupplementaryEngine(additional);if(cdc)this.cdc=new GrowthCDC(cdc);}
     static normalize(raw){return GrowthClinicalCore.normalize(raw,{extended:true});}
     static applicable(family,age){return GrowthClinicalCore.applicable(family,age);}
     static unavailable(error,notApplicable=false){return {zscore:null,error,zscoreRaw:null,percentile:null,percentileStatus:'percentileUnavailable',...(notApplicable?{notApplicable:true}:{})};}
     calculate(raw){
+        if(raw?.growthProfile==='intergrowth'){const adapter=typeof module!=='undefined'&&module.exports?require('./intergrowth-result.js').IntergrowthResult:IntergrowthResult;return adapter.calculate(raw,GrowthEngine.version);}
         if(!this.additional&&SupplementaryEngine.fields.some(k=>SupplementaryEngine.present(raw[k])))throw Error('referenceInvalid');
         const child=GrowthEngine.normalize(raw),age=GrowthPolicy.calculationAge(child),family=GrowthPolicy.family(child);
         let result;

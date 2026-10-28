@@ -1,5 +1,10 @@
 # Préparer et adopter une mise à jour
 
+## 5.6.0 — profil postnatal INTERGROWTH explicite
+
+Moteur combiné 4.4.0 : PMA direct ou dérivé avec âges distincts, trois mesures postnatales, résultats/sauvegardes/import en copie, CSV/PDF, courbes et lots séparés, FR/EN/AR. Aucun seuil clinique OMS copié, aucune transition d’âge automatique, aucune visite existante réécrite. Les mesures absentes ne s’affichent plus comme zéro. Le flux de sauvegarde reste version 1 avec contexte de visite additionnel. Voir [INTERGROWTH](../references/INTERGROWTH.md). Tests numériques/logiciels distincts de la relecture clinique et des essais navigateur/terrain ; pas de nouvelle validation TECNO.
+
+
 ## Profil américain explicite — sources 5.5.0 / moteur 4.3.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).

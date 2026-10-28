@@ -5,8 +5,21 @@ const ReportingUI=typeof module!=='undefined'&&module.exports?require('./service
 const SupplementaryUI=typeof module!=='undefined'&&module.exports?require('./services/supplementary-growth.js').SupplementaryGrowth:globalThis.SupplementaryGrowth;
 const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/growth-profile.js').GrowthProfile:globalThis.GrowthProfile;
 class WorkspaceApp {
-    static version = '5.5.0';
+    static version = '5.6.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
+    static draftForProfile(draft,profile) {
+        ProfileUI.read({growthProfile:profile});
+        return {...draft,growthProfile:profile,
+            ageMode:profile==='intergrowth'&&draft.ageMode==='months'||profile!=='intergrowth'&&draft.ageMode==='pma'?'days':draft.ageMode};
+    }
+    static draftForAgeMode(draft,mode) {
+        const next={...draft,ageMode:mode};
+        if(next.growthProfile==='intergrowth'){
+            if(mode==='pma')for(const key of ['ageDays','birthDate','gestationalAgeWeeks','gestationalAgeDays'])next[key]='';
+            else next.postmenstrualDays='';
+        }
+        return next;
+    }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
         const numeric=typeof value.percentile==='number'&&Number.isFinite(value.percentile)&&value.percentile>0&&value.percentile<100&&!value.flagged;
@@ -24,10 +37,10 @@ class WorkspaceApp {
         this.prefs = { language: ['fr', 'en', 'ar'].includes(prefs.language) ? prefs.language : localStorage.getItem('zscore-app-language') || 'fr', theme: ['light', 'dark', 'system'].includes(prefs.theme) ? prefs.theme : 'system' };
         if (!['fr', 'en', 'ar'].includes(this.prefs.language)) this.prefs.language = 'fr';
         this.prefs.navCollapsed = prefs.navCollapsed === true;
-        this.prefs.growthProfile = prefs.growthProfile === 'us' ? 'us' : 'who';
+        this.prefs.growthProfile = ['us','intergrowth'].includes(prefs.growthProfile)?prefs.growthProfile:'who';
         this.state = this.emptyWorkspace();
     }
-    emptyDraft(growthProfile=this.prefs?.growthProfile||'who') { return { caseId: '', name: '', ageMode: 'months', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: '', growthProfile }; }
+    emptyDraft(growthProfile=this.prefs?.growthProfile||'who') { return { caseId: '', name: '', ageMode: growthProfile==='intergrowth'?'days':'months', postmenstrualDays:'', gestationalAgeWeeks:'', gestationalAgeDays:'', ageYears: '', ageMonths: '', ageDays: '', birthDate: '', measurementDate: ClinicalEngine.today(), weight: '', height: '', gender: '', position: '', oedema: '', growthProfile }; }
     emptyWorkspace() { return { version: 1, draft: this.emptyDraft(), batchDraft: this.emptyDraft(), single: null, batch: [], paste: '', mode: 'single', stale: false }; }
     t(key) { const own=table=>table&&Object.hasOwn(table,key)&&typeof table[key]==='string'?table[key]:'';return own(this.translations?.[this.prefs.language])||own(this.translations?.fr)||String(key??''); }
     esc(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -87,7 +100,7 @@ class WorkspaceApp {
     }
     date(value) { const date = new Date(value); return Number.isFinite(date.getTime()) ? date.toLocaleString(this.prefs.language, { dateStyle: 'medium', timeStyle: 'short' }) : this.t('unknown'); }
     calendarDate(value) { try { ClinicalEngine.dateDays(value); return new Date(value+'T00:00:00Z').toLocaleDateString(this.prefs.language,{dateStyle:'medium',timeZone:'UTC'}); } catch (_) { return this.t('unknown'); } }
-    number(value, digits = 2) { return Number(value).toLocaleString(this.prefs.language, { minimumFractionDigits: digits, maximumFractionDigits: digits }); }
+    number(value, digits = 2) { return value===null||value===undefined||value===''||!Number.isFinite(Number(value))?'—':Number(value).toLocaleString(this.prefs.language, { minimumFractionDigits: digits, maximumFractionDigits: digits }); }
     async init() {
         try {
             const paths=['data/interface-translations.json','data/who-manifest.json','data/who-official.json','data/who-2007-manifest.json','data/who-2007.json','data/who-additional-manifest.json','data/who-additional.json','data/cdc-growth-manifest.json','data/cdc-growth.json'];
@@ -256,7 +269,7 @@ class WorkspaceApp {
         document.getElementById('mobile-actions-button')?.setAttribute('aria-expanded','true');d.showModal();
     }
     setPreference(kind, value) {
-        const allowed = {language:['fr','en','ar'],theme:['system','light','dark'],growthProfile:['who','us']};
+        const allowed = {language:['fr','en','ar'],theme:['system','light','dark'],growthProfile:['who','us','intergrowth']};
         if (!Object.hasOwn(allowed,kind) || !allowed[kind].includes(value)) return;
         this.readForms(); this.prefs[kind] = value; this.persistPreferences(); this.applyPreferences();
         if(kind==='growthProfile')for(const key of ['draft','batchDraft'])if(!HistoryManager.hasWork({draft:this.state[key]}))this.state[key]=this.emptyDraft(value);
@@ -298,7 +311,7 @@ class WorkspaceApp {
         const select=selectId?document.getElementById(selectId):null;
         if(!select&&!['language','theme','growthProfile'].includes(kind))return;
         const names={fr:'Français',en:'English',ar:'العربية'};
-        const options=select?[...select.options].map(o=>({value:o.value,label:o.textContent,disabled:o.disabled})):(kind==='language'?['fr','en','ar']:kind==='growthProfile'?['who','us']:['system','light','dark']).map(value=>({value,label:kind==='language'?names[value]:this.t(kind==='growthProfile'?value==='us'?'profileUS':'profileWHO':value)}));
+        const options=select?[...select.options].map(o=>({value:o.value,label:o.textContent,disabled:o.disabled})):(kind==='language'?['fr','en','ar']:kind==='growthProfile'?['who','us','intergrowth']:['system','light','dark']).map(value=>({value,label:kind==='language'?names[value]:this.t(kind==='growthProfile'?value==='intergrowth'?'profileINTERGROWTH':value==='us'?'profileUS':'profileWHO':value)}));
         const current=select?select.value:this.prefs[kind],popup=this.choicePopup();
         popup.dir=document.documentElement.dir||'ltr';popup.setAttribute('aria-label',select?(document.getElementById(select.id+'-label')?.textContent||''):this.t(kind));
         popup.innerHTML=options.map(o=>`<button type="button" role="option" aria-selected="${o.value===current}" tabindex="${o.value===current?'0':'-1'}" data-action="choice-value" data-value="${this.esc(o.value)}" ${o.disabled?'disabled':''}>${kind==='theme'?this.icon(o.value):''}<span${kind==='language'?` lang="${o.value}" dir="auto"`:''}>${this.esc(o.label)}</span>${o.value===current?this.icon('check'):''}</button>`).join('');
@@ -381,7 +394,7 @@ class WorkspaceApp {
     }
     settingsHTML() {
         const names={fr:'Français',en:'English',ar:'العربية'};
-        return `<section class="card settings-card" aria-label="${this.esc(this.t('settings'))}"><p class="hint">${this.t('settingsHelp')}</p><div class="settings-grid">${['language','theme','growthProfile'].map(kind=>`<div class="setting-row"><label id="${kind}-label" for="${kind}-button">${this.t(kind)}</label><button id="${kind}-button" class="choice-trigger" data-action="header-panel" data-kind="${kind}" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-labelledby="${kind}-label ${kind}-value">${this.icon(kind==='language'||kind==='growthProfile'?'language':this.prefs.theme)}<span class="choice-value" id="${kind}-value"${kind==='language'?' dir="auto"':''}>${this.esc(kind==='language'?names[this.prefs.language]:this.t(kind==='growthProfile'?this.prefs.growthProfile==='us'?'profileUS':'profileWHO':this.prefs.theme))}</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>`).join('')}</div><p class="hint">${this.t('growthProfileHelp')}</p></section>`;
+        return `<section class="card settings-card" aria-label="${this.esc(this.t('settings'))}"><p class="hint">${this.t('settingsHelp')}</p><div class="settings-grid">${['language','theme','growthProfile'].map(kind=>`<div class="setting-row"><label id="${kind}-label" for="${kind}-button">${this.t(kind)}</label><button id="${kind}-button" class="choice-trigger" data-action="header-panel" data-kind="${kind}" aria-haspopup="listbox" aria-controls="choice-popup" aria-expanded="false" aria-labelledby="${kind}-label ${kind}-value">${this.icon(kind==='language'||kind==='growthProfile'?'language':this.prefs.theme)}<span class="choice-value" id="${kind}-value"${kind==='language'?' dir="auto"':''}>${this.esc(kind==='language'?names[this.prefs.language]:this.t(kind==='growthProfile'?this.prefs.growthProfile==='intergrowth'?'profileINTERGROWTH':this.prefs.growthProfile==='us'?'profileUS':'profileWHO':this.prefs.theme))}</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>`).join('')}</div><p class="hint">${this.t('growthProfileHelp')}</p></section>`;
     }
     resultHeadingHTML(entry) {
         const child=entry?.child;
@@ -390,6 +403,7 @@ class WorkspaceApp {
     profileDetailsHTML(child,result) {
         if(!child?.growthProfile&&!result?.profileContext)return '';
         const e=v=>this.esc(v),t=k=>e(this.t(k)),context=result?.profileContext;
+        if(result?.intergrowthContext){const a=result.intergrowthContext.age;return `<div class="profile-context"><p>${t('profileINTERGROWTH')}</p><p>${t('postmenstrualDays')} : ${e(a.postmenstrualDays)} · ${t('ageDays')} : ${e(a.chronologicalDays??this.t('unknown'))} · ${t('birthGestationDays')} : ${e(a.birthGestationDays??this.t('unknown'))}</p><p>${t('intergrowthDescriptive')}</p></div>`;}
         const policy=child.growthProfile==='us'||context?.profile==='us'?'profileUS':'profileWHO';
         const ages=context?`<p>${t('reportedAgeMonths')} : ${e(this.number(context.reportedAgeInMonths,3))} · ${t('calculationAgeMonths')} : ${e(this.number(result.ageInMonths,3))} · ${t('agePrecision')} : ${t(context.agePrecision)}</p>`:'';
         const methods=result?.referenceFamily==='CDC2000'?`<p>${t('cdcInterpretation')}</p>${['weightForAge','heightForAge','bmiForAge'].filter(k=>result[k]?.method).map(k=>`<p>${t(k)} : ${e(result[k].method)} · ${t('modifiedZscore')} : ${e(this.number(result[k].modifiedZscore,3))}</p>`).join('')}${Number.isFinite(result.bmiForAge?.percentOfP95)?`<p>${t('percentOfP95')} : ${e(this.number(result.bmiForAge.percentOfP95,1))} %</p>`:''}`:'';
@@ -401,20 +415,22 @@ class WorkspaceApp {
         return `<div class="toolbar compact-toolbar result-toolbar">${this.toolButton('print','print','print',{showLabel:true})}${exports()}${child.caseId?this.toolButton('newVisit','plus','new-visit',{showLabel:true,labelKey:'newVisitShort'}):''}<button id="single-view-toggle" class="icon-button action-with-label" data-action="${editing?'show-results':'edit-measures'}" aria-controls="measure-card" aria-expanded="${editing}" title="${this.esc(this.t(editing?'showResults':'editMeasures'))}" aria-label="${this.esc(this.t(editing?'showResults':'editMeasures'))}">${this.icon(editing?'chart':'edit')}${this.actionLabelHTML(editing?'showResults':'editMeasures')}</button>${!editing?this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'}):''}</div>`;
     }
     formHTML(prefix, data, batch = false) {
+        const ig=data.growthProfile==='intergrowth';
         const labelKey=key=>({caseId:'caseShort',name:'nameShort',oedema:'oedemaShort',ageMode:'ageShort'}[key]||key);
         const label=(key,hint='')=>`<div class="field-label"><label for="${prefix}-${key}">${this.t(labelKey(key))}${['caseId','name'].includes(key)?` <small>(${this.t('optional')})</small>`:''}</label>${hint?this.infoButton(hint,key,`${prefix}-${key}-info`):''}</div>`;
         const field = (key, type = 'text', attrs = '', hint = '') => `<div class="field">${label(key,hint)}<input id="${prefix}-${key}" name="${key}" type="${type}" value="${this.esc(data[key])}" ${attrs}${hint ? ` aria-describedby="${prefix}-${key}-hint"` : ''}>${hint ? `<p id="${prefix}-${key}-hint" class="sr-only">${this.t(hint)}</p>` : ''}</div>`;
         const select = (key, options, hint = '') => `<div class="field">${label(key,hint)}<select id="${prefix}-${key}" name="${key}"${hint ? ` aria-describedby="${prefix}-${key}-hint"` : ''}>${options.map(([value,text]) => `<option value="${value}" ${data[key] === value ? 'selected' : ''}>${this.t(text)}</option>`).join('')}</select>${hint ? `<p id="${prefix}-${key}-hint" class="sr-only">${this.t(hint)}</p>` : ''}</div>`;
         return `<form id="${prefix}-form" novalidate><div class="form-grid">
             ${field('caseId', 'text', 'maxlength="100" autocomplete="off"')}${field('name', 'text', `maxlength="100" autocomplete="off" placeholder="${this.t('namePlaceholder')}"`)}
-            <div class="field">${label('ageMode','ageHint')}<select id="${prefix}-ageMode" name="ageMode" aria-describedby="${prefix}-ageMode-hint">${['months','dates','days'].map(mode => `<option value="${mode}" ${data.ageMode === mode ? 'selected' : ''}>${this.t(mode)}</option>`).join('')}</select><p id="${prefix}-ageMode-hint" class="sr-only">${this.t('ageHint')}</p></div>
+            <div class="field">${label('ageMode','ageHint')}<select id="${prefix}-ageMode" name="ageMode" aria-describedby="${prefix}-ageMode-hint">${(ig?['days','dates','pma']:['months','dates','days']).map(mode => `<option value="${mode}" ${data.ageMode === mode ? 'selected' : ''}>${this.t(mode)}</option>`).join('')}</select><p id="${prefix}-ageMode-hint" class="sr-only">${this.t('ageHint')}</p></div>
             <div class="age-fields" data-age="months" ${data.ageMode !== 'months' ? 'hidden' : ''}>${field('ageYears','number','min="0" max="19" step="1" inputmode="numeric"')}${field('ageMonths','number','min="0" max="11" step="1" inputmode="numeric"')}</div>
             <div class="age-fields" data-age="dates" ${data.ageMode !== 'dates' ? 'hidden' : ''}>${field('birthDate','date',`max="${ClinicalEngine.today()}"`)}</div>
-            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number',`min="0" max="${data.growthProfile==='us'?7304:6970}" step="1" inputmode="numeric"`)}</div>
+            <div class="age-fields" data-age="days" ${data.ageMode !== 'days' ? 'hidden' : ''}>${field('ageDays','number',`min="0" max="${ig?448:data.growthProfile==='us'?7304:6970}" step="1" inputmode="numeric"`)}</div>
+            ${ig?`<div class="age-fields" data-age="pma" ${data.ageMode!=='pma'?'hidden':''}>${field('postmenstrualDays','number','min="189" max="448" step="1" inputmode="numeric"')}</div><div class="age-fields" data-gestation ${data.ageMode==='pma'?'hidden':''}>${field('gestationalAgeWeeks','number','min="0" max="36" step="1" inputmode="numeric"')}${field('gestationalAgeDays','number','min="0" max="6" step="1" inputmode="numeric"')}</div><p class="hint">${this.t('intergrowthAgeHelp')}</p>`:''}
             ${field('measurementDate','date',`max="${ClinicalEngine.today()}"`)}
-            ${field('weight','number','min="50" max="300000" step="1" inputmode="decimal"','weightHint')}${field('height','number','min="30" max="250" step="0.1" inputmode="decimal"')}
-            ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['','unknown'],['n','no'],['y','yes']])}${select('position',[['','choose'],['L','lying'],['H','standing']],'positionHint')}
-            </div><details class="reference-profile"><summary>${this.t(data.growthProfile==='us'?'profileUS':'profileWHO')}</summary><p class="hint">${this.t('growthProfileHelp')}</p>${select('growthProfile',[['who','profileWHO'],['us','profileUS']])}</details><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t('clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><details class="additional-fields"${SupplementaryUI.fields.some(k=>SupplementaryUI.present(data[k]))?' open':''}><summary>${this.t('additionalMeasures')}</summary><p class="hint">${this.t('additionalMeasureHelp')}</p><div class="form-grid">${field('headCircumference','number','min="25" max="64" step="0.1" inputmode="decimal"')}${field('tricepsSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}${field('subscapularSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
+            ${field('weight','number',ig?'min="0" step="any" inputmode="decimal"':'min="50" max="300000" step="1" inputmode="decimal"','weightHint')}${field('height','number',ig?'min="0" step="any" inputmode="decimal"':'min="30" max="250" step="0.1" inputmode="decimal"')}${ig?field('headCircumference','number','min="0" step="any" inputmode="decimal"'):''}
+            ${select('gender',[['','choose'],['M','male'],['F','female']])}${select('oedema',[['','unknown'],['n','no'],['y','yes']])}${select('position',(ig?[['','choose'],['L','lying']]:[['','choose'],['L','lying'],['H','standing']]),'positionHint')}
+            </div><details class="reference-profile"><summary>${this.t(ig?'profileINTERGROWTH':data.growthProfile==='us'?'profileUS':'profileWHO')}</summary><p class="hint">${this.t('growthProfileHelp')}</p>${select('growthProfile',[['who','profileWHO'],['us','profileUS'],['intergrowth','profileINTERGROWTH']])}</details><details class="clinical-fields"${NutritionUI.inputFields.some(k=>data[k]!==undefined&&data[k]!=='')?' open':''}><summary>${this.t('clinicalSection')}</summary><p class="hint">${this.t(ig?'intergrowthNoScreening':'clinicalHelp')}</p><div class="form-grid">${field('muac','number','min="50" max="400" step="0.1" inputmode="decimal"','muacHelp')}${select('oedemaGrade',[['','unknown'],['1','grade1'],['2','grade2'],['3','grade3']])}${NutritionUI.dangerFields.map(key=>select(key,[['','unknown'],['n','no'],['y','yes']])).join('')}${select('acuteProblem',[['','unknown'],['n','no'],['y','yes']])}${select('appetite',[['','unknown'],['good','appetiteGood'],['poor','appetitePoor']])}${select('furtherAssessment',[['','unknown'],['n','assessmentNone'],['y','assessmentNeeded'],['cleared','assessmentCleared']])}</div></details><details class="additional-fields"${SupplementaryUI.fields.some(k=>SupplementaryUI.present(data[k]))?' open':''}><summary>${this.t('additionalMeasures')}</summary><p class="hint">${this.t(ig?'intergrowthUnsupportedMeasures':'additionalMeasureHelp')}</p><div class="form-grid">${ig?'':field('headCircumference','number','min="25" max="64" step="0.1" inputmode="decimal"')}${field('tricepsSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}${field('subscapularSkinfold','number','min="1.8" max="40" step="0.1" inputmode="decimal"')}</div></details><div id="${prefix}-error" class="notice error" role="alert" tabindex="-1" hidden></div></form>`;
     }
     singleHTML() {
         const hasResult=!!this.state.single?.result, dashboard=hasResult&&!this.singleEditing;
@@ -430,7 +446,7 @@ class WorkspaceApp {
             const v = result[key], hasValue = v && typeof v.zscore === 'number' && Number.isFinite(v.zscore);
             const category = v?.classification;
             const severe = /Severe|severe|obesity|Obesity|bmiBelow3|bmiAbove3/.test(category || '');
-            return `<div class="indicator ${severe ? 'severe' : !['withinReference','bmiWithin','cdcHealthyWeight','cdcBetween3And97'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton(result.referenceFamily==='CDC2000'?'cdcInterpretation':'bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category) : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score" aria-label="${this.esc(this.t('zscoreLabel')+' : '+(hasValue?this.number(v.zscore):this.t('notCalculated')))}" title="${this.esc(this.t('zscoreHelp'))}"><span class="score-prefix" aria-hidden="true">Z</span> ${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
+            return `<div class="indicator ${severe ? 'severe' : result.referenceFamily!=='INTERGROWTH2015'&&!['withinReference','bmiWithin','cdcHealthyWeight','cdcBetween3And97'].includes(category) ? 'caution' : ''}"><div><div class="label">${this.t(key)}${key==='bmiForAge'?this.infoButton(result.referenceFamily==='CDC2000'?'cdcInterpretation':'bmiHelp','bmiForAge',preview?'preview-bmi-info':'result-bmi-info'):''}</div><div class="category">${this.esc(hasValue ? this.t(category||'intergrowthDescriptive') : this.t('notCalculated'))}</div></div><div class="indicator-values"><div class="score" aria-label="${this.esc(this.t('zscoreLabel')+' : '+(hasValue?this.number(v.zscore):this.t('notCalculated')))}" title="${this.esc(this.t('zscoreHelp'))}"><span class="score-prefix" aria-hidden="true">Z</span> ${hasValue ? this.number(v.zscore) : '—'}</div>${this.percentileHTML(v,result)}</div>${v?.flagged ? `<div class="flag">${this.t('flagged')}</div>` : ''}${v?.error ? `<div class="flag">${this.esc(this.t(v.error))}</div>` : ''}</div>`;
           }).join('');
         const warnings=`${(result.warnings || []).map(w => `<p class="notice warn">${this.esc(this.t(w))}</p>`).join('')}${['WHO2007','CDC2000'].includes(result.referenceFamily)?`<p class="hint">${this.t(result.referenceFamily==='CDC2000'?'cdcCoverage':'coverage2007')}</p>`:''}`;
         const measures=`<div class="meta result-measures"><p>${this.t('caseId')} : ${this.esc(child.caseId || this.t('unknown'))} · ${this.t('measurementDate')} : ${this.calendarDate(child.measurementDate)}</p><p>${this.t('ageDays')} : ${this.esc(child.ageDays ?? this.t('unknown'))} · ${this.t('weight')} : ${this.number(child.weight,0)} · ${this.t('height')} : ${this.number(child.height,1)}${result.schemaVersion===4&&Number.isFinite(result.bmi)?` · ${this.t('bmi')} : ${this.number(result.bmi,2)} kg/m²`:''}</p><p>${this.t('gender')} : ${this.t(child.gender === 'M' ? 'male' : child.gender === 'F' ? 'female' : 'unknown')} · ${this.t('position')} : ${this.t(child.position === 'L' ? 'lying' : child.position === 'H' ? 'standing' : 'unknown')} · ${this.t('oedema')} : ${this.t(child.oedema === 'y' ? 'yes' : child.oedema === 'n' ? 'no' : 'unknown')}</p>${result.correctedHeight ? `<p>${this.t('adjustedHeight')} : ${this.number(result.correctedHeight,1)} ${this.t('unitCm')}</p>` : ''}<p>${this.t('calculatedAt')} : ${this.date(result.calculatedAt)}</p><p>${this.t('referenceVersion')} : ${this.esc(result.referenceVersion || 'unknown')} · ${this.t('engineVersion')} : ${this.esc(result.engineVersion || this.t('unknown'))}</p>${this.profileDetailsHTML(child,result)}</div>`;
@@ -442,16 +458,17 @@ class WorkspaceApp {
     additionalResultsHTML(result) {
         const extra=result?.additionalGrowth;if(!extra)return '';
         const e=v=>this.esc(v),t=k=>e(this.t(k));
-        return `<details class="additional-results"><summary>${t('additionalResults')}</summary><p class="hint">${t('additionalResultHelp')}</p><dl class="measurement-snapshot">${Object.entries(extra.indicators).map(([key,v])=>`<div><dt>${t(key)}</dt><dd>${e(this.number(v.measure,1))} ${e(v.unit)} · ${Number.isFinite(v.zscore)?'Z '+e(this.number(v.zscore)):'—'}${this.percentileHTML(v,result)}</dd><p>${t(v.error||v.classification)}${v.flagged?' · '+t('flagged'):''}</p></div>`).join('')}</dl><p class="meta">${t('referenceVersion')} : ${e(extra.referenceVersion)}</p></details>`;
+        return `<details class="additional-results"><summary>${t('additionalResults')}</summary><p class="hint">${t(result.referenceFamily==='INTERGROWTH2015'?'intergrowthDescriptive':'additionalResultHelp')}</p><dl class="measurement-snapshot">${Object.entries(extra.indicators).map(([key,v])=>`<div><dt>${t(key)}</dt><dd>${e(this.number(v.measure,1))} ${e(v.unit)} · ${Number.isFinite(v.zscore)?'Z '+e(this.number(v.zscore)):'—'}${this.percentileHTML(v,result)}</dd><p>${t(v.error||v.classification||'intergrowthDescriptive')}${v.flagged?' · '+t('flagged'):''}</p></div>`).join('')}</dl><p class="meta">${t('referenceVersion')} : ${e(extra.referenceVersion)}</p></details>`;
     }
     nutritionHTML(child,result) {
+        if(result?.referenceFamily==='INTERGROWTH2015')return `<section class="nutrition-result"><h3>${this.t('profileINTERGROWTH')}</h3><p>${this.t('intergrowthNoScreening')}</p>${result.nutrition?.reasons.includes('dangerPresent')?`<p class="notice warn">${this.t('orientationUrgent')}</p>`:''}</section>`;
         const n=result?.nutrition;if(!n)return '';const label=key=>this.esc(this.t(key));
         return `<section class="nutrition-result ${n.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(n.orientation)?'clinical-urgent':''}" aria-label="${label('clinicalSection')}"><h3>${label('screeningTitle')}</h3><strong>${label(n.category)}</strong>${n.criteria?.length?`<p>${n.criteria.map(label).join(' · ')}</p>`:''}<p><b>${label('orientationTitle')}</b> — ${label(n.orientation)}</p>${n.reasons.length?`<p>${n.reasons.map(k=>label(k)).join(' · ')}</p>`:''}<details class="screening-details"><summary title="${label('assessmentDetails')}">${label('detailsShort')}</summary><p>${label('muac')} : ${n.muacMm===null?this.t('unknown'):this.number(n.muacMm,1)+' mm'} · ${label(n.muac)}</p><p>${label('clinicalHelp')}</p>${n.missing.length?`<p>${label('assessmentMissing')} : ${n.missing.map(k=>label(k)).join(', ')}</p>`:''}<p>${label('clinicalReference')} : ${this.esc(n.reference)} · v${n.version}</p><a href="https://www.who.int/publications/i/item/9789240082830" target="_blank" rel="noopener noreferrer">OMS 2023</a> · <a href="https://www.who.int/publications/i/item/9789240122840" target="_blank" rel="noopener noreferrer">OMS / UNICEF 2026</a></details></section>`;
     }
     lotModels(){
         if(!this.engine?.older)return [LotAnalysis.build(this.state.batch,this.engine?.data.referenceVersion)];
         const family=e=>e.result?.referenceFamily||ProfileUI.family(e.child);
-        return [['WHO2006',this.engine.data.referenceVersion],['WHO2007',this.engine.older.data.referenceVersion],...(this.engine.cdc?[['CDC2000',this.engine.cdc.data.referenceVersion]]:[])].flatMap(([key,reference])=>{const entries=this.state.batch.filter(e=>family(e)===key);return entries.length?[LotAnalysis.build(entries,reference,{family:key,additionalReference:this.engine.additional?.data.referenceVersion})]:[];});
+        return [['WHO2006',this.engine.data.referenceVersion],['WHO2007',this.engine.older.data.referenceVersion],...(this.engine.cdc?[['CDC2000',this.engine.cdc.data.referenceVersion]]:[]),['INTERGROWTH2015','INTERGROWTH2015-postnatal-gigs-fb58fe6596d4']].flatMap(([key,reference])=>{const entries=this.state.batch.filter(e=>family(e)===key);return entries.length?[LotAnalysis.build(entries,reference,{family:key,additionalReference:this.engine.additional?.data.referenceVersion})]:[];});
     }
     lotSummaryHTML(options={}){return this.lotModels().map(model=>LotAnalysis.html(model,this,options)).join('');}
     batchHTML() {
@@ -470,11 +487,11 @@ class WorkspaceApp {
         const note = key => `<div class="${compact&&key==='withinReference'?'sr-only':'item-sub'}">${this.esc(this.t(key))}</div>`;
         const cell = (key,value) => `<td role="cell"${indicators.includes(key)?' class="score"':''}><span class="cell-label" aria-hidden="true">${this.esc(this.t(key))}</span><div class="cell-value">${value}</div></td>`;
         return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
-            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${this.esc(child.muac??'—')} mm</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p></details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${this.additionalResultsHTML(result)}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||key!=='estimatedAge').map(note).join('')}`;
+            const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${this.esc(child.muac??'—')} mm</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p>${result.referenceFamily==='INTERGROWTH2015'?(result.warnings||[]).map(note).join(''):''}</details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${this.additionalResultsHTML(result)}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||result?.referenceFamily!=='INTERGROWTH2015'&&key!=='estimatedAge').map(note).join('')}`;
             return `<tr role="row">${cell('name',identity)}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
                 const value=key==='bmiForAge'&&result?.schemaVersion!==4?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
                 const category=value?.classification;
-                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||'unknown'):key==='bmiForAge'&&result&&!result.schemaVersion===4?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
+                return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||(result?.referenceFamily==='INTERGROWTH2015'?'intergrowthDescriptive':'unknown')):key==='bmiForAge'&&result&&!result.schemaVersion===4?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
             }).join('')}</tr>`;
         }).join('')}</tbody></table>`;
     }
@@ -593,12 +610,14 @@ class WorkspaceApp {
         document.getElementById('app-root').addEventListener('change', async event => {
             if (event.target.name === 'ageMode') {
                 const form = event.target.closest('form'); form.querySelectorAll('[data-age]').forEach(div => { div.hidden = div.dataset.age !== event.target.value; });
-                this.readForms(); this.scheduleSave();
+                const prefix=form.id==='single-form'?'single':'batch';this.readForms();const draft=prefix==='single'?this.state.draft:this.state.batchDraft;
+                if(draft.growthProfile==='intergrowth'){this.state[prefix==='single'?'draft':'batchDraft']=WorkspaceApp.draftForAgeMode(draft,draft.ageMode);this.render(prefix+'-ageMode');}
+                this.scheduleSave();
             } else if (event.target.name === 'growthProfile') {
                 this.readForms();const form=event.target.closest('form'),prefix=form.id==='single-form'?'single':'batch';
-                document.getElementById(prefix+'-ageDays').max=event.target.value==='us'?'7304':'6970';
-                const summary=form.querySelector('.reference-profile summary');if(summary)summary.textContent=this.t(event.target.value==='us'?'profileUS':'profileWHO');
-                this.scheduleSave();
+                const key=prefix==='single'?'draft':'batchDraft';
+                this.state[key]=WorkspaceApp.draftForProfile(this.state[key],event.target.value);
+                this.render(prefix+'-growthProfile');this.scheduleSave();
             } else if (event.target.id === 'backup-file') {
                 const file = event.target.files[0]; if (file) await this.previewImport(file); event.target.value = '';
             } else if (event.target.id === 'csv-file') {
@@ -615,6 +634,7 @@ class WorkspaceApp {
             const form = document.getElementById(prefix+'-form'); if (!form) continue;
             const key = prefix === 'single' ? 'draft' : 'batchDraft';
             this.state[key] = {...this.state[key],...Object.fromEntries(new FormData(form))};
+            if(this.state[key].growthProfile==='intergrowth'&&this.state[key].ageMode!=='pma')this.state[key].postmenstrualDays='';
         }
         const paste = document.getElementById('paste-data'); if (paste && !this.csvBusy && !this.csvReading) this.state.paste = paste.value;
         this.state.mode = this.page === 'batch' ? 'batch' : this.page === 'single' ? 'single' : this.state.mode;
@@ -706,6 +726,7 @@ class WorkspaceApp {
             const child = this.state.single?.child;if(!child?.caseId)return;
             await this.saveImmediate('beforeNew');this.state=this.emptyWorkspace();this.singleEditing=false;
             Object.assign(this.state.draft,{caseId:child.caseId,name:child.name,gender:child.gender,birthDate:child.birthDate || '',ageMode:child.birthDate?'dates':child.ageMode || 'months',growthProfile:child.growthProfile||'who'});
+            if(child.growthProfile==='intergrowth')Object.assign(this.state.draft,{gestationalAgeWeeks:child.gestationalAgeWeeks,gestationalAgeDays:child.gestationalAgeDays,postmenstrualDays:'',ageDays:''});
             this.page='single';await this.saveImmediate('automatic');this.render('single-caseId');
         }
         else if(action==='view-case'){this.search=button.dataset.caseId;this.historyPage=0;this.sessions=await this.history.catalog();this.page='history';this.render('history-search');}
@@ -722,6 +743,7 @@ class WorkspaceApp {
             const options={mapping};for(const key of ['weightUnit','heightUnit','muacUnit','dateFormat','oedemaCodes'])options[key]=document.getElementById('csv-'+key).value;
             try{CSVManager.options(pending.text,options);}catch(_){this.toast('csvMappingInvalid',true);return;}await this.addCSV(pending.text,options);
         }
+        else if(action==='csv-template'&&this.state.batchDraft.growthProfile==='intergrowth')this.download('name,caseId,growthProfile,ageMode,postmenstrualDays,weight,height,headCircumference,gender,position,oedema\r\nExemple fictif,PRETERM-001,intergrowth,pma,224,1600,42,29,M,L,n\r\n','zscore-intergrowth-modele.csv','text/csv');
         else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema,muac\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n,130\r\n','zscore-modele.csv','text/csv');
         else if(action==='reporting')this.reportingDialog();
         else if(action==='download-report')this.downloadReport(false);
@@ -823,7 +845,7 @@ class WorkspaceApp {
         const unit=(key,label,values,selected)=>select('csv-'+key,this.t(label),values,selected);
         const sample=`<div class="table-scroll"><table><caption>${this.t('csvSample')}</caption><thead><tr>${info.headers.map(h=>`<th scope="col">${this.esc(h)}</th>`).join('')}</tr></thead><tbody>${info.sample.map(row=>`<tr>${row.map(v=>`<td>${this.esc(v.length>200?v.slice(0,200)+'…':v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
         const units=unit('weightUnit','csvWeightUnit',[['',this.t('csvChooseUnit')],['g','g'],['kg','kg']],info.weightUnit)+unit('heightUnit','csvHeightUnit',[['cm','cm'],['m','m'],['mm','mm']],'cm')+unit('muacUnit','csvMuacUnit',[['mm','mm'],['cm','cm']],info.muacUnit)+unit('dateFormat','csvDateFormat',[['iso','YYYY-MM-DD'],['dmy','DD/MM/YYYY'],['mdy','MM/DD/YYYY']],'iso')+unit('oedemaCodes','oedema',[['text',this.t('csvOedemaText')],['who12','1 = '+this.t('yes')+' ; 2 = '+this.t('no')],['zeroone','0 = '+this.t('no')+' ; 1 = '+this.t('yes')]],'text');
-        this.dialog('csvMapping',`<p>${this.t('csvMappingHelp')}</p><p>${this.t('growthProfile')} : ${this.t(this.state.batchDraft.growthProfile==='us'?'profileUS':'profileWHO')}</p>${sample}<div class="form-grid">${units}${fields}</div><details${clinical.some(field=>info.mapping[field])?' open':''}><summary>${this.t('clinicalSection')}</summary><div class="form-grid">${mappedFields(clinical)}</div></details><p id="csv-dialog-status" role="alert"></p>`,`<button class="btn primary" data-action="csv-confirm">${this.t('parseCSV')}</button>`);
+        this.dialog('csvMapping',`<p>${this.t('csvMappingHelp')}</p><p>${this.t('growthProfile')} : ${this.t(this.state.batchDraft.growthProfile==='intergrowth'?'profileINTERGROWTH':this.state.batchDraft.growthProfile==='us'?'profileUS':'profileWHO')}</p>${sample}<div class="form-grid">${units}${fields}</div><details${clinical.some(field=>info.mapping[field])?' open':''}><summary>${this.t('clinicalSection')}</summary><div class="form-grid">${mappedFields(clinical)}</div></details><p id="csv-dialog-status" role="alert"></p>`,`<button class="btn primary" data-action="csv-confirm">${this.t('parseCSV')}</button>`);
         document.getElementById('workspace-dialog').classList.add('csv-mapping-dialog');
     }
     async readCSVFile(file){
@@ -880,9 +902,9 @@ class WorkspaceApp {
     previewDraft(draft, mode) {
         if (!draft || !HistoryManager.hasWork({[mode === 'batch' ? 'batchDraft' : 'draft']:draft})) return '';
         const ageFields = draft.ageMode === 'dates' ? ['birthDate'] : draft.ageMode === 'days' ? ['ageDays'] : ['ageYears','ageMonths'];
-        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema','growthProfile',...NutritionUI.inputFields,...SupplementaryUI.fields];
+        const fields=['caseId','name','ageMode',...ageFields,'measurementDate','weight','height','gender','position','oedema','growthProfile','postmenstrualDays','gestationalAgeWeeks','gestationalAgeDays',...NutritionUI.inputFields,...SupplementaryUI.fields];
         const labels = { gender:{M:'male',F:'female'}, position:{L:'lying',H:'standing'}, oedema:{n:'no',y:'yes'} };
-        const value = key => key === 'growthProfile' ? this.t(draft[key]==='us'?'profileUS':'profileWHO') : key === 'ageMode' ? this.t(draft[key]) : labels[key]?.[draft[key]] ? this.t(labels[key][draft[key]]) : draft[key];
+        const value = key => key === 'growthProfile' ? this.t(draft[key]==='intergrowth'?'profileINTERGROWTH':draft[key]==='us'?'profileUS':'profileWHO') : key === 'ageMode' ? this.t(draft[key]) : labels[key]?.[draft[key]] ? this.t(labels[key][draft[key]]) : draft[key];
         return `<h3>${this.t('draft')} · ${this.t(mode)}</h3><div class="preview-grid">${fields.filter(k=>draft[k]!==''&&draft[k]!==undefined&&draft[k]!==null).map(k=>`<dl><dt>${this.t(k)}</dt><dd>${this.esc(value(k))}</dd></dl>`).join('')}</div>`;
     }
     async restore(session){
@@ -921,7 +943,7 @@ class WorkspaceApp {
         }catch(error){if(prepared?.format==='stream')this.transfers().release(prepared);if(request!==this.importRequest)return;this.preparedImport=null;this.toast(error instanceof SyntaxError||error instanceof TypeError?'importInvalid':error.message,true);}
         finally{if(request===this.importRequest)this.transferStatus();}
     }
-    chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older,this.engine.cdc].filter(Boolean).filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(!engines.length)engines=[this.engine.young||this.engine];const additional=entries.filter(e=>e.result?.additionalGrowth);return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('')+(this.engine.additional&&additional.length?GrowthChart.referenceHTML(additional,this.engine.additional,this)+GrowthChart.html(additional,this.engine.additional.data.referenceVersion,this):'');}
+    chartsHTML(entries){let engines=this.engine.older?[this.engine.young,this.engine.older,this.engine.cdc].filter(Boolean).filter(engine=>entries.some(e=>e.result?.referenceVersion===engine.data.referenceVersion)):[this.engine];if(entries.some(e=>e.result?.referenceFamily==='INTERGROWTH2015'))engines.push({data:{referenceVersion:'INTERGROWTH2015-postnatal-gigs-fb58fe6596d4'}});if(!engines.length)engines=[this.engine.young||this.engine];const additional=entries.filter(e=>e.result?.additionalGrowth?.referenceVersion.startsWith('WHO-child-additional-'));return engines.map(engine=>GrowthChart.referenceHTML(entries.filter(e=>e.result?.referenceVersion===engine.data.referenceVersion),engine,this)+GrowthChart.html(entries,engine.data.referenceVersion,this)).join('')+(this.engine.additional&&additional.length?GrowthChart.referenceHTML(additional,this.engine.additional,this)+GrowthChart.html(additional,this.engine.additional.data.referenceVersion,this):'');}
     async renderFollowup(){
         const entry=this.state.single,child=entry?.child,epoch=this.renderEpoch;if(!entry?.result)return;
         const {entries,identityConflict}=child.caseId?await this.history.caseVisits(child.caseId,child.gender,child.birthDate):{entries:[entry],identityConflict:false};

@@ -43,7 +43,7 @@ test('INTERGROWTH exact-day/date inputs include leap days and reject completed m
     assert.equal(Visit.check(leap), true);
     for (const extra of [
         {ageMode: 'months', ageYears: 0, ageMonths: 1}, {ageDays: 14.5},
-        {ageDays: -1}, {ageDays: ''}, {postmenstrualDays: 448}, {gestationalAgeWeeks: 25},
+        {ageDays: -1}, {ageDays: ''}, {postmenstrualDays: 448}, {gestationalAgeWeeks: -1},
         {gestationalAgeWeeks: 37}, {gestationalAgeWeeks: 30.5},
         {gestationalAgeDays: 7}, {gestationalAgeDays: ''},
         {gestationalAgeWeeks: 26, ageDays: 6}, {gestationalAgeWeeks: 36, ageDays: 197},
@@ -129,9 +129,11 @@ test('INTERGROWTH stored contract rejects altered age, unit, centile, suspension
     assert.equal(Visit.check(consistent), true);
 });
 
-test('INTERGROWTH prepared contract cannot enter current patient profiles or backups by accidental routing', () => {
-    assert.throws(() => GrowthProfile.read({growthProfile: 'intergrowth'}), /growthProfileInvalid/);
-    assert.throws(() => HistoryManager.checkWorkspace(calculate()), /importInvalid/);
-    const assets = JSON.parse(fs.readFileSync(path.join(__dirname, '../scripts/offline-assets.json')));
-    assert.ok(!assets.some(file => /intergrowth/i.test(file)));
+test('INTERGROWTH direct PMA preserves unknown chronological age and is not a bare workspace import', () => {
+    const r=Visit.calculate({gender:'F',ageMode:'pma',postmenstrualDays:189,headCircumference:23});
+    assert.equal(r.age.chronologicalDays,null);assert.equal(r.age.birthGestationDays,null);
+    assert.equal(Visit.check(r),true);
+    assert.throws(()=>Visit.calculate({gender:'F',ageMode:'pma',postmenstrualDays:224,headCircumference:29,ageDays:14}),/intergrowthAgeConflict/);
+    assert.throws(()=>HistoryManager.checkWorkspace(r),/importInvalid/);
+    assert.equal(calculate({gestationalAgeWeeks:25,ageDays:14}).age.postmenstrualDays,189);
 });

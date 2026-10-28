@@ -1,6 +1,6 @@
 # Administrer et mettre à jour Z-score Niger
 
-Guide actuel pour les sources 5.5.0 et le moteur combiné 4.3.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
+Guide actuel pour les sources 5.6.0 et le moteur combiné 4.4.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
 
 ## Environnement et propriété
 

@@ -67,13 +67,13 @@ test('INTERGROWTH retains unrounded equations; a known printed-table rounding di
     close(IG.measurement('lengthForAge', 'F', 281, 4), Math.exp(p.mu + p.sigma * 4));
 });
 
-test('INTERGROWTH preparation does not silently activate a patient profile, UI asset or clinical classifier', () => {
-    const assets = json('tools/scripts/offline-assets.json');
-    assert.ok(!assets.some(name => /intergrowth/i.test(name)));
-    assert.doesNotMatch(read('src/index.html').toString(), /intergrowth/i);
-    assert.equal(IG.classify, undefined);
-    assert.equal(IG.correctedAge, undefined);
-    assert.equal(IG.percentile, undefined);
-    const {GrowthProfile} = require('../../src/js/services/growth-profile.js');
-    assert.throws(() => GrowthProfile.read({growthProfile: 'intergrowth'}), /growthProfileInvalid/);
+test('INTERGROWTH is explicitly selected with an offline core, not a clinical classifier', () => {
+    const assets=json('tools/scripts/offline-assets.json');
+    assert.ok(assets.includes('js/services/reference-intergrowth.js'));
+    assert.match(read('src/index.html').toString(), /reference-intergrowth/);
+    assert.equal(IG.classify,undefined);assert.equal(IG.correctedAge,undefined);assert.equal(IG.percentile,undefined);
+    const {GrowthProfile}=require('../../src/js/services/growth-profile.js');
+    assert.equal(GrowthProfile.read({growthProfile:'intergrowth'}),'intergrowth');
+    assert.equal(GrowthProfile.read({}),'who');
+    assert.throws(()=>GrowthProfile.read({growthProfile:'guessed-preterm'}),/growthProfileInvalid/);
 });

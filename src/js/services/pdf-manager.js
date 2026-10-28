@@ -44,14 +44,18 @@ class PDFManager {
             if (r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi)) measures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const notes = [];
             for(const key of SupplementaryPDF.fields)if(SupplementaryPDF.present(c[key]))measures.push(field(key,number(c[key],1)));
-            if(r?.additionalGrowth){notes.push(t('additionalResults')+' · '+r.additionalGrowth.referenceVersion);for(const [key,v] of Object.entries(r.additionalGrowth.indicators)){const score=Number.isFinite(v.zscore)?'Z = '+number(v.zscore,2)+(typeof v.percentile==='number'?' | P '+number(v.percentile,1):'')+' | '+t(v.classification):t(v.error);notes.push(t(key)+' : '+number(v.measure,1)+' '+v.unit+' | '+score+(v.flagged?' | '+t('flagged'):''));}}
+            if(r?.additionalGrowth){notes.push(t('additionalResults')+' · '+r.additionalGrowth.referenceVersion);for(const [key,v] of Object.entries(r.additionalGrowth.indicators)){const score=Number.isFinite(v.zscore)?'Z = '+number(v.zscore,2)+(typeof v.percentile==='number'?' | P '+number(v.percentile,1):'')+' | '+t(v.classification||'intergrowthDescriptive'):t(v.error);notes.push(t(key)+' : '+number(v.measure,1)+' '+v.unit+' | '+score+(v.flagged?' | '+t('flagged'):''));}}
             if(c.muac!==undefined&&c.muac!=='')measures.push(field('muac',number(c.muac,1)+' mm'));
             if(r?.nutrition)notes.push(t(r.nutrition.category),...(r.nutrition.criteria||[]).map(t),t(r.nutrition.muac),t(r.nutrition.orientation),...r.nutrition.reasons.map(t),t('clinicalReference')+' : '+r.nutrition.reference+' v'+r.nutrition.version,...(r.nutrition.missing.length?[t('assessmentMissing')+' : '+r.nutrition.missing.map(t).join(', ')]:[]));
             let provenance=null;
             if (!r) notes.push(t('pdfUncalculated'));
             else {
-                if (r.schemaVersion===4) notes.push(t(r.referenceFamily==='CDC2000'?'cdcCoverage':'bmiReportHelp'));
-                if(r.profileContext){
+                if (r.schemaVersion===4) notes.push(t(r.referenceFamily==='INTERGROWTH2015'?'intergrowthDescriptive':r.referenceFamily==='CDC2000'?'cdcCoverage':'bmiReportHelp'));
+                if(r.intergrowthContext){
+                    const a=r.intergrowthContext.age;measures.push(field('growthProfile',t('profileINTERGROWTH')),field('postmenstrualDays',number(a.postmenstrualDays,0)),field('birthGestationDays',number(a.birthGestationDays,0)));
+                    notes.push(t('intergrowthNoScreening'),field('postmenstrualDays',number(a.postmenstrualDays,0))+' | '+field('birthGestationDays',number(a.birthGestationDays,0)));
+                    for(const [key,v] of Object.entries(r.intergrowthContext.scores))if(v.method)notes.push(t(key==='lengthForAge'?'heightForAge':key)+' | '+v.method);
+                }else if(r.profileContext){
                     measures.push(field('growthProfile',t('profileUS')),field('reportedAgeMonths',number(r.profileContext.reportedAgeInMonths,3)),field('calculationAgeMonths',number(r.ageInMonths,3)),field('agePrecision',t(r.profileContext.agePrecision)));
                     notes.push(t('profileUS')+' | '+t('reportedAgeMonths')+' : '+number(r.profileContext.reportedAgeInMonths,3)+' | '+t('calculationAgeMonths')+' : '+number(r.ageInMonths,3)+' | '+t(r.profileContext.agePrecision));
                 }
@@ -70,7 +74,7 @@ class PDFManager {
             const scores = indicators.map(key => {
                 const v = r?.[key], valid = typeof v?.zscore === 'number' && Number.isFinite(v.zscore);
                 const lines = [valid ? 'Z = ' + v.zscore.toFixed(2) : t('notCalculated')];
-                if (valid) lines.push(t(v.classification || 'unknown'));
+                if (valid) lines.push(t(v.classification || (r.referenceFamily==='INTERGROWTH2015'?'intergrowthDescriptive':'unknown')));
                 if (v?.flagged) lines.push(t('flagged'));
                 if (v?.error) lines.push(t(v.error));
                 return lines.join('\n');
@@ -80,7 +84,7 @@ class PDFManager {
                 if(r?.schemaVersion!==4||r.percentileVersion!==1||!Number.isFinite(v?.zscore))return '';
                 return typeof v.percentile==='number'&&Number.isFinite(v.percentile)&&v.percentile>0&&v.percentile<100&&!v.flagged?'P '+v.percentile.toFixed(1):'P --';
             });
-            const compactMeasures=[field('ageDays',number(c.ageDays,0)),field('weight',number(c.weight,0)),field('height',number(c.height,1)),
+            const compactMeasures=[...(r?.intergrowthContext?[field('postmenstrualDays',number(r.intergrowthContext.age.postmenstrualDays,0))]:[]),field('ageDays',number(c.ageDays,0)),field('weight',number(c.weight,0)),field('height',number(c.height,1)),
                 t(c.gender==='M'?'male':c.gender==='F'?'female':'unknown')+' | '+t(c.position==='L'?'lying':c.position==='H'?'standing':'unknown'),
                 t('pdfOedema')+' : '+t(c.oedema==='y'?'yes':c.oedema==='n'?'no':'unknown')];
             if(c.ageMode==='months')compactMeasures.push(field('ageYears',c.ageYears)+' | '+field('ageMonths',c.ageMonths),t('approximateAge'));
@@ -89,6 +93,7 @@ class PDFManager {
             if(r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi))compactMeasures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const heightPair=number(c.height,1)+(typeof r?.correctedHeight==='number'?' / '+number(r.correctedHeight,1):'');
             const briefMeasures=[number(c.weight,0)+' g | '+heightPair+' cm',number(c.ageDays,0)+' '+t('pdfDaysUnit')+' ('+t(c.ageMode||'unknown')+') | '+this.clean(c.gender||t('unknown'))+' | '+this.clean(c.position||t('unknown')),t('pdfOedema')+' : '+t(c.oedema==='y'?'yes':c.oedema==='n'?'no':'unknown')];
+            if(r?.intergrowthContext)briefMeasures.unshift(field('postmenstrualDays',number(r.intergrowthContext.age.postmenstrualDays,0)));
             if(c.ageMode==='months')briefMeasures.push(field('ageYears',c.ageYears)+' | '+field('ageMonths',c.ageMonths),t('approximateAge'));
             if(c.ageMode==='dates')briefMeasures.push(field('birthDate',c.birthDate));
             if(r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi))briefMeasures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
@@ -184,7 +189,7 @@ class PDFManager {
             autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+5,head:[scoreHead],body:scoreBody});
             const provenance=model.provenances[0];
             const noteRows=[row.notes.join('\n'),...(provenance?[[t('referenceVersion')+' : '+provenance[0],t('engineVersion')+' : '+provenance[1],t('calculatedAt')+' : '+row.calculatedAt].join('\n')]:[])].filter(Boolean);
-            autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+4,head:[[t('pdfNotes')]],body:noteRows.map(n=>[n]),styles:{...base.styles,fontSize:9.5,cellPadding:1.2}});
+            autoTable(doc,{...base,startY:doc.lastAutoTable.finalY+4,pageBreak:'avoid',head:[[t('pdfNotes')]],body:noteRows.map(n=>[n]),styles:{...base.styles,fontSize:9.5,cellPadding:1.2}});
         }
         const pages=doc.getNumberOfPages();
         for(let i=1;i<=pages;i++){

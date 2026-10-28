@@ -24,6 +24,8 @@ Cette option protège le fichier téléchargé, pas la session ouverte, le stock
 
 Références : [OWASP, stockage cryptographique](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html), [dérivation PBKDF2](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
 
-## Profil de croissance — raccordement technique en cours
+## Profils de croissance — sources 5.6.0 / moteur 4.4.0
 
-Le moteur combiné 4.3.0 et les validateurs acceptent les nouvelles visites américaines et leurs résultats CDC dans le même flux version 1, sans réécrire les visites OMS existantes. Le choix de ce profil dans l’interface, les courbes et les exports restent à raccorder avant son activation utilisateur. Les versions plus anciennes de l’application peuvent refuser les nouveaux objets plutôt que les interpréter comme des mesures OMS. La lecture de résultats enregistrés ne recalcule pas leurs valeurs à partir des tables ; le contrôle vérifie leur structure, leurs liens et leur cohérence interne, sans certifier les mesures médicales.
+OMS, profil américain explicite et INTERGROWTH postnatal utilisent le même flux version 1, sans réécrire les visites existantes. Les résultats gardent le schéma 4, leur référence, leur moteur et le contexte de profil. `ageDomainVersion` vaut 2 pour OMS, 3 pour le profil US, 4 pour INTERGROWTH. Ce dernier conserve séparément PMA, âge chronologique et gestation à la naissance lorsqu’ils sont connus, via `intergrowthContext` version 1. Un PMA directement renseigné ne fabrique pas les âges inconnus. Voir [INTERGROWTH](INTERGROWTH.md).
+
+Les applications antérieures à 5.6.0 peuvent refuser les visites INTERGROWTH ; elles ne doivent pas les lire comme des mesures OMS. La lecture d’un résultat ne recalcule pas le score : types, liens, sommes d’âges, unités, arrondis, centiles et suspensions sont contrôlés, sans certifier la vérité médicale des mesures. Import en copie et chiffrement gardent le même protocole ; aucun ancien format réintroduit.

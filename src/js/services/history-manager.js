@@ -2,6 +2,7 @@
 const NutritionHistory=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
 const SupplementaryHistory=typeof module!=='undefined'&&module.exports?require('./supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
 const ProfileHistory=typeof module!=='undefined'&&module.exports?require('./growth-profile.js').GrowthProfile:GrowthProfile;
+const IGHistory=typeof module!=='undefined'&&module.exports?require('./intergrowth-result.js').IntergrowthResult:IntergrowthResult;
 const CDCHistory=typeof module!=='undefined'&&module.exports?require('./cdc-result-validation.js').CDCResultValidation:CDCResultValidation;
 class HistoryManager {
     constructor(storage) {
@@ -15,7 +16,7 @@ class HistoryManager {
     static clone(data) { return JSON.parse(JSON.stringify(data)); }
     static hasWork(workspace) {
         const meaningfulDraft = draft => draft && (
-            ['caseId', 'name', 'ageYears', 'ageMonths', 'ageDays', 'birthDate', 'weight', 'height', 'gender', 'position',...SupplementaryHistory.fields].some(k => draft[k] !== '' && draft[k] !== undefined && draft[k] !== null)
+            ['caseId', 'name', 'ageYears', 'ageMonths', 'ageDays', 'birthDate', 'weight', 'height', 'gender', 'position','postmenstrualDays','gestationalAgeWeeks','gestationalAgeDays',...SupplementaryHistory.fields].some(k => draft[k] !== '' && draft[k] !== undefined && draft[k] !== null)
             || NutritionHistory.inputFields.some(k=>draft[k]!==undefined&&draft[k]!==null&&draft[k]!=='') || draft.oedema === 'y' || ['days', 'dates'].includes(draft.ageMode)
             || !!draft.measurementDate && draft.measurementDate !== ClinicalEngine.today()
         );
@@ -155,6 +156,7 @@ class HistoryManager {
     }
     static checkChild(child) {
         if (!child || typeof child.id !== 'string' || !child.id || child.id.length > 200 || typeof child.name !== 'string' || child.name.length > 100) throw new Error('importInvalid');
+        if(child.growthProfile==='intergrowth'){IGHistory.checkChild(child);return;}
         if(child.ageDomainVersion!==(ProfileHistory.read(child)==='us'?3:2))throw new Error('importVersion');
         const extended=true;
         NutritionHistory.normalize(child);SupplementaryHistory.normalize(child);
@@ -166,6 +168,7 @@ class HistoryManager {
         if(normalized.ageDays!==child.ageDays||normalized.totalAgeMonths!==child.totalAgeMonths)throw new Error('importInvalid');
     }
     static checkPair(child,result){
+        if(child.growthProfile==='intergrowth'||result?.referenceFamily==='INTERGROWTH2015'){IGHistory.checkPair(child,result);return;}
         if(result)NutritionHistory.check(child,result);
         if(!result)return;
         SupplementaryHistory.check(child,result.additionalGrowth,ClinicalEngine);
@@ -182,6 +185,7 @@ class HistoryManager {
         for (const key of ['status','referenceVersion','engineVersion']) if (result[key] !== undefined && (typeof result[key] !== 'string' || result[key].length > 300)) throw new Error('importInvalid');
         if (result.warnings !== undefined && (!Array.isArray(result.warnings) || result.warnings.length > 50 || result.warnings.some(w => typeof w !== 'string' || w.length > 200))) throw new Error('importInvalid');
         if(result.schemaVersion!==4)throw new Error('importVersion');
+        if(result.referenceFamily==='INTERGROWTH2015'){IGHistory.check(result);return;}
         if(!result.nutrition||result.nutrition.version!==1)throw new Error('importInvalid');
         ProfileHistory.checkContext(result);
         if(result.referenceFamily==='CDC2000'){CDCHistory.check(result);return;}
