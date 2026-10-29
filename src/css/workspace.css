@@ -364,3 +364,22 @@ th{font-size:13px;color:var(--ink)}table{font-size:13px}
 }
 @media screen and (max-width:359px){.mobile-actions-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace-topbar .workspace-context h1{font-size:13.5px}}
 @media print{.mobile-action-dock{display:none!important}}
+
+#workspace-dialog.csv-mapping-dialog{width:min(920px,calc(100vw - 24px));max-width:calc(100vw - 24px)}
+.csv-mapping-dialog .form-grid{margin-block:16px;gap:12px 20px}.csv-mapping-dialog .table-scroll{max-height:180px;overflow:auto}.csv-mapping-dialog select{width:100%;min-width:0}.csv-mapping-dialog .dialog-top{position:sticky;top:0;background:var(--surface);z-index:1}
+
+/* Keep the original labels and icon order in the mobile Actions sheet. */
+.format-desktop-label{display:none}
+@media screen and (min-width:681px){
+ .desktop-format-action .format-original-label{display:none}
+ .desktop-format-action .format-desktop-label{display:inline}
+ .desktop-format-action>.ui-icon[data-format]{order:2;width:31px;height:35px;flex-shrink:0}
+ .desktop-format-action>.format-action-label{order:1}
+ .compact-toolbar .desktop-format-action{min-height:44px;height:auto;gap:7px}
+ .csv-heading-actions .desktop-format-action{width:auto;padding:4px 9px;font-size:13px;gap:7px}
+ .csv-heading-actions .desktop-format-action>.format-action-label{display:inline}
+ .batch-actions .desktop-format-action{width:44px;min-width:44px;padding:3px;gap:0}
+ .batch-actions .desktop-format-action>.format-action-label{display:none}
+}
+
+.additional-fields,.additional-results{margin-block:12px;border-block-start:1px solid var(--line);padding-block:10px}.additional-fields>summary,.additional-results>summary{cursor:pointer;font-weight:650;color:var(--accent)}.additional-fields .form-grid{margin-block-start:12px}.additional-results .measurement-snapshot p{font-size:13px;margin:4px 0}.additional-results .centile{margin-inline-start:8px}.additional-results .hint{margin-block:8px}

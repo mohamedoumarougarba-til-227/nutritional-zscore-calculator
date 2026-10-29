@@ -1,5 +1,38 @@
 # Préparer et adopter une mise à jour
 
+## 5.7.2 — repère de continuation des rapports de lot
+
+Une fiche très longue peut continuer sur une autre page du PDF détaillé. Cette page porte maintenant « Ligne du lot N · suite » dans les trois langues, en conservant les cellules et la pagination d’AutoTable. Les notes strictement identiques sont conservées une seule fois, dans leur ordre initial ; aucune note distincte, référence, mesure ou résultat archivé n’est modifié. Les rapports compacts restent disponibles avec leur légende. Les compteurs de sauvegarde parlent de fiches de mesures enregistrées : leurs copies ne sont pas présentées comme des enfants distincts.
+
+Les essais de neuf fiches fictives OMS/CDC/INTERGROWTH ont vérifié import, compteurs techniques, pagination huit puis une, aperçu au clavier, CSV, rejet d’un import incomplet et PDF FR/AR réellement téléchargés. Voir la [matrice datée](VALIDATION_MANUELLE.md) pour les versions et limites. Moteur 4.4.0, calculs et formats de sauvegarde inchangés ; aucune impression physique ou validation clinique présumée.
+
+
+## 5.7.1 — aides par profil et état des mises à jour
+
+L’aide à l’âge et à la position suit le profil explicitement choisi : OMS, américain ou postnatal INTERGROWTH. Références et aide décrit désormais aussi les sources, domaines et limites postnatales dans les trois langues. Le message de confidentialité distingue les dossiers locaux des journaux HTTP de l’hébergeur.
+
+Une mise à jour pouvant s’activer immédiatement après le premier chargement était annoncée à tort comme échouée lorsque l’ancien worker devenait obsolète. L’interface distingue maintenant remplacement normal et installation rejetée, et propose la réouverture après sauvegarde. Les refus d’intégrité ne sont pas contournés ; historiques et caches restent conservés. L’aperçu d’une mesure PB absente affiche « Non renseigné » plutôt qu’une unité seule. Aucun calcul, seuil, référence numérique ou format de sauvegarde modifié.
+
+Deux captures réelles sur cas fictifs et une social preview éditable préparent la présentation publique ; aucun réglage GitHub n’est appliqué implicitement. Voir la [validation manuelle datée](VALIDATION_MANUELLE.md) pour la portée des essais navigateur, distincte du terrain, du lecteur d’écran et de la relecture clinique.
+
+
+## 5.7.0 — revue technique du lot et préparation d’analyse
+
+Contrôle local du lot entier : signaux de données absentes/estimées/importées/indisponibles, incohérences de référence, identités contradictoires et mesures potentiellement dupliquées. Aperçu en lecture seule, huit lignes par page, sans fusion/correction/suppression automatique. Deux CSV : revue par numéro local et préparation d’analyse sans noms/identifiants, plan de sondage explicitement absent et colonnes de sondage vides. Aucune prévalence représentative, connexion DHIS2 ou modification de calcul clinique. Moteur combiné 4.4.0 et formats de sauvegarde inchangés. Les contrôles automatiques ne remplacent pas les essais navigateur ou la relecture métier.
+
+
+## 5.6.0 — profil postnatal INTERGROWTH explicite
+
+Moteur combiné 4.4.0 : PMA direct ou dérivé avec âges distincts, trois mesures postnatales, résultats/sauvegardes/import en copie, CSV/PDF, courbes et lots séparés, FR/EN/AR. Aucun seuil clinique OMS copié, aucune transition d’âge automatique, aucune visite existante réécrite. Les mesures absentes ne s’affichent plus comme zéro. Le flux de sauvegarde reste version 1 avec contexte de visite additionnel. Voir [INTERGROWTH](../references/INTERGROWTH.md). Tests numériques/logiciels distincts de la relecture clinique et des essais navigateur/terrain ; pas de nouvelle validation TECNO.
+
+
+## Profil américain explicite — sources 5.5.0 / moteur 4.3.0
+
+Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).
+
+Contrôles numériques et modèles de sortie testés sur données fictives ; la vérification navigateur, RTL visuel, accessibilité et impression ne sont pas présumées réalisées. Pas de publication implicite de ces sources locales.
+
+
 ## Boutons nommés sur mobile - 5.2.2, 22 octobre 2026
 
 Sur mobile, un bouton Actions fixé en bas ouvre une grille compacte avec icônes et libellés courts. Calcul/ajout, sauvegarde, exports, impression, nouvelle visite et modification utilisent les mêmes commandes que sur ordinateur. Les boutons Reprendre et Nouveau restent en haut, réduits à des cibles de 44 px ; le titre reste sur une ligne et les deux états sont regroupés dessous. Le menu d’export pouvant sortir de l’écran est retiré. Le moteur et les données enregistrées ne changent pas. Les contrôles navigateur restent distincts des essais physiques TECNO.
@@ -147,3 +180,20 @@ La version 2.3.1 corrige les lots et aperçus sur les écrans étroits ; les bou
 - Variante jsPDF dédiée aux rapports, sans modules MD5, ancien RGBColor, images ou HTML inutilisés ; sources lisibles, adaptations et script de reconstruction fournis.
 - Données OMS et moteurs inchangés ; aucune migration ni transmission de dossiers d’enfants.
 - Construction Vercel conditionnée à la cohérence des notices et sources. Hébergement et forfait à contrôler séparément.
+
+## 5.3.0 — 26 octobre 2026
+
+Import CSV jusqu’à 50 000 fiches/50 Mio, association des colonnes, unités et dates explicites, découpage des grands imports en travaux de 5 000 fiches enregistrés ensemble. Calcul des lots progressif. PDF sur les lots actifs élargis. Paquet public de contrôle numérique sans installation ni oracles locaux, documentation de périmètre et recherche de références complémentaires. Aucune modification des formules OMS et aucun partage patient activé.
+
+## 5.3.1 — 26 octobre 2026
+
+- Sur PC, les boutons d’export et d’import évitent de répéter PDF/CSV : le format se lit dans l’icône, agrandie et placée après le libellé. Les commandes PDF/CSV du lot gardent seulement leur icône et leur intitulé complet au survol.
+- Les libellés, tailles et dispositions sur mobile sont conservés, y compris dans le menu Actions.
+
+## 5.4.0 — 27 octobre 2026
+
+- Indicateurs OMS facultatifs : périmètre crânien, PB pour âge, plis tricipital et sous-scapulaire ; domaines explicites, historique, CSV/PDF et courbes. Les seuils absolus PB et les calculs usuels restent inchangés ; moteur combiné 4.2.0.
+- Contrôle du format de sauvegarde isolé de sa préparation IndexedDB pour des tests publics sans base ; transaction de restauration en copie conservée.
+- Socle public synthétique de 16 tests, runner refusant zéro test, suite privée séparée et 962 cas complémentaires Decimal.
+- CI sans déploiement, contribution, sécurité, templates et documentation actuelle ; la présence du workflow ne prouve pas encore une exécution GitHub.
+- Format unique .zscore et protection .zscore.enc conservés ; aucun résultat historique recalculé et aucun backend patient ajouté.

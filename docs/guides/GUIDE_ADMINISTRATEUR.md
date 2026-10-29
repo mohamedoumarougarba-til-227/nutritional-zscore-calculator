@@ -1,14 +1,14 @@
 # Administrer et mettre à jour Z-score Niger
 
-Guide actualisé le 21 octobre 2026 pour la version 5.0.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
+Guide actuel pour les sources 5.7.2 et le moteur combiné 4.4.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
 
 ## Environnement et propriété
 
 Node.js 20 ou ultérieur suffit pour le serveur local et la préparation. `fake-indexeddb` 6.2.5 est une dépendance de tests ; aucun paquet npm n'est requis par les utilisateurs du site. R est réservé aux comparaisons scientifiques indépendantes. Ne pas installer de logiciel supplémentaire sans justification et contrôle du budget. Le plafond actif de téléchargement est de 1 Go cumulé. Les anciens plafonds cités dans les journaux historiques ne s'appliquent plus.
 
-Le dépôt Git local est créé, sur `main`, synchronisé avec le dépôt privé `mohamedoumarougarba-til-227/nutritional-zscore-calculator`. La livraison fonctionnelle 5.0.0 correspond au commit signé `cede1e4`. Avant toute modification ou commit, contrôler `git status --short`, `git branch --show-current`, `git rev-parse HEAD` et le diff indexé. Préserver les changements non liés, les données et les preuves ; aucune réécriture d'historique ou purge globale.
+Le dépôt Git local est créé, lié au dépôt public `mohamedoumarougarba-til-227/nutritional-zscore-calculator`. La livraison fonctionnelle 5.0.0 correspond au commit signé `cede1e4`. Avant toute modification ou commit, contrôler `git status --short`, `git branch --show-current`, `git rev-parse HEAD` et le diff indexé. Préserver les changements non liés, les données et les preuves ; aucune réécriture d'historique ou purge globale.
 
-Le titulaire a choisi **GPLv3** pour son code original. Conserver `COPYING`, `NOTICE.md`, les notices tierces et les archives de sources correspondantes téléchargeables. Le dépôt de développement reste privé ; les sources distribuées sont accessibles et réutilisables conformément aux licences. Voir [distribution GPL](../references/DISTRIBUTION_GPL.md).
+Le titulaire a choisi **GPLv3** pour son code original. Conserver `COPYING`, `NOTICE.md`, les notices tierces et les archives de sources correspondantes téléchargeables. Le dépôt GitHub est public ; les dossiers, audits et preuves privés restent exclus. Les sources distribuées sont réutilisables conformément aux licences. Voir [distribution GPL](../references/DISTRIBUTION_GPL.md).
 
 ## Vérifier les ressources tierces
 
@@ -51,3 +51,11 @@ Les dossiers restent dans le navigateur ; sauvegarder le code du serveur ne sauv
 Demander un cas fictif reproductible, version, appareil/navigateur, date, message et étapes. Conserver les preuves ; ne pas collecter un historique réel par défaut. Avant un import ou une récupération, consulter l'aperçu et garder l'export original. Le même fichier importé peut être signalé ; des exports différents du même travail ne constituent pas nécessairement le même fichier.
 
 Les quotas réellement disponibles, fermeture forcée, redémarrage, import via sélecteur sur Android, transfert entre téléphones et lecteur d'écran Android restent à vérifier. Utiliser la [grille terrain](../projet/VALIDATION_TERRAIN.md), sans transformer un test automatisé réussi en validation physique.
+
+## Vérification publique — 5.3.0
+
+`npm run verify:public` fonctionne à partir du clone ou des sources distribuées, sans npm install, R ou `.local`. Il vérifie les cas numériques fictifs et les résultats R conservés sous `tools/verification/`. La suite de développement et les audits historiques restent locaux. Le numéro du paquet npm suit désormais celui de l’interface ; le moteur garde sa propre version 4.1.0 puisqu’aucune formule n’a changé. Les nouveaux imports peuvent être répartis en plusieurs travaux ; vérifier également restauration, conservation des versions et exports des grands lots. Les tables complémentaires recherchées restent des sources de travail et ne sont pas actives dans 5.3.0.
+
+## Contrôles actuels
+
+`npm test` lance le socle public autonome ; `npm run test:private` conserve la suite locale distincte. Voir [CONTRIBUTING](../../CONTRIBUTING.md), [Méthode](../references/METHODE.md) et [releases](../maintenance/COMPOSANTS_ET_RELEASES.md). Une ancienne livraison signée ne démontre pas l’état du workspace courant.

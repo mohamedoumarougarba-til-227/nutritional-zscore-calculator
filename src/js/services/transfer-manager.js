@@ -21,7 +21,7 @@ class TransferManager {
             if(event.kind!=='record'||index<phase||index<0||!record||typeof record!=='object'||Array.isArray(record))throw new Error('importInvalid');phase=index;
             const key=event.store==='settings'?record.key:record.id;
             if(typeof key!=='string'||!key||event.store!=='settings'&&key.length>200||ids[event.store].has(key)||++counts[event.store]>50000)throw new Error('importInvalid');ids[event.store].add(key);
-            if(event.store==='children'){HistoryManager.checkChild(record);if(record.ageDomainVersion===2)extendedAges.set(key,record);remember(children,key);}
+            if(event.store==='children'){HistoryManager.checkChild(record);extendedAges.set(key,record);remember(children,key);}
             else if(event.store==='results'){HistoryManager.checkResult(record,ids.children);HistoryManager.checkPair(extendedAges.get(record.childId)||{},record);remember(results,key);}
             else if(event.store==='sessions'){
                 if(typeof record.name!=='string'||!Number.isFinite(Date.parse(record.createdAt))||!Array.isArray(record.children)||!Array.isArray(record.results)||record.children.some(id=>!ids.children.has(id))||record.results.some(id=>!ids.results.has(id)))throw new Error('importInvalid');
@@ -174,26 +174,32 @@ class TransferManager {
         if(event.kind!=='end'||event.checksum!==hash)throw new Error('importChecksum');
         if(JSON.stringify(event.counts)!==JSON.stringify(validator.counts)||event.recovery!==validator.recovery)throw new Error('importInvalid');
     }
+    static async inspect(file,onLine=()=>{},onProgress=()=>{}){
+        const validator=this.validator(),previews=[];let seq=0,hash='',header,ended=false;
+        for await(const line of this.lines(file)){
+            const event=HistoryManager.parse(line);if(ended)throw new Error('importInvalid');
+            if(seq===0){this.header(event);header=event;hash=await this.hash('',line);}
+            else if(event.kind==='end'){this.end(event,validator,hash);ended=true;}
+            else{validator.accept(event);hash=await this.hash(hash,line);this.previewRow(previews,event,seq);}
+            await onLine(seq++,line);
+            if(seq%16===0)onProgress(seq-1);
+        }
+        if(!ended)throw new Error('importChecksum');
+        return {header,validator,hash,lines:seq,previews};
+    }
     async prepare(file,onProgress=()=>{},options={}){
         if(!this.storage.db)throw new Error('transferStorageRequired');
-        const db=await TransferManager.openStage(),validator=TransferManager.validator(),previews=[];let seq=0,hash='',header,ended=false;
+        const db=await TransferManager.openStage();let seq=0;
         try{
             if(!TransferManager.remember(db.name)){
                 try{if(typeof indexedDB.databases!=='function'||!(await indexedDB.databases()).some(r=>r.name===db.name))throw new Error('stageDiscoveryPartial');}
                 catch(_){throw new Error('stageDiscoveryPartial');}
             }
             await TransferManager.metadata(db,'base',{fileName:String(options.fileName||file.name||'').slice(0,260),bytes:file.size,createdAt:new Date().toISOString(),source:options.source==='local'?'local':'file'});
-            for await(const line of TransferManager.lines(file)){
-                const event=HistoryManager.parse(line);if(ended)throw new Error('importInvalid');
-                if(seq===0){TransferManager.header(event);header=event;hash=await TransferManager.hash('',line);}
-                else if(event.kind==='end'){TransferManager.end(event,validator,hash);ended=true;}
-                else{validator.accept(event);hash=await TransferManager.hash(hash,line);TransferManager.previewRow(previews,event,seq);}
-                await TransferManager.storeLine(db,seq++,line);
-                if(seq%16===0)onProgress(seq-1);
-            }
-            if(!ended)throw new Error('importChecksum');
-            try{await TransferManager.metadata(db,'ready',{fingerprint:'stream:'+hash,lines:seq});}catch(_){}
-            return this.prepared(db,seq,header,validator,hash,previews);
+            const verified=await TransferManager.inspect(file,async(index,line)=>{await TransferManager.storeLine(db,index,line);seq=index+1;},onProgress);
+            const {header,validator,hash,lines,previews}=verified;
+            try{await TransferManager.metadata(db,'ready',{fingerprint:'stream:'+hash,lines});}catch(_){}
+            return this.prepared(db,lines,header,validator,hash,previews);
         }catch(error){try{await TransferManager.metadata(db,'failed',{at:new Date().toISOString(),lines:seq});}catch(_){}db.close();throw error;}
     }
     release(prepared){const stage=this.stages.get(prepared);if(stage){stage.db.close();this.stages.delete(prepared);}}

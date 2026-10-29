@@ -1,0 +1,49 @@
+{
+  "retrievedUTC": "2026-10-26T17:06:44.439166+00:00",
+  "whoCommit": "b776d8a12b1c97369c748b561159fd2ec4f4db58",
+  "files": [
+    {
+      "file": "who-additional/hcanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/hcanthro.txt",
+      "bytes": 91947,
+      "sha256": "e794e46f06b91223ad2c6435148dc08794a1d75b67613a652c3151201a98bf7c"
+    },
+    {
+      "file": "who-additional/acanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/acanthro.txt",
+      "bytes": 107829,
+      "sha256": "1b588802bc66534abb42ead27fe6f8e8d62b26967d764eecf16d0f4a8660a7bd"
+    },
+    {
+      "file": "who-additional/tsanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/tsanthro.txt",
+      "bytes": 104527,
+      "sha256": "babc2a2a6252080f4ad9ca39a27e59248142820add3151e76d959dd104146a48"
+    },
+    {
+      "file": "who-additional/ssanthro.txt",
+      "url": "https://raw.githubusercontent.com/WorldHealthOrganization/anthro/b776d8a12b1c97369c748b561159fd2ec4f4db58/data-raw/growthstandards/ssanthro.txt",
+      "bytes": 104662,
+      "sha256": "3e6e1bce0cd87998b5f061a44730860f1393cf8f6b1f5545f80b372085b40ea1"
+    },
+    {
+      "file": "cdc/wtage.csv",
+      "url": "https://www.cdc.gov/growthcharts/data/zscore/wtage.csv?download=1",
+      "bytes": 66456,
+      "sha256": "3406c9d125bcb69c062a9e84eb8c0209bfe9346542bdc1d308643750dcc241b7"
+    },
+    {
+      "file": "cdc/statage.csv",
+      "url": "https://www.cdc.gov/growthcharts/data/zscore/statage.csv?download=1",
+      "bytes": 66087,
+      "sha256": "45130d2a9d7c50c54a47e7ba626b66c61d4554bc2d901198cedd9419a53f7251"
+    },
+    {
+      "file": "cdc/bmiagerev.csv",
+      "url": "https://www.cdc.gov/growthcharts/data/zscore/bmiagerev.csv?download=1",
+      "bytes": 72022,
+      "sha256": "cbeea0e8d500ee15c652f3fdc45bcd02cb9c15d4d1e86f4d8048bbfea8d166e5"
+    }
+  ],
+  "purpose": "Source references; retrieval alone does not activate a clinical indicator."
+}

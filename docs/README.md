@@ -1,5 +1,20 @@
 # Documentation
 
+Les statuts ci-dessous distinguent l’état actuel des études et résultats datés. Un ancien nombre de tests ne prouve pas une réexécution sur le checkout courant.
+
+| Statut | Documents | Portée |
+|---|---|---|
+| CURRENT | [Méthode](references/METHODE.md), guides, format de sauvegarde, PB/orientation, interopérabilité et distribution GPL | Comportement, limites et droits courants |
+| CURRENT | [Composants et releases](maintenance/COMPOSANTS_ET_RELEASES.md), [validation manuelle](maintenance/VALIDATION_MANUELLE.md), vérification publique | Procédures ; une matrice vide n’est pas un essai réussi |
+| CURRENT, confirmations à obtenir | Références nationales et références complémentaires | Distinguer références actives, recherchées et protocole à authentifier |
+| CURRENT | [CDC](references/CDC.md) | Profil américain explicite dans les sources 5.7.2 ; portée, méthodes et vérifications distinctes des essais navigateur/terrain |
+| CURRENT | [INTERGROWTH](references/INTERGROWTH.md) | Profil postnatal explicite ; PMA distinct, méthodes, stockage/export et limites |
+| HISTORICAL | Mises à jour, préparation initiale de publication, sélection Git initiale | États et décisions datés ; CONTRIBUTING décrit la procédure actuelle |
+| HISTORICAL / SUPERSEDED | Audit des droits et options propriétaires de DROITS_ET_LICENCES | COPYING, NOTICE et distribution GPL font foi pour la licence courante |
+| MAINTAINER ONLY | `docs/projet/`, `.local/`, tests privés | Plans, entretiens, audits et terrain ; exclus de la distribution publique |
+
+[Contribuer](../CONTRIBUTING.md) · [Sécurité](../SECURITY.md).
+
 - [Guide utilisateur](guides/GUIDE_UTILISATEUR.md)
 - [Guide administrateur](guides/GUIDE_ADMINISTRATEUR.md)
 - [Format des sauvegardes](references/FORMAT_SAUVEGARDE.md)
@@ -13,3 +28,8 @@ Le dossier projet contient le plan, les états de validation et l’ancien READM
 
 - [PB et orientation](references/EVALUATION_NUTRITIONNELLE.md)
 - [Rapports agrégés / DHIS2](references/INTEROPERABILITE.md)
+
+- [Périmètre et vérifications reproductibles](guides/PERIMETRE_ET_VERIFICATION.md)
+- [Référentiels complémentaires identifiés](references/REFERENTIELS_COMPLEMENTAIRES.md)
+
+- [Présentation publique, captures et réglages GitHub préparés](maintenance/PRESENTATION_PUBLIQUE.md)
