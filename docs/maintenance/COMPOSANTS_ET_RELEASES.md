@@ -8,9 +8,9 @@ CURRENT — procédures de maintenance ; les résultats d’anciens audits ne so
 |---|---|
 | Interface | `WorkspaceApp.version`, alignée avec `package.json` et le package-lock |
 | Moteur combiné | `GrowthEngine.version`, conservée dans les résultats |
-| Références | Identifiants et empreintes des manifestes OMS et CDC ; distincts du moteur |
+| Références | Identifiants/empreintes des manifestes OMS et CDC et code postnatal INTERGROWTH épinglé ; distincts du moteur |
 | Sauvegarde | Flux `zscore-niger-stream` version 1 ; enveloppe facultative `ZSCOREENC1` |
-| Résultat/espace de travail | Schéma de résultat 4 ; workspace 1 ; domaine d’âge 2 OMS / 3 profil américain ; contexte de profil 1 ; complément facultatif 1 |
+| Résultat/espace de travail | Schéma de résultat 4 ; workspace 1 ; domaine d’âge 2 OMS / 3 profil américain / 4 postnatal INTERGROWTH ; contextes de profil/visite 1 ; complément facultatif 1 |
 | Paquet/offline | ID SHA-256 de `src/release-manifest.json` et worker généré |
 
 Les schémas sont des structures internes du format courant, pas des options d’anciens formats proposées à l’utilisateur. Un changement de schéma exige une analyse de compatibilité ; aucune suppression de sauvegarde ni conversion silencieuse. `private: true` dans package.json empêche une publication npm accidentelle et ne décrit pas la visibilité GitHub.

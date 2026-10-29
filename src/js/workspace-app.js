@@ -7,7 +7,7 @@ const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/
 const PretermUI=typeof module!=='undefined'&&module.exports?require('./services/reference-intergrowth.js').IntergrowthPostnatal:globalThis.IntergrowthPostnatal;
 const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
 class WorkspaceApp {
-    static version = '5.7.1';
+    static version = '5.7.2';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});

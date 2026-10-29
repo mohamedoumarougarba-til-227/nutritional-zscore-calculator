@@ -1,5 +1,12 @@
 # Préparer et adopter une mise à jour
 
+## 5.7.2 — repère de continuation des rapports de lot
+
+Une fiche très longue peut continuer sur une autre page du PDF détaillé. Cette page porte maintenant « Ligne du lot N · suite » dans les trois langues, en conservant les cellules et la pagination d’AutoTable. Les notes strictement identiques sont conservées une seule fois, dans leur ordre initial ; aucune note distincte, référence, mesure ou résultat archivé n’est modifié. Les rapports compacts restent disponibles avec leur légende. Les compteurs de sauvegarde parlent de fiches de mesures enregistrées : leurs copies ne sont pas présentées comme des enfants distincts.
+
+Les essais de neuf fiches fictives OMS/CDC/INTERGROWTH ont vérifié import, compteurs techniques, pagination huit puis une, aperçu au clavier, CSV, rejet d’un import incomplet et PDF FR/AR réellement téléchargés. Voir la [matrice datée](VALIDATION_MANUELLE.md) pour les versions et limites. Moteur 4.4.0, calculs et formats de sauvegarde inchangés ; aucune impression physique ou validation clinique présumée.
+
+
 ## 5.7.1 — aides par profil et état des mises à jour
 
 L’aide à l’âge et à la position suit le profil explicitement choisi : OMS, américain ou postnatal INTERGROWTH. Références et aide décrit désormais aussi les sources, domaines et limites postnatales dans les trois langues. Le message de confidentialité distingue les dossiers locaux des journaux HTTP de l’hébergeur.

@@ -1,6 +1,6 @@
 {
   "name": "nutritional-zscore-calculator",
-  "version": "5.7.1",
+  "version": "5.7.2",
   "private": true,
   "description": "Calcul de croissance OMS local-first FR/EN/AR, sans compte ni dependance reseau du moteur",
   "scripts": {

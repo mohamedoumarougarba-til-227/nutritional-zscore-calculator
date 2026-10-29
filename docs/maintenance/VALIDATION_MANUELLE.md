@@ -55,10 +55,35 @@ Navigateur intégré Codex, moteur Chromium, fenêtre réellement observée envi
 Les [captures publiques](PRESENTATION_PUBLIQUE.md) ne contiennent que ces cas synthétiques. Les traces techniques détaillées restent privées. Aucun essai physique, validation clinique, certification WCAG, mesure de connexion faible ou impression papier n’est déduit de ces observations.
 
 
-## Scénarios additionnels 5.7.0 — NOT RUN sur navigateur
+## Scénarios additionnels introduits en 5.7.0 — grille historique, portée exécutée ci-dessous
 
 - Profil INTERGROWTH : PMA direct/âges dérivés, mesure partielle, référence conservée, retour à la saisie, nouvelle visite sans ancien PMA réutilisé, sauvegarde et PDF FR/EN/AR. Contrôler au clavier les champs affichés et le focus.
 - Contrôle du lot : neuf lignes fictives importées, pagination huit puis une, aperçu en lecture seule, fermeture du dialogue et retour au bouton ; modifier une mesure et vérifier la mise à jour du contrôle sans effacer le travail.
 - Même identifiant/date : conserver deux visites légitimes, deux mesures identiques et une identité contradictoire. Vérifier les différents signaux, la traduction et l’absence d’exclusion automatique des agrégats.
 - CSV de préparation : retrouver valeurs brutes/arrondies et références distinctes OMS/CDC/INTERGROWTH ; noms/identifiants absents, âges inconnus vides, colonnes de sondage vides. Ouvrir dans un tableur avec une donnée fictive commençant par `=` pour vérifier qu’elle reste du texte.
 - Mobile/RTL : section repliée, libellés complets, boutons/pagination sans débordement. Ces observations restent à exécuter sur une surface autorisée, sans TECNO.
+
+
+## Lot mixte de neuf fiches — observations du 29 octobre 2026
+
+Essai desktop dans le navigateur intégré, versions 5.7.1 puis patch PDF 5.7.2, moteur 4.4.0. Fenêtre réellement observée 1553 × 1336 CSS px pendant une partie du parcours ; aucun redimensionnement mobile revendiqué. Données synthétiques uniquement, mesure du 2026-10-29 sauf la fiche contradictoire du 2026-10-28.
+
+Le lot comprend trois mesures OMS d’un même identifiant fictif (deux identiques, une de sexe différent), une mesure sans identifiant, un profil américain à trois ans, deux visites postnatales à PMA 224 jours (dérivé et direct), un profil OMS à douze ans et un nourrisson d’un mois. Les tailles, poids et autres champs nécessaires sont présents dans chaque cas valide. Un nom fictif commence par `=1+1` pour tester l’échappement CSV.
+
+| Scénario | Résultat observé | Portée |
+|---|---|---|
+| Import et calcul | PASS : neuf lignes calculées ; références OMS 2006/2007, CDC et postnatale conservées | Petit lot ; pas un benchmark 50 000 lignes |
+| Revue technique | PASS : neuf lignes signalées, sept âges estimés, un PMA seul, un identifiant absent ; conflit d’identité sur trois lignes, dates répétées sur quatre, mesures identiques sur deux | Signaux chevauchants ; aucun dossier fusionné ou exclu |
+| Pagination indépendante | PASS : contrôle huit lignes puis une, distinct des pages du tableau principal ; même résultat en arabe | Numéros de lignes du lot, pas enfants uniques |
+| Aperçu au clavier | PASS : Entrée ouvre la ligne neuf, Échap ferme et rend le focus au bouton de cette ligne ; page du contrôle conservée | Un dialogue, pas tout le clavier/lecteur d’écran |
+| PMA direct | PASS : PMA 224 affiché ; âge chronologique et gestation inconnus restent « Non renseigné » | Pas d’âge inventé à partir du PMA seul |
+| Conservation des résultats | PASS : CSV de résultats strictement identique avant/après les aperçus et après changement de langue/rejet de fichier | Pas de réécriture des valeurs ni des dates de calcul |
+| Compteurs de sauvegarde | Libellés corrigés en « fiches »/« measurement records »/« سجلات قياس » dans les trois langues | Les copies et fiches ne représentent pas des personnes distinctes |
+| CSV préparatoire | PASS : neuf lignes/105 colonnes, mêmes scores et références, aucun nom/identifiant/date précise ; sondage non fourni, grappe/strate/poids vides | Pas de garantie d’anonymat, analyse représentative ou mapping DHIS2 validé |
+| Comparaison navigateur/Node | Même calcul et mêmes signaux ; différence brute maximale 1,4211e−14, valeurs arrondies identiques | Deux runtimes du même code, pas un oracle clinique indépendant |
+| Formule CSV | PASS : nom exporté avec apostrophe protectrice avant `=1+1` | Fichier parsé ; ouverture dans Excel/LibreOffice non exécutée |
+| Import incomplet | PASS : œdèmes vides à la ligne cinq rejetés avec message arabe ; neuf résultats antérieurs inchangés | Aucun ajout partiel, pas d’hypothèse « œdèmes absents » |
+| FR/EN/AR | PASS : libellés et signaux traduits, compteur conservé ; RTL sans débordement horizontal au format desktop observé | Ni smartphone physique ni relecture linguistique professionnelle |
+| PDF | Fichiers détaillés FR/AR et compact AR effectivement téléchargés ; pages rendues et inspectées. Défaut de repère sur continuation trouvé et corrigé en 5.7.2 ; notes uniques et contexte conservés | Rendus numériques ; aucune impression papier. Le rapport détaillé peut garder des fiches sur plusieurs pages |
+
+La grille historique n’est pas intégralement terminée : modification d’une fiche au sein du lot, très gros import, toutes les langues/layouts du PDF au navigateur, lecteurs d’écran, mobile réel et quotas restent des scénarios distincts. Les preuves et fichiers fictifs détaillés restent privés ; les droits et l’architecture locale sont inchangés.

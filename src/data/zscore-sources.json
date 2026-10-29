@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.7.1",
+  "version": "5.7.2",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 8239717,
-  "sha256": "1f04a6839dce4fafaf2c71dc9de2a9c18b55ea3c9a2ce23be10d9e4c0ce633b0",
+  "bytes": 8248119,
+  "sha256": "cdb99674e2e1389c600b4cd02fed774cb7090fd084ecc66b73d8ef887bccec22",
   "files": [
     {
       "file": ".gitattributes",
@@ -54,7 +54,7 @@
     {
       "file": "README.md",
       "bytes": 10140,
-      "sha256": "0aa20981e38a765e32a0c29056ac02cab47daf13b0dd0f96cf6422204092bd09"
+      "sha256": "d0b6f3da5d40455bee22f95a4bb1796178ab67fe6045d9e82842249af8e8abd0"
     },
     {
       "file": "SECURITY.md",
@@ -69,7 +69,7 @@
     {
       "file": "docs/README.md",
       "bytes": 2856,
-      "sha256": "bac3bad29ea32cdb5e679a0d3bf428464f9f0948049c0f805c57daf5dd2ef78a"
+      "sha256": "1983946fa5b7ca8d3f2222ef3c204271e4f93b2f7356463995f5750c4313c217"
     },
     {
       "file": "docs/assets/individual-fr.jpg",
@@ -94,27 +94,27 @@
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "70b992b3aa648862c45c3feada7f933e6b9709c9f7353818a925b195374f5bc0"
+      "sha256": "3f486d47d3408d9f9720696380f1ed92845a1b28249cd96186be4e1112dbca7c"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
       "bytes": 13421,
-      "sha256": "fab4db5ba6adb8268d674539b883a03d4d924b7d14ac74fdbb9848f939a9dd27"
+      "sha256": "5e61d9c01cc5546265d729b230b1e0e8abcefd7647b359e86eabc200fa841bc5"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
       "bytes": 5374,
-      "sha256": "76a4f736c0e927d303d0b54976dde62676ab40befe8252dd000612ac53498762"
+      "sha256": "783eddcd5aa2ece79eb3fcca90b99cb881094da3b7595c5d2427be72010ef528"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
-      "bytes": 5671,
-      "sha256": "bea72416004ca70f84ec900629cce7dd95d18ac8937790ee390ebc9027610837"
+      "bytes": 5742,
+      "sha256": "18a95bd35aa3a2f150309d445227333c2b64589ccb8ce87f7c24d0ec1888ee84"
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
-      "bytes": 31557,
-      "sha256": "bb3ace5b652f136b8bbc5906d3ae733e6ae2407a7503cac428c5821dcfd3884f"
+      "bytes": 32634,
+      "sha256": "8941821d0bf447ead35b71570413b19bfdf3dfbbdcbfdc2bf797dfc1f57fc7a4"
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
@@ -133,8 +133,8 @@
     },
     {
       "file": "docs/maintenance/VALIDATION_MANUELLE.md",
-      "bytes": 8636,
-      "sha256": "7c041af29f3270df5369dc3aa102ff021064a93d5436e79445424c67f7f04d47"
+      "bytes": 12667,
+      "sha256": "479b60a1daee0f9c0edcc8a95ce0433bf338ef978b2d121276fa5acc16034e0b"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",
@@ -144,7 +144,7 @@
     {
       "file": "docs/references/CDC.md",
       "bytes": 9943,
-      "sha256": "b0c70fcf805323931a8726f9638bc021e607c2c13ae1fabb5eb763c79023aca0"
+      "sha256": "d5d12d978f0f497562559d39f6cf7b77c9aa066937bfd1f445587aa5e73bde3f"
     },
     {
       "file": "docs/references/DISTRIBUTION_GPL.md",
@@ -169,7 +169,7 @@
     {
       "file": "docs/references/INTERGROWTH.md",
       "bytes": 6845,
-      "sha256": "46d67b6073c46016f6c3e52d6834b26e371f387c6b85f9c816928eadf09eeb37"
+      "sha256": "baf9c26f32cf8a53912f150cac010bdb4101b6f9b617edf73d0d484a7af8c628"
     },
     {
       "file": "docs/references/INTEROPERABILITE.md",
@@ -179,7 +179,7 @@
     {
       "file": "docs/references/METHODE.md",
       "bytes": 6879,
-      "sha256": "04b4dcdd462d6fa19481b59e02a436742795f21c0c635a597f1bcc9c82cd72ff"
+      "sha256": "fca1c3255956f9a189308af266e28740b329e8111bb953732615ce1c581b4237"
     },
     {
       "file": "docs/references/REFERENCES_NATIONALES.md",
@@ -194,12 +194,12 @@
     {
       "file": "package-lock.json",
       "bytes": 720,
-      "sha256": "c6ec3cae44228bb98916d0089ed800c9a952184c6907b2e5b1117e6d93185c09"
+      "sha256": "18a493a059e92ebe5ae853cdc600e6293431f9c5a43e8de82c91da21a37a7fb6"
     },
     {
       "file": "package.json",
       "bytes": 983,
-      "sha256": "079cd1c31433c27d84567e90eb1945159837d5da54e9c15ee83f35488737e72e"
+      "sha256": "888b43fee120dba19a95db7dccb81d5077b5d0302dc18dfe26a39176f342c85f"
     },
     {
       "file": "src/assets/icons/icon-128.png",
@@ -278,8 +278,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 169925,
-      "sha256": "3a92ed201014c68f9f6739a0a20a8cebca9943fb33deb3213eabefcff45230d5"
+      "bytes": 170139,
+      "sha256": "4b3680db3d9221e544c4a2b5329e19b842236f1c8fe98225873ae36f5b191cb5"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -383,8 +383,8 @@
     },
     {
       "file": "src/js/services/pdf-manager.js",
-      "bytes": 20118,
-      "sha256": "820efa8623089921f3f3df94121a8bba26526c3a18598e96b3f91822cd0e7535"
+      "bytes": 21295,
+      "sha256": "8fc014e0be5b9a6126d3fa13959e846698e578cf269a53b485968add2f5ec9ae"
     },
     {
       "file": "src/js/services/reference-2007.js",
@@ -424,7 +424,7 @@
     {
       "file": "src/js/workspace-app.js",
       "bytes": 131544,
-      "sha256": "591be6224099f9c9d8ffbf8fc42b29ad17b17e153c79a802fe45bb2c4c8eb7db"
+      "sha256": "37379b59e82c3411f0f2d86c89f9f448ad64ef8a97917df22bbbe35d8bf8349d"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -528,8 +528,8 @@
     },
     {
       "file": "tools/public-tests/public.test.cjs",
-      "bytes": 19367,
-      "sha256": "eb16cde5a3c3697c811d3bc466fc2755ce311622f0fdbd3ab445bf98e1300f0c"
+      "bytes": 21199,
+      "sha256": "8a97b652b8b0eccbe9170e99aaae92004e11ed457aa9f53dd892a05ffb2cb3ce"
     },
     {
       "file": "tools/public-tests/reporting.test.cjs",

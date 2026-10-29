@@ -236,3 +236,29 @@ test('history previews distinguish an unknown MUAC from a measured value in FR E
         assert.ok(known.includes(app.t('muac')+' : '+app.number(114,1)+' mm'));
     }
 });
+
+test('PDF notes retain distinct warnings and provenance while removing exact repetitions',()=>{
+    const input=engine.calculate(example()),before=JSON.stringify(input);
+    input.result.warnings=['estimatedAge','estimatedAge'];
+    for(const language of ['fr','en','ar']){
+        const model=PDFManager.model([input],{language,translations}),notes=model.rows[0].notes;
+        assert.equal(notes.length,new Set(notes).size);
+        assert.equal(notes.filter(n=>n===translations[language].estimatedAge).length,1);
+        assert.ok(notes.includes(translations[language][input.result.nutrition.category]));
+        assert.ok(notes.some(n=>n.includes(input.result.nutrition.reference)));
+        assert.equal(model.provenances[0][0],input.result.referenceVersion);
+        assert.equal(model.rows[0].scores[0].split('\n')[0],'Z = -1.15');
+    }
+    assert.equal(input.result.warnings.length,2,'reporting never rewrites the archived input');
+    assert.ok(before.includes('FICTIF-PUBLIC'));
+});
+
+test('PDF continuation markers use the original lot row in LTR and RTL and ignore ordinary rows',()=>{
+    const raw=['6','FICTIF','stored measurements','notes'],before=JSON.stringify(raw);
+    assert.equal(PDFManager.continuedRowIndex({section:'body',row:{index:-1,raw}}),'6');
+    assert.equal(PDFManager.continuedRowIndex({section:'body',row:{index:-1,raw:[...raw].reverse()}},true),'6');
+    for(const data of [null,{}, {section:'head',row:{index:-1,raw}}, {section:'body',row:{index:5,raw}},
+        {section:'body',row:{index:-1,raw:['<FICTIF>']}}, {section:'body',row:{index:-1,raw:{}}}])assert.equal(PDFManager.continuedRowIndex(data),null);
+    assert.equal(JSON.stringify(raw),before);
+    for(const language of ['fr','en','ar'])assert.ok(translations[language].pdfRowContinuation.replace('{number}','6').includes('6'));
+});

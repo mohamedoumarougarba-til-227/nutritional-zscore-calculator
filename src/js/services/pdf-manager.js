@@ -98,7 +98,7 @@ class PDFManager {
             if(c.ageMode==='dates')briefMeasures.push(field('birthDate',c.birthDate));
             if(r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi))briefMeasures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             if(c.muac!==undefined&&c.muac!==''){const pb=field('muac',number(c.muac,1)+' mm');compactMeasures.push(pb);briefMeasures.push(pb);}
-            return {index:i+1,identity,measures,compactMeasures,briefMeasures,briefIdentity:[this.clean(c.name||t('unknown')),this.clean(c.caseId||t('unknown'))],measurementDate:this.clean(c.measurementDate||t('unknown')),scores,percentiles,notes,provenance,calculatedAt:this.clean(r?.calculatedAt||t('unknown'))};
+            return {index:i+1,identity,measures,compactMeasures,briefMeasures,briefIdentity:[this.clean(c.name||t('unknown')),this.clean(c.caseId||t('unknown'))],measurementDate:this.clean(c.measurementDate||t('unknown')),scores,percentiles,notes:[...new Set(notes.filter(Boolean))],provenance,calculatedAt:this.clean(r?.calculatedAt||t('unknown'))};
         });
         return {language, t, indicators, rows, stale, provenances,keys:['pdfNumber','pdfIdentity','pdfMeasures',...indicators,'pdfNotes']};
     }
@@ -115,6 +115,13 @@ class PDFManager {
         if(!p)return score;
         const newline=score.indexOf('\n');
         return newline<0?score+' | '+p:score.slice(0,newline)+' | '+p+score.slice(newline);
+    }
+    // AutoTable 5 marks split remainder rows with index -1 and keeps the original
+    // raw row. Its record number remains unambiguous even when other cells are empty.
+    static continuedRowIndex(data, rtl = false) {
+        if(data?.section!=='body'||data.row?.index!==-1||!Array.isArray(data.row.raw))return null;
+        const raw=data.row.raw,index=raw[rtl?raw.length-1:0];
+        return typeof index==='string'&&/^[1-9]\d*$/.test(index)?index:null;
     }
     static build(entries, options, { jsPDF, autoTable, fonts, now = new Date() }) {
         if (!jsPDF || !autoTable || !fonts?.[0] || !fonts?.[1]) throw new Error('pdfUnavailable');
@@ -179,7 +186,17 @@ class PDFManager {
                 widths=model.indicators.length===4?[9,40,48,29,29,29,29,60]:model.indicators.length===2?[9,45,56,51,51,61]:[9,45,56,34,34,34,61];head=model.keys.map(t);body=rows.map(r=>[String(r.index),r.identity.join('\n'),r.compactMeasures.join('\n'),...r.scores.map((s,i)=>this.scoreWithPercentile(r,i)),[r.provenance||'',r.calculatedAt,...r.notes].join('\n')]);
             }
             if(rtl){head.reverse();body=body.map(r=>r.reverse());widths.reverse();}
-            autoTable(doc,{...base,startY:y,styles:{...base.styles,fontSize:compact?9:10,cellPadding:compact?1:1.5},head:[head],body,columnStyles:Object.fromEntries(widths.map((cellWidth,i)=>[i,{cellWidth}]))});
+            const continuedPages=new Set();
+            autoTable(doc,{...base,startY:y,styles:{...base.styles,fontSize:compact?9:10,cellPadding:compact?1:1.5},head:[head],body,columnStyles:Object.fromEntries(widths.map((cellWidth,i)=>[i,{cellWidth}])),
+                didDrawCell:data=>{
+                    const index=this.continuedRowIndex(data,rtl),page=doc.internal.getCurrentPageInfo().pageNumber;
+                    if(index===null||continuedPages.has(page))return;
+                    continuedPages.add(page);
+                    const size=doc.getFontSize(),color=doc.getTextColor();
+                    doc.setFontSize(8);doc.setTextColor(35);
+                    doc.text(safe(t('pdfRowContinuation').replace('{number}',index)),rtl?width-margin:margin,27.5,{align:rtl?'right':'left'});
+                    doc.setFontSize(size);doc.setTextColor(color);
+                }});
         }else{
             const row=rows[0],values=[...row.identity,...row.measures];
             autoTable(doc,{...base,head:[[t('pdfMeasures')]],body:values.map(v=>[v])});

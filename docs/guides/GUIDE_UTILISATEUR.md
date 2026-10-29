@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.7.1
+# Guide utilisateur — Z-score Niger 5.7.2
 
 ## Relire un lot et préparer une analyse
 
@@ -12,7 +12,7 @@ Télécharger le contrôle des lignes pour retrouver leurs numéros dans ce trav
 Sélectionner explicitement ce profil dans les réglages pour les nouveaux travaux, ou dans la référence de la visite. Entrer le PMA exact en jours (189–448), ou l’âge gestationnel à la naissance et l’âge chronologique exact (jours/deux dates). Les mois estimés ne sont pas convertis. Renseigner au moins un poids en g, une longueur couchée en cm ou un périmètre crânien en cm. Les âges inconnus restent inconnus. Les résultats décrivent une position dans cette référence postnatale, sans catégorie de diagnostic OMS ni admission/prescription. Naissance, perte/reprise de poids et PMA avant 32 semaines demandent une interprétation particulière avec le soignant. Voir [méthode et limites](../references/INTERGROWTH.md).
 
 
-## Profil américain explicite — sources 5.7.1 / moteur 4.4.0
+## Profil américain explicite — sources 5.7.2 / moteur 4.4.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).
 

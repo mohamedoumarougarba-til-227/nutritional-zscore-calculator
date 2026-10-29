@@ -99,7 +99,7 @@
     "batchIntro": "Ajoutez les mesures une à une ou importez un CSV. Chaque entrée est vérifiée avant ajout.",
     "batchList": "Enfants du lot",
     "emptyBatch": "Le lot est vide. Ajoutez un premier enfant.",
-    "count": "enfant(s)",
+    "count": "fiche(s)",
     "computeBatch": "Calculer le lot",
     "csvHelp": "CSV, point-virgule ou tabulation. Les colonnes peuvent être associées aux champs ; kg/g, m/cm/mm et formats de dates sont choisis explicitement. Jusqu’à 50 Mio et 50 000 fiches, réparties en travaux de 5 000. Le fichier est vérifié avant ajout ; une erreur n’ajoute aucune ligne.",
     "csvTemplate": "Télécharger un modèle CSV",
@@ -134,7 +134,7 @@
     "confirmImport": "Ajouter à l’historique",
     "cancel": "Annuler",
     "sessions": "sessions",
-    "children": "enfants enregistrés",
+    "children": "fiches de mesures enregistrées",
     "results": "résultats enregistrés",
     "importDone": "Sauvegarde ajoutée à l’historique",
     "fileTooLarge": "Le fichier dépasse 50 Mo.",
@@ -650,7 +650,8 @@
     "usAgeHelp": "Profil américain explicite : OMS avant 24 mois, puis CDC de 24 à moins de 240 mois. Les années/mois déclarent des mois révolus ; le calcul CDC utilise alors +0,5 mois. Les dates et les jours exacts ne reçoivent pas cet ajout. Le profil et la précision sont conservés par visite.",
     "sourceIntergrowth": "INTERGROWTH : courbes postnatales des prématurés",
     "sourceIntergrowthUse": "INTERGROWTH : contexte d’utilisation",
-    "sourceIntergrowthCode": "Équations postnatales GIGS et licence GPL"
+    "sourceIntergrowthCode": "Équations postnatales GIGS et licence GPL",
+    "pdfRowContinuation": "Ligne du lot {number} · suite"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -752,7 +753,7 @@
     "batchIntro": "Add measurements one at a time or import CSV. Every entry is checked before adding.",
     "batchList": "Children in the batch",
     "emptyBatch": "The batch is empty. Add the first child.",
-    "count": "child(ren)",
+    "count": "record(s)",
     "computeBatch": "Calculate batch",
     "csvHelp": "CSV, semicolon or tab-separated data. Map columns and explicitly select kg/g, m/cm/mm and date formats. Up to 50 MiB and 50,000 records, split into workspaces of 5,000. The file is checked before adding; an error adds no rows.",
     "csvTemplate": "Download CSV template",
@@ -787,7 +788,7 @@
     "confirmImport": "Add to history",
     "cancel": "Cancel",
     "sessions": "sessions",
-    "children": "saved children",
+    "children": "saved measurement records",
     "results": "saved results",
     "importDone": "Backup added to history",
     "fileTooLarge": "The file exceeds 50 MB.",
@@ -1303,7 +1304,8 @@
     "usAgeHelp": "Explicit US profile: WHO below 24 months, then CDC from 24 to under 240 months. Years/months report completed months; CDC calculation then adds 0.5 month. Exact dates or days receive no such addition. Profile and precision are stored per visit.",
     "sourceIntergrowth": "INTERGROWTH: preterm postnatal curves",
     "sourceIntergrowthUse": "INTERGROWTH: context of use",
-    "sourceIntergrowthCode": "GIGS postnatal equations and GPL licence"
+    "sourceIntergrowthCode": "GIGS postnatal equations and GPL licence",
+    "pdfRowContinuation": "Lot row {number} · continued"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1405,7 +1407,7 @@
     "batchIntro": "أضف القياسات واحدة تلو الأخرى أو استورد CSV. يُتحقق من كل إدخال قبل إضافته.",
     "batchList": "أطفال المجموعة",
     "emptyBatch": "المجموعة فارغة. أضف الطفل الأول.",
-    "count": "طفل / أطفال",
+    "count": "سجل / سجلات",
     "computeBatch": "احسب المجموعة",
     "csvHelp": "CSV أو بيانات مفصولة بفاصلة منقوطة أو علامة جدولة. اربط الأعمدة واختر وحدات القياس والتواريخ بوضوح. حتى 50 ميبيبايت و50000 سجل، مقسّمة إلى أعمال من 5000 سجل. يُفحص الملف قبل الإضافة؛ لا تُضاف أي صفوف عند وجود خطأ.",
     "csvTemplate": "تنزيل نموذج CSV",
@@ -1440,7 +1442,7 @@
     "confirmImport": "أضف إلى السجل",
     "cancel": "إلغاء",
     "sessions": "جلسات",
-    "children": "أطفال محفوظون",
+    "children": "سجلات قياس محفوظة",
     "results": "نتائج محفوظة",
     "importDone": "أُضيفت النسخة إلى السجل",
     "fileTooLarge": "يتجاوز الملف 50 ميغابايت.",
@@ -1956,6 +1958,7 @@
     "usAgeHelp": "الملف الأمريكي الصريح: منظمة الصحة العالمية قبل 24 شهرًا، ثم CDC من 24 إلى أقل من 240 شهرًا. تُعبّر السنوات والأشهر عن أشهر مكتملة، فيضيف حساب CDC حينها 0.5 شهر. لا تضاف هذه القيمة إلى التواريخ أو الأيام الدقيقة. يُحفظ الملف ودقة العمر لكل زيارة.",
     "sourceIntergrowth": "INTERGROWTH: منحنيات الخدّج بعد الولادة",
     "sourceIntergrowthUse": "INTERGROWTH: سياق الاستخدام",
-    "sourceIntergrowthCode": "معادلات GIGS بعد الولادة وترخيص GPL"
+    "sourceIntergrowthCode": "معادلات GIGS بعد الولادة وترخيص GPL",
+    "pdfRowContinuation": "صف الدفعة {number} · تابع"
   }
 }

@@ -1,6 +1,6 @@
 # Référence CDC — profil américain explicite
 
-**CURRENT — sources 5.7.1, moteur combiné 4.4.0, service CDC 1.0.0.** Le choix est explicite dans Réglages et dans chaque formulaire. Il est conservé par visite : changer la préférence ne transforme ni ne recalcule les dossiers existants. Les nouvelles visites d’un dossier conservent son profil ; un professionnel peut le changer explicitement. L’interface hébergée peut différer tant que ce lot n’est pas publié. Les tests automatisés ci-dessous ne constituent pas des essais navigateur ou une relecture clinique.
+**CURRENT — sources 5.7.2, moteur combiné 4.4.0, service CDC 1.0.0.** Le choix est explicite dans Réglages et dans chaque formulaire. Il est conservé par visite : changer la préférence ne transforme ni ne recalcule les dossiers existants. Les nouvelles visites d’un dossier conservent son profil ; un professionnel peut le changer explicitement. L’interface hébergée peut différer tant que ce lot n’est pas publié. Les tests automatisés ci-dessous ne constituent pas des essais navigateur ou une relecture clinique.
 
 ## Périmètre et sources
 
