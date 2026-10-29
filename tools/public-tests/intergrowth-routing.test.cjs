@@ -87,6 +87,11 @@ test('INTERGROWTH FR/EN/AR forms and PDF models identify PMA, methods and non-sc
         const ui=Object.assign(Object.create(WorkspaceApp.prototype),{prefs:{language,growthProfile:'intergrowth'},translations});
         const form=ui.formHTML('single',e.child),html=ui.resultsHTML(e,false,true),pdf=PDFManager.model([e],{language,translations});
         assert.ok(form.includes('name="postmenstrualDays"'));assert.ok(form.includes('name="gestationalAgeWeeks"'));
+        assert.ok(form.includes('data-info="intergrowthAgeHelp"'));assert.ok(form.includes('data-info="intergrowthLengthRequired"'));
+        assert.ok(!form.includes(translations[language].ageHint));assert.ok(!form.includes(translations[language].positionHint));
+        const opened=[];ui.openInfo=(key,opener)=>opened.push([key,opener]);
+        ui.showInfo('intergrowthAgeHelp','single-ageMode-info');ui.showInfo('intergrowthLengthRequired','single-position-info');ui.showInfo('unlisted','fake');
+        assert.deepEqual(opened,[['intergrowthAgeHelp','single-ageMode-info'],['intergrowthLengthRequired','single-position-info']]);
         assert.equal((form.match(/name="headCircumference"/g)||[]).length,1);
         assert.ok(html.includes('&lt;FICTIF-PRETERM&gt;'));assert.ok(!html.includes('undefined'));
         assert.ok(html.includes(translations[language].postmenstrualDays));
@@ -94,6 +99,7 @@ test('INTERGROWTH FR/EN/AR forms and PDF models identify PMA, methods and non-sc
         assert.ok(JSON.stringify(pdf).includes(translations[language].postmenstrualDays));
         assert.ok(!JSON.stringify(pdf).includes(translations[language].profileUS));
         const table=ui.tableHTML([e],{compact:true});assert.ok(table.includes(translations[language].intergrowthNoScreeningShort));assert.ok(table.includes(translations[language].intergrowthClinicalReviewShort));assert.ok(!table.includes('intergrowthNoScreeningShort'));assert.ok(table.includes(translations[language].intergrowthDescriptive));
+        ui.manifest={referenceVersion:'WHO-2006-test',sha256:'test'};ui.engine=engine;const refs=ui.referencesHTML();assert.ok(refs.includes('intergrowth21.com/tools-resources/postnatal-growth-preterm-infants'));assert.ok(refs.includes('fb58fe6596d4b289d5362c5efe00f882984d3186'));assert.ok(refs.includes(translations[language].sourceIntergrowth));
         assert.equal(ui.number(null),'—');assert.equal(ui.number(''),'—');
     }
 });

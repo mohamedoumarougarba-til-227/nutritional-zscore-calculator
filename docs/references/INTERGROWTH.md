@@ -1,6 +1,6 @@
 # INTERGROWTH-21st — suivi postnatal des prématurés
 
-CURRENT — sources interface 5.6.0, moteur combiné 4.4.0, contrat de visite 1. Le profil `intergrowth` est un choix explicite des réglages ou de la visite, jamais déduit du pays, de la langue ou du poids. OMS reste le choix par défaut. Aucun ancien résultat OMS/CDC n’est recalculé ni converti. Le noyau est dans `src/js/services/reference-intergrowth.js` ; les points d’entrée `tools/reference/intergrowth/*.cjs` utilisent ce même code.
+CURRENT — sources interface 5.7.1, moteur combiné 4.4.0, contrat de visite 1. Le profil `intergrowth` est un choix explicite des réglages ou de la visite, jamais déduit du pays, de la langue ou du poids. OMS reste le choix par défaut. Aucun ancien résultat OMS/CDC n’est recalculé ni converti. Le noyau est dans `src/js/services/reference-intergrowth.js` ; les points d’entrée `tools/reference/intergrowth/*.cjs` utilisent ce même code.
 
 ## Provenance et droits
 

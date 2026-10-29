@@ -35,6 +35,25 @@ Ne pas vider le profil du propriétaire ni purger ses caches pour obtenir un chi
 
 La relecture clinique concerne le protocole applicable, la pratique des mesures, le vocabulaire et le circuit de soins. La validation DHIS2 concerne le système destinataire et ses métadonnées. Une enquête représentative relève de son responsable et de son plan statistique. Ces confirmations ne sont pas remplacées par les tests techniques.
 
+## Observations du 29 octobre 2026 — portée partielle
+
+Navigateur intégré Codex, moteur Chromium, fenêtre réellement observée environ 1280 × 720 ; version exacte du navigateur non fournie par l’interface d’essai. Application locale 5.7.1, moteur 4.4.0, données entièrement fictives. Les lignes NOT RUN du protocole général restent à exécuter dans leur portée complète : ce relevé ne les transforme pas en validation globale Chrome/Android.
+
+| Parcours effectivement exécuté | Résultat | Limite |
+|---|---|---|
+| Saisie OMS, calcul, retour aux mesures | PASS : quatre scores et centiles attendus ; 8 500 g et les autres champs conservés | Un cas fictif, français, desktop |
+| Profil postnatal dérivé | PASS : 30 semaines de naissance + 14 jours = PMA 224 ; trois scores/centiles présents ; retour au formulaire sans perte | Le PMA direct et les cas partiels restent à parcourir dans le navigateur |
+| Aides par profil | Défaut trouvé et corrigé : le profil postnatal affichait l’aide OMS. Âge et position renvoient désormais à leurs propres règles ; trois langues testées dans les sources | Relecture métier distincte |
+| FR/EN/AR et RTL | PASS dans la portée du cas postnatal : mêmes valeurs, libellés traduits, disposition arabe RTL sans débordement horizontal à 1265 px | Pas de lecteur d’écran ; ni toutes les pages ni tout le PDF parcourus |
+| Aide au clavier | PASS : Entrée ouvre l’aide anglaise à l’âge ; Échap la ferme, focus conservé sur le déclencheur | Ce n’est pas un parcours clavier complet de l’application |
+| CSV individuel postnatal | PASS : fichier réellement téléchargé, référence postnatale et contexte PMA conservés | Pas d’import dans un tableur pendant cet essai |
+| Mise à jour après premier chargement | Défaut reproduit : ancien worker remplacé pris à tort pour une installation échouée. Corrigé ; proposition de mise à jour puis activation et copie de reprise vérifiées, mêmes valeurs | Les refus d’intégrité restent testés séparément ; aucune purge |
+| Serveur local arrêté puis rafraîchissement | PASS : application chargée depuis le cache, historique accessible, reprise en copie et nouveau calcul OMS réussis sans serveur | Réseau du système toujours actif : ce n’est pas un essai en mode avion Android |
+| Stockage après plusieurs releases | Estimation affichée : 38,7 Mio / quota indicatif 10 Gio sur une origine fictive après plusieurs installations ; anciennes caches conservées | Inclut caches et autres stockages de cette origine ; pas une mesure du transfert réseau compressé |
+| Petit écran demandé | NOT RUN : l’override 390 × 844 n’a pas été appliqué ; dimensions réelles restées desktop. Override réinitialisé | Aucune capture desktop déclarée mobile ; aucun accès au TECNO |
+
+Les [captures publiques](PRESENTATION_PUBLIQUE.md) ne contiennent que ces cas synthétiques. Les traces techniques détaillées restent privées. Aucun essai physique, validation clinique, certification WCAG, mesure de connexion faible ou impression papier n’est déduit de ces observations.
+
 
 ## Scénarios additionnels 5.7.0 — NOT RUN sur navigateur
 

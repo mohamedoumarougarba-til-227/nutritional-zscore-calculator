@@ -1,5 +1,14 @@
 # Préparer et adopter une mise à jour
 
+## 5.7.1 — aides par profil et état des mises à jour
+
+L’aide à l’âge et à la position suit le profil explicitement choisi : OMS, américain ou postnatal INTERGROWTH. Références et aide décrit désormais aussi les sources, domaines et limites postnatales dans les trois langues. Le message de confidentialité distingue les dossiers locaux des journaux HTTP de l’hébergeur.
+
+Une mise à jour pouvant s’activer immédiatement après le premier chargement était annoncée à tort comme échouée lorsque l’ancien worker devenait obsolète. L’interface distingue maintenant remplacement normal et installation rejetée, et propose la réouverture après sauvegarde. Les refus d’intégrité ne sont pas contournés ; historiques et caches restent conservés. L’aperçu d’une mesure PB absente affiche « Non renseigné » plutôt qu’une unité seule. Aucun calcul, seuil, référence numérique ou format de sauvegarde modifié.
+
+Deux captures réelles sur cas fictifs et une social preview éditable préparent la présentation publique ; aucun réglage GitHub n’est appliqué implicitement. Voir la [validation manuelle datée](VALIDATION_MANUELLE.md) pour la portée des essais navigateur, distincte du terrain, du lecteur d’écran et de la relecture clinique.
+
+
 ## 5.7.0 — revue technique du lot et préparation d’analyse
 
 Contrôle local du lot entier : signaux de données absentes/estimées/importées/indisponibles, incohérences de référence, identités contradictoires et mesures potentiellement dupliquées. Aperçu en lecture seule, huit lignes par page, sans fusion/correction/suppression automatique. Deux CSV : revue par numéro local et préparation d’analyse sans noms/identifiants, plan de sondage explicitement absent et colonnes de sondage vides. Aucune prévalence représentative, connexion DHIS2 ou modification de calcul clinique. Moteur combiné 4.4.0 et formats de sauvegarde inchangés. Les contrôles automatiques ne remplacent pas les essais navigateur ou la relecture métier.

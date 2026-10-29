@@ -195,3 +195,44 @@ test('optional history chart tables display centiles from their own indicators i
     }
     assert.equal(JSON.stringify(entry),saved);
 });
+
+// Synthetic service-worker lifecycle; no browser data or private fixtures.
+// First-load documents are initially uncontrolled because the worker never claims tabs.
+test('an immediate update after first-load install offers reload instead of a false failure',async t=>{
+    const original=Object.getOwnPropertyDescriptor(global,'navigator');
+    const worker=()=>({state:'installing',listeners:[],addEventListener(name,fn){this.listeners.push(fn);},emit(state){this.state=state;this.listeners.forEach(fn=>fn());}});
+    const first=worker(),registration={active:null,installing:first,waiting:null,addEventListener(name,fn){this.onUpdate=fn;}};
+    Object.defineProperty(global,'navigator',{configurable:true,value:{serviceWorker:{controller:null,register:async()=>registration,addEventListener(){}}}});
+    t.after(()=>{if(original)Object.defineProperty(global,'navigator',original);else delete global.navigator;});
+    const app=Object.assign(Object.create(WorkspaceApp.prototype),{reloadAvailable:false,updateOfflineStatus(){},updateUpdateStatus(){}});
+    await app.registerOffline();registration.active=first;first.emit('installed');first.emit('activated');
+    assert.equal(app.reloadAvailable,false);assert.equal(app.updateError,null);
+    const next=worker();registration.installing=next;registration.onUpdate();next.emit('installed');
+    registration.active=next;registration.installing=null;first.emit('redundant');next.emit('activated');
+    assert.equal(app.updateError,null);assert.equal(app.reloadAvailable,true);assert.equal(app.offlineState,'offlineReady');
+});
+
+test('a rejected installation still reports failure while preserving the active offline release',async t=>{
+    const original=Object.getOwnPropertyDescriptor(global,'navigator');let listener;
+    const next={state:'installing',addEventListener(name,fn){listener=fn;}};
+    const active={state:'activated'},registration={active,installing:next,waiting:null,addEventListener(){}};
+    Object.defineProperty(global,'navigator',{configurable:true,value:{serviceWorker:{controller:active,register:async()=>registration,addEventListener(){}}}});
+    t.after(()=>{if(original)Object.defineProperty(global,'navigator',original);else delete global.navigator;});
+    const app=Object.assign(Object.create(WorkspaceApp.prototype),{reloadAvailable:false,updateOfflineStatus(){},updateUpdateStatus(){}});
+    await app.registerOffline();registration.installing=null;next.state='redundant';listener();
+    assert.equal(app.updateError,'updateFailedHelp');assert.equal(app.offlineState,'offlineReady');
+    assert.equal(app.reloadAvailable,false);assert.equal(registration.active,active);
+});
+
+
+test('history previews distinguish an unknown MUAC from a measured value in FR EN AR',()=>{
+    const missing=engine.calculate(example()),measured=engine.calculate(example({muac:114}));
+    for(const language of ['fr','en','ar']){
+        const app=Object.assign(Object.create(WorkspaceApp.prototype),{prefs:{language},translations,engine});
+        const unknown=app.tableHTML([missing]);
+        assert.ok(unknown.includes(app.t('muac')+' : '+app.t('unknown')));
+        assert.ok(!unknown.includes(app.t('muac')+' :  mm'));
+        const known=app.tableHTML([measured]);
+        assert.ok(known.includes(app.t('muac')+' : '+app.number(114,1)+' mm'));
+    }
+});

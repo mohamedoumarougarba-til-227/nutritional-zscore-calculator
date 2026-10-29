@@ -274,3 +274,12 @@
 # Local-first lot review and synthetic public checks
 !/src/js/services/lot-quality.js
 !/tools/public-tests/lot-quality.test.cjs
+
+# Presentation publique revue : donnees fictives uniquement
+!/docs/assets/
+!/docs/assets/social-preview.svg
+!/docs/assets/social-preview.png
+!/docs/assets/individual-fr.jpg
+!/docs/assets/postnatal-ar.jpg
+!/docs/maintenance/PRESENTATION_PUBLIQUE.md
+!/tools/scripts/build-social-preview.py

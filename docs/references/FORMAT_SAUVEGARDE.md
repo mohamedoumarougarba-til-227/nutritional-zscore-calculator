@@ -24,7 +24,7 @@ Cette option protège le fichier téléchargé, pas la session ouverte, le stock
 
 Références : [OWASP, stockage cryptographique](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html), [dérivation PBKDF2](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
 
-## Profils de croissance — sources 5.6.0 / moteur 4.4.0
+## Contexte de profil introduit en 5.6.0 — flux 1 / moteur 4.4.0
 
 OMS, profil américain explicite et INTERGROWTH postnatal utilisent le même flux version 1, sans réécrire les visites existantes. Les résultats gardent le schéma 4, leur référence, leur moteur et le contexte de profil. `ageDomainVersion` vaut 2 pour OMS, 3 pour le profil US, 4 pour INTERGROWTH. Ce dernier conserve séparément PMA, âge chronologique et gestation à la naissance lorsqu’ils sont connus, via `intergrowthContext` version 1. Un PMA directement renseigné ne fabrique pas les âges inconnus. Voir [INTERGROWTH](INTERGROWTH.md).
 

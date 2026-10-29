@@ -173,7 +173,7 @@ test('CDC result views, compact/detailed PDF models and charts explain the actua
         assert.ok(row.notes.some(n=>n.includes('CDC2022-extended-BMI')));assert.ok(row.notes.some(n=>n.includes(ui.t('profileUS'))));assert.ok(row.scores.some(n=>n.includes(ui.t('cdcSevereObesity'))));
         const compact=PDFManager.compact(model);assert.ok(compact.legend.some(r=>r[1].includes(ui.t('cdcInterpretation'))));
         const lot=LotAnalysis.html(LotAnalysis.build([entry],engine.cdc.data.referenceVersion,{family:'CDC2000'}),ui,{exportButton:false});assert.ok(lot.includes(ui.esc(ui.t('cdcLotRules'))));
-        assert.ok(ui.settingsHTML().includes(ui.esc(ui.t('profileUS'))));assert.ok(ui.formHTML('single',entry.child).includes('name="growthProfile"'));
+        assert.ok(ui.settingsHTML().includes(ui.esc(ui.t('profileUS'))));assert.ok(ui.formHTML('single',entry.child).includes('name="growthProfile"'));assert.ok(ui.formHTML('single',entry.child).includes('data-info="usAgeHelp"'));assert.ok(!ui.formHTML('single',entry.child).includes(translations[language].ageHint));
         for(const key of ['growthProfile','profileWHO','profileUS','cdcCoverage','cdcInterpretation','cdcCompletedMonths','cdcSevereObesity'])assert.notEqual(ui.t(key),key);
     }
     assert.equal(JSON.stringify(entry),before);

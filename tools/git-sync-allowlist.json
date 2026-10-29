@@ -199,6 +199,12 @@
     "src/js/services/intergrowth-result.js",
     "tools/public-tests/intergrowth-routing.test.cjs",
     "src/js/services/lot-quality.js",
-    "tools/public-tests/lot-quality.test.cjs"
+    "tools/public-tests/lot-quality.test.cjs",
+    "docs/assets/social-preview.svg",
+    "docs/assets/social-preview.png",
+    "docs/assets/individual-fr.jpg",
+    "docs/assets/postnatal-ar.jpg",
+    "docs/maintenance/PRESENTATION_PUBLIQUE.md",
+    "tools/scripts/build-social-preview.py"
   ]
 }

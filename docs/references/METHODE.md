@@ -1,13 +1,13 @@
 # Méthode et périmètre actuels
 
-## Profil américain explicite — sources 5.7.0 / moteur 4.4.0
+## Profil américain explicite — sources 5.7.1 / moteur 4.4.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](CDC.md).
 
 Contrôles numériques et modèles de sortie testés sur données fictives ; la vérification navigateur, RTL visuel, accessibilité et impression ne sont pas présumées réalisées. Pas de publication implicite de ces sources locales.
 
 
-CURRENT — interface 5.7.0, moteur combiné 4.4.0. Cette page explique le calcul ; ce n’est pas un protocole de traitement.
+CURRENT — interface 5.7.1, moteur combiné 4.4.0. Cette page explique le calcul ; ce n’est pas un protocole de traitement.
 
 ## Références et domaines
 
@@ -44,4 +44,4 @@ Les résultats enregistrés conservent leur référence et version ; leur lectur
 
 `npm test` couvre un socle public synthétique ; `npm run verify:public` compare les sorties numériques à des attentes conservées séparément. Les cas complémentaires utilisent une évaluation Python Decimal indépendante des tables TSV, explicitement distincte d’une exécution du paquet R OMS. La suite privée, la relecture métier et les essais physiques ont des portées différentes. Aucune certification OMS, gouvernementale ou clinique n’est revendiquée.
 
-Le [profil américain OMS/CDC](CDC.md) est raccordé explicitement aux sources 5.7.0. Le [profil postnatal INTERGROWTH](INTERGROWTH.md) est raccordé aux sources 5.7.0 avec son PMA exact, ses équations et sa portée séparés. Le [relevé des autres références](REFERENTIELS_COMPLEMENTAIRES.md) conserve les recherches historiques ; elles ne sont pas toutes activées. Les décisions de soins, l’orientation locale et les traitements relèvent du professionnel et du protocole applicable.
+Le [profil américain OMS/CDC](CDC.md) est raccordé explicitement aux sources 5.7.1. Le [profil postnatal INTERGROWTH](INTERGROWTH.md) est raccordé aux sources 5.7.1 avec son PMA exact, ses équations et sa portée séparés. Le [relevé des autres références](REFERENTIELS_COMPLEMENTAIRES.md) conserve les recherches historiques ; elles ne sont pas toutes activées. Les décisions de soins, l’orientation locale et les traitements relèvent du professionnel et du protocole applicable.

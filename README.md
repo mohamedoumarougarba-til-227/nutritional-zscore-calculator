@@ -6,7 +6,7 @@ Application web gratuite et sans compte pour calculer les indicateurs de croissa
 
 *Offline-first WHO / CDC growth Z-score calculator — local records, FR/EN/AR, no account.*
 
-Version des sources de l’interface : **5.7.0** ; moteur combiné : **4.4.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
+Version des sources de l’interface : **5.7.1** ; moteur combiné : **4.4.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
 
 Un [profil INTERGROWTH postnatal](docs/references/INTERGROWTH.md) explicite ajoute poids, longueur couchée et périmètre crânien selon le PMA exact 27–64 semaines, sans catégories cliniques OMS transposées.
 
@@ -16,6 +16,19 @@ Le calcul, les sauvegardes, les courbes et les résumés de lots restent locaux 
 
 L’hébergeur peut traiter les requêtes HTTP et journaux techniques. Le stockage reste accessible aux personnes utilisant le même profil de navigateur ; protéger le poste et les exports. **Cet outil ne remplace ni l’examen, ni le protocole applicable, ni une décision du professionnel. Aucune certification OMS ou validation clinique indépendante n’est revendiquée.**
 
+
+## Aperçu avec données fictives
+
+Interface 5.7.1, moteur 4.4.0 : exemples réellement calculés dans le navigateur, sans dossier patient. Les captures illustrent l’interface ; elles ne constituent pas une validation clinique. [Cas et provenance des images](docs/maintenance/PRESENTATION_PUBLIQUE.md).
+
+![Tableau de bord OMS en français avec le dossier fictif DEMO-001](docs/assets/individual-fr.jpg)
+
+<details>
+<summary>Profil postnatal INTERGROWTH en arabe, de droite à gauche</summary>
+
+![Résultat postnatal fictif en arabe avec âge postmenstruel explicite](docs/assets/postnatal-ar.jpg)
+
+</details>
 
 ## Utilisation locale
 
