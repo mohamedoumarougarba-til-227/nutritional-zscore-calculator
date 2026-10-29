@@ -197,6 +197,8 @@
     "src/js/services/reference-intergrowth.js",
     "src/js/services/intergrowth-visit.js",
     "src/js/services/intergrowth-result.js",
-    "tools/public-tests/intergrowth-routing.test.cjs"
+    "tools/public-tests/intergrowth-routing.test.cjs",
+    "src/js/services/lot-quality.js",
+    "tools/public-tests/lot-quality.test.cjs"
   ]
 }

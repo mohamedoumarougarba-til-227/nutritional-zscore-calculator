@@ -270,3 +270,7 @@
 !/src/js/services/intergrowth-visit.js
 !/src/js/services/intergrowth-result.js
 !/tools/public-tests/intergrowth-routing.test.cjs
+
+# Local-first lot review and synthetic public checks
+!/src/js/services/lot-quality.js
+!/tools/public-tests/lot-quality.test.cjs

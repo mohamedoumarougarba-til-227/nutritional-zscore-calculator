@@ -1,4 +1,4 @@
-# Périmètre et vérification — 5.6.0
+# Périmètre et vérification — 5.7.0
 
 L’application calcule les indicateurs de croissance OMS 2006 avant 60 mois moyens et OMS 2007 à partir de 60 et avant 229 mois moyens. Un mois moyen vaut 30,4375 jours. Poids/âge n’est pas proposé à partir de 121 mois ; poids/taille n’appartient pas à la référence OMS 2007. Les indicateurs disponibles et leur référence sont conservés avec chaque résultat.
 
@@ -21,15 +21,15 @@ Ces vérifications établissent une concordance numérique sur ces jeux. Elles n
 Un CSV peut contenir jusqu’à 50 000 fiches et 50 Mio. Les colonnes non standard ouvrent une préparation des correspondances, unités et dates. Jusqu’à 5 000 fiches sont conservées dans un travail actif ; les séries plus grandes sont réparties en travaux sauvegardés. Une erreur de validation n’ajoute aucune fiche. Un échec d’enregistrement d’une série répartie ne crée pas quelques travaux seulement.
 
 Les résultats, dossiers locaux et exports ne sont pas automatiquement envoyés à un service distant. Le partage entre utilisateurs n’est pas activé.
-## Socle public et compléments — sources 5.6.0
+## Socle public et compléments — sources 5.7.0
 
-`npm test` est public, sans installation npm, et refuse une suite vide. Ses 61 tests couvrent domaines, méthode, œdèmes/PB, CSV, historique, contrôle du format réel d’import et copie des identifiants, chiffrement sur fichier fictif, langues, intégrité, profils CDC et INTERGROWTH explicites, ainsi que les agrégats. Ils ne simulent pas une transaction IndexedDB complète ni un appareil physique ; ces vérifications restent distinctes. INTERGROWTH utilise le PMA exact et trois mesures postnatales, sans extrapoler les catégories OMS. Le chargement JavaScript classique et les modèles HTML/PDF sont contrôlés ; cela ne prouve pas leur affichage réel sur navigateur.
+`npm test` est public, sans installation npm, et refuse une suite vide. Ses 69 tests couvrent domaines, méthode, œdèmes/PB, CSV, historique, contrôle du format réel d’import et copie des identifiants, chiffrement sur fichier fictif, langues, intégrité, profils CDC et INTERGROWTH explicites, ainsi que les agrégats. Ils ne simulent pas une transaction IndexedDB complète ni un appareil physique ; ces vérifications restent distinctes. INTERGROWTH utilise le PMA exact et trois mesures postnatales, sans extrapoler les catégories OMS. Le chargement JavaScript classique et les modèles HTML/PDF sont contrôlés ; cela ne prouve pas leur affichage réel sur navigateur.
 
 Le paquet numérique ajoute 962 cas complémentaires, évalués séparément avec Python Decimal à 60 chiffres à partir des TSV OMS. Il ne s’agit pas de sorties du logiciel R OMS. Les cas, leur générateur et leurs empreintes sont publics. Voir [Méthode](../references/METHODE.md). La suite privée reste accessible séparément par `npm run test:private` dans le workspace complet.
 
 
 
-## Profil américain — 5.6.0 / moteur 4.4.0
+## Profil américain — 5.7.0 / moteur 4.4.0
 
 Les tests du profil américain couvrent import CSV explicite, conservation des visites lors des réglages et restaurations, courbes CDC utilisant l’inverse IMC étendu, groupes de lots indépendants et modèles PDF FR/EN/AR. Le contrôle numérique comporte 254 cas CDC Decimal/libm, 161 probabilités et 120 positions de courbes. Les 962 cas facultatifs OMS restent distincts des sorties R OMS historiques.
 

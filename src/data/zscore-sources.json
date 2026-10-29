@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.6.0",
+  "version": "5.7.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 7905531,
-  "sha256": "27a1fc51cd2e45320a9f62f9cd3eaba1eb456df41c6747fd7254b17e990c7a70",
+  "bytes": 7945488,
+  "sha256": "ceda3afe5f53e6cc22e809655886e6be3d39ec949b640b2ece2855446aa238b0",
   "files": [
     {
       "file": ".gitattributes",
@@ -33,8 +33,8 @@
     },
     {
       "file": ".gitignore",
-      "bytes": 9377,
-      "sha256": "435432b4cccd531b8e992c6c2812511b054472cdb6ce27b0d5595ecb2c300939"
+      "bytes": 9506,
+      "sha256": "ca81ea879e29e2b72e92bd921d3abe59cc9b6010e43038f64eb2286826ed994d"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -53,8 +53,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 9282,
-      "sha256": "ea4eb5bbca0720595be087fc3dd2a006d94b86f0c0510e40dfcde3e80d706ecc"
+      "bytes": 9529,
+      "sha256": "2976be3e30b523e22e34959a7855ec948ff590a127fc4e3d66182bd2b0c29160"
     },
     {
       "file": "SECURITY.md",
@@ -74,17 +74,17 @@
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "77a4609566bf0be7b9a34296f34329d86f2b5c58e0acdba6c28d903551f5becf"
+      "sha256": "b4ceb6e07289224c4b9074f5a8a34597d6723e29e02c01818309d5e267c0245c"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 12513,
-      "sha256": "62f6175b659961a121a36ed051e145eed0f528459825dd3750b7c85e3e13d03f"
+      "bytes": 13421,
+      "sha256": "117713fed262fcc54d42c3d0bfa8ffe8c200dd6570183d0981b448f7ebd36365"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
       "bytes": 5195,
-      "sha256": "0eed3802ab38022e23af2eed932ee9376efbc5c7ee1b850591dbc457d6a38ac8"
+      "sha256": "afe7b87c0240636932cf46286eb18408cddcd063a6c0f55995d468a56837a5a3"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
@@ -93,8 +93,8 @@
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
-      "bytes": 29509,
-      "sha256": "f816439f87e1bb195fb8dec1bad8047049165a556ebf4945d45f51b02c888b4f"
+      "bytes": 30260,
+      "sha256": "83e3eea5e06de68ce672e8abc193922c22a9dc79199d80e93bafc06714b06e11"
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
@@ -108,8 +108,8 @@
     },
     {
       "file": "docs/maintenance/VALIDATION_MANUELLE.md",
-      "bytes": 4268,
-      "sha256": "d3d002f59f12689ad0c51cb43e764477a07e2587940daa09abd1f42f2eb94b9a"
+      "bytes": 5497,
+      "sha256": "b77c4753a39a7ce43754a803cfdab66f732b583324b89a74b3d2d0b82f4b6471"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",
@@ -148,13 +148,13 @@
     },
     {
       "file": "docs/references/INTEROPERABILITE.md",
-      "bytes": 2878,
-      "sha256": "7d60109aaa1ee22e1ba5542c0e45d0b9cae6af45716d7cea2b5acf26cbb5e4cb"
+      "bytes": 7054,
+      "sha256": "4da1c792db0f7d8d78053d8c6492e49469572c4ee8f4f039cef68e03769775f7"
     },
     {
       "file": "docs/references/METHODE.md",
       "bytes": 6879,
-      "sha256": "482415421e2ef3621a1def442d45522fe4a118cbc34b65ac3089a2bb574217f1"
+      "sha256": "1f535b9858a07021038f5e46ba2d429e8eaf57267cf65195a2d4837510004722"
     },
     {
       "file": "docs/references/REFERENCES_NATIONALES.md",
@@ -169,12 +169,12 @@
     {
       "file": "package-lock.json",
       "bytes": 720,
-      "sha256": "a9e52bb48ca33903b9c45583a4b158be66ba7f2761aba7197078285356b9df39"
+      "sha256": "2a0d78a7a627f347f072541bc859c4f06549dd38e8649f60fcc629c5a7d129a3"
     },
     {
       "file": "package.json",
       "bytes": 983,
-      "sha256": "a25ef2f37e3e5be9ae836411ec88d1689cc79cdf97d2ba1684cc6382706a42d4"
+      "sha256": "6f4d42cd83ff52099c84bf3ab668608c8e690aefe8a9359328c423ecf11b98f1"
     },
     {
       "file": "src/assets/icons/icon-128.png",
@@ -253,8 +253,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 158082,
-      "sha256": "1f55dd98c649a251b94668aa34c54a303d7941c050726c7b0b41b132384d0341"
+      "bytes": 166176,
+      "sha256": "bca34ebf45bd32e7f20897c0a77a04f22f2397cb93eb1175df83d00e0af4d5ba"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -288,8 +288,8 @@
     },
     {
       "file": "src/index.html",
-      "bytes": 3882,
-      "sha256": "3eddb95591a3113af5adbb07349a1bb6cfebb340bd62bf62238b9225c0e8c1a1"
+      "bytes": 3961,
+      "sha256": "1f7a3bfaee5fbe5da6f958f141090006c7cb52c9de0c3811c73b775ff53d3617"
     },
     {
       "file": "src/js/components/growth-chart.js",
@@ -347,6 +347,11 @@
       "sha256": "00e4761b607ac628cc96e191732a95866ccd95496fefe4ecfc9a251ea342dae8"
     },
     {
+      "file": "src/js/services/lot-quality.js",
+      "bytes": 9604,
+      "sha256": "60185be5f9fd293884bdeee0aba000fabae6062b22e08e863fba4d0ead2f1808"
+    },
+    {
       "file": "src/js/services/nutrition-assessment.js",
       "bytes": 5428,
       "sha256": "6bee38d6e67f2d0c67cc1ca4c066e8db7e48f8093c5919008c6eb5ce02b81568"
@@ -393,8 +398,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 126371,
-      "sha256": "6bb914b1a609e0f86866afaf19a6733bf16ea6b8c325bf17f30b38f2949649ed"
+      "bytes": 129937,
+      "sha256": "67db89ab5c527d32ef0ad1ae4fea7cc67a57a6b68699db3aafcb6c12ef022153"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -463,8 +468,8 @@
     },
     {
       "file": "tools/git-sync-allowlist.json",
-      "bytes": 8688,
-      "sha256": "db8c38002ac35f27012925c03d70c81babd197d96e42f03b8faafc28efa1af49"
+      "bytes": 8773,
+      "sha256": "ae1a5001a24f8d71fb947297edff5e5b0dac2ad176e4a059d681bfc6c7ef75eb"
     },
     {
       "file": "tools/public-tests/cdc.test.cjs",
@@ -485,6 +490,11 @@
       "file": "tools/public-tests/intergrowth.test.cjs",
       "bytes": 4804,
       "sha256": "2cee4cfcc4368fcc55f6e4fae4242ba2b94a91f69b743a29feb1c25d8d70f402"
+    },
+    {
+      "file": "tools/public-tests/lot-quality.test.cjs",
+      "bytes": 10767,
+      "sha256": "0f56e76e337fefd522f09c8945aa68ad6f73c1a009276d5d4b9b41139810096c"
     },
     {
       "file": "tools/public-tests/profiles.test.cjs",
@@ -858,8 +868,8 @@
     },
     {
       "file": "tools/scripts/offline-assets.json",
-      "bytes": 2076,
-      "sha256": "29fe4f7118a7b8d73df8322f37317cad031d5248888f26e4616d3d85a51ea184"
+      "bytes": 2108,
+      "sha256": "9c4f044937c7977e0a6ff4d03f7ecbd950f5cad414b2b4520b02fed58721a1f1"
     },
     {
       "file": "tools/scripts/prepare-public.cjs",

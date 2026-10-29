@@ -1,5 +1,10 @@
 # Préparer et adopter une mise à jour
 
+## 5.7.0 — revue technique du lot et préparation d’analyse
+
+Contrôle local du lot entier : signaux de données absentes/estimées/importées/indisponibles, incohérences de référence, identités contradictoires et mesures potentiellement dupliquées. Aperçu en lecture seule, huit lignes par page, sans fusion/correction/suppression automatique. Deux CSV : revue par numéro local et préparation d’analyse sans noms/identifiants, plan de sondage explicitement absent et colonnes de sondage vides. Aucune prévalence représentative, connexion DHIS2 ou modification de calcul clinique. Moteur combiné 4.4.0 et formats de sauvegarde inchangés. Les contrôles automatiques ne remplacent pas les essais navigateur ou la relecture métier.
+
+
 ## 5.6.0 — profil postnatal INTERGROWTH explicite
 
 Moteur combiné 4.4.0 : PMA direct ou dérivé avec âges distincts, trois mesures postnatales, résultats/sauvegardes/import en copie, CSV/PDF, courbes et lots séparés, FR/EN/AR. Aucun seuil clinique OMS copié, aucune transition d’âge automatique, aucune visite existante réécrite. Les mesures absentes ne s’affichent plus comme zéro. Le flux de sauvegarde reste version 1 avec contexte de visite additionnel. Voir [INTERGROWTH](../references/INTERGROWTH.md). Tests numériques/logiciels distincts de la relecture clinique et des essais navigateur/terrain ; pas de nouvelle validation TECNO.

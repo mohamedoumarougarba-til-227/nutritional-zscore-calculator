@@ -4,8 +4,9 @@ const SecureBackup=typeof module!=='undefined'&&module.exports?require('./servic
 const ReportingUI=typeof module!=='undefined'&&module.exports?require('./services/reporting-export.js').ReportingExport:globalThis.ReportingExport;
 const SupplementaryUI=typeof module!=='undefined'&&module.exports?require('./services/supplementary-growth.js').SupplementaryGrowth:globalThis.SupplementaryGrowth;
 const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/growth-profile.js').GrowthProfile:globalThis.GrowthProfile;
+const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
 class WorkspaceApp {
-    static version = '5.6.0';
+    static version = '5.7.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});
@@ -474,7 +475,25 @@ class WorkspaceApp {
     batchHTML() {
         const view=this.batchView(),disabled=!view.total;
         return `<div class="workspace-grid batch-workspace"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('addBatch','plus','',{primary:true,submit:true,showLabel:true,attrs:'form="batch-form"'})}</div></div>${this.formHTML('batch',this.state.batchDraft,true)}<section class="csv-tools" aria-labelledby="csv-tools-toggle"><div class="csv-tools-heading"><div class="csv-heading-label"><button type="button" class="csv-tools-toggle" id="csv-tools-toggle" data-action="toggle-csv" aria-expanded="${!!this.state.paste}" aria-controls="csv-tools-body csv-heading-actions"><span>${this.t('csvTools')}</span></button>${this.infoButton('csvHelp','csvTools','csv-help-button')}</div><div id="csv-heading-actions" class="toolbar compact-toolbar csv-heading-actions"${this.state.paste?'':' hidden'}><label class="icon-button action-with-label file-label desktop-format-action" title="${this.esc(this.t('importCSV'))}">${this.icon('csv')}${this.actionLabelHTML('importCSV',true)}<input class="file-input" type="file" id="csv-file" aria-label="${this.esc(this.t('importCSV'))}" accept=".csv,text/csv"></label>${this.toolButton('csvTemplate','csv','csv-template',{showLabel:true,labelKey:'csvTemplateShort'})}</div></div><div id="csv-tools-body" class="csv-tools-body"${this.state.paste?'':' hidden'}><div class="field"><label for="paste-data">${this.t('pasteLabel')}</label><textarea id="paste-data" rows="3">${this.esc(this.state.paste)}</textarea></div><p id="csv-progress" role="status" aria-live="polite"></p><button id="csv-parse-button" class="btn" data-action="parse-csv">${this.t('parseCSV')}</button></div></section></section>
-          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
+          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?`<div data-lot-quality>${this.qualityHTML()}</div>`+this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
+    }
+    qualityHTML({open=false}={}) {
+        if(this.qualityWorkspace!==this.state){this.qualityWorkspace=this.state;this.qualityPage=0;}
+        const report=QualityUI.build(this.state.batch),rows=report.rows.filter(r=>r.codes.length),pages=Math.max(1,Math.ceil(rows.length/8));
+        this.qualityPage=Math.min(Math.max(0,this.qualityPage||0),pages-1);
+        const start=this.qualityPage*8,shown=rows.slice(start,start+8),e=v=>this.esc(v),t=k=>e(this.t(k));
+        const counts=QualityUI.codes.filter(k=>report.counts[k]).map(k=>`<div><dt>${t(k)}</dt><dd>${e(this.number(report.counts[k],0))}</dd></div>`).join('');
+        const table=shown.length?`<div class="table-scroll"><table><caption class="sr-only">${t('qualityRows')}</caption><thead><tr><th scope="col">${t('qualityRecord')}</th><th scope="col">${t('qualitySignals')}</th><th scope="col">${t('preview')}</th></tr></thead><tbody>${shown.map(r=>`<tr><th scope="row">${e(this.number(r.index,0))}</th><td>${r.codes.map(t).join(' · ')}</td><td><button class="btn" data-action="quality-view" data-index="${r.index-1}" aria-label="${t('preview')} · ${t('qualityRecord')} ${e(this.number(r.index,0))}">${t('preview')}</button></td></tr>`).join('')}</tbody></table></div>${this.paginationHTML({current:this.qualityPage,pages,total:rows.length,from:start+1,to:start+shown.length},{action:'quality-page',previousAction:'quality-previous',nextAction:'quality-next'})}`:`<p>${t('qualityNoSignals')}</p>`;
+        return `<details class="lot-analysis quality-review"${open?' open':''}><summary>${t('qualityTitle')} · ${e(this.number(report.signalledRows,0))} / ${e(this.number(report.total,0))}</summary><p>${t('qualityHelp')}</p><dl class="lot-overview">${counts}</dl>${table}<p class="hint">${t('analysisPreparationHelp')}</p><div class="toolbar"><button class="btn" data-action="quality-csv">${t('qualityExport')}</button><button class="btn" data-action="analysis-csv">${t('analysisPreparationExport')}</button></div></details>`;
+    }
+    renderQuality() {
+        const target=document.querySelector('[data-lot-quality]');if(!target)return;
+        target.innerHTML=this.qualityHTML({open:true});this.focusPagination('quality-page');
+    }
+    downloadQuality(analysis=false) {
+        const rows=analysis?QualityUI.analysisRows(this.state.batch):QualityUI.reviewRows(this.state.batch);
+        const csv='\uFEFF'+rows.map(row=>row.map(CSVManager.cell).join(',')).join('\r\n');
+        this.download(csv,analysis?'zscore-preparation-analyse.csv':'zscore-controle-qualite.csv','text/csv');
     }
     preparePrint() {
         const target=document.getElementById('batch-print');
@@ -745,6 +764,15 @@ class WorkspaceApp {
         }
         else if(action==='csv-template'&&this.state.batchDraft.growthProfile==='intergrowth')this.download('name,caseId,growthProfile,ageMode,postmenstrualDays,weight,height,headCircumference,gender,position,oedema\r\nExemple fictif,PRETERM-001,intergrowth,pma,224,1600,42,29,M,L,n\r\n','zscore-intergrowth-modele.csv','text/csv');
         else if(action==='csv-template')this.download('name,caseId,ageYears,ageMonths,weight,height,gender,position,oedema,muac\r\nExemple fictif,TEST-001,1,0,8500,75,M,L,n,130\r\n','zscore-modele.csv','text/csv');
+        else if(action==='quality-page'||action==='quality-previous'||action==='quality-next'){
+            const page=action==='quality-page'?Number(button.dataset.page):(this.qualityPage||0)+(action==='quality-next'?1:-1);
+            if(Number.isInteger(page)&&page>=0){this.qualityPage=page;this.renderQuality();}
+        }
+        else if(action==='quality-view'){
+            const index=Number(button.dataset.index),entry=this.state.batch[index];
+            if(Number.isInteger(index)&&index>=0&&entry)this.dialog('qualityRecord',`<p>${this.t('qualityRecord')} ${this.number(index+1,0)} · ${this.t('qualityReadOnly')}</p>${entry.result?this.resultsHTML(entry,false,true):this.tableHTML([entry])}`);
+        }
+        else if(action==='quality-csv'||action==='analysis-csv')this.downloadQuality(action==='analysis-csv');
         else if(action==='reporting')this.reportingDialog();
         else if(action==='download-report')this.downloadReport(false);
         else if(action==='download-dhis2')this.downloadReport(true);
