@@ -7,7 +7,7 @@ const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/
 const PretermUI=typeof module!=='undefined'&&module.exports?require('./services/reference-intergrowth.js').IntergrowthPostnatal:globalThis.IntergrowthPostnatal;
 const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
 class WorkspaceApp {
-    static version = '5.8.0';
+    static version = '5.8.1';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});
@@ -862,6 +862,10 @@ class WorkspaceApp {
         else if(action==='history-previous'||action==='history-next'){this.historyPage+=action==='history-next'?1:-1;this.renderHistoryList();this.focusPagination('history-page');}
         else if(action==='history-page'){const page=Number(button.dataset.page);if(Number.isInteger(page)&&page>=0){this.historyPage=page;this.renderHistoryList();this.focusPagination('history-page');}}
         else if(action==='preview')await this.previewSession(this.sessions.find(s=>s.id===button.dataset.id));
+        else if(action==='preview-page'){
+            const page=Number(button.dataset.page);
+            if(this.previewedVersion&&Number.isInteger(page)&&page>=0){this.previewPage=page;this.renderVersionPreview(true);}
+        }
         else if(action==='close-dialog'){if(this.batchCorrection?.busy)return;document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;document.getElementById('workspace-dialog').close();}
         else if(action==='restore'){const selected=this.previewedVersion||this.sessions.find(s=>s.id===button.dataset.id);if(selected?.id===button.dataset.id&&selected.metadata?.workspace)await this.restore(selected);else this.toast('historyReadFailed',true);}
         else if(action==='commit-import'){
@@ -999,8 +1003,20 @@ class WorkspaceApp {
         if(!session){this.toast('historyReadFailed',true);return;}
         this.previewedVersion=session;
         if(!session?.metadata?.workspace)return;
-        const w=session.metadata.workspace,entries=[...(w.single?[w.single]:[]),...(w.batch||[])];
-        this.dialog('preview',`<p class="lede">${this.t('previewHelp')}</p><p class="meta">${this.date(session.createdAt)}</p><p class="meta">${this.t(w.mode === 'batch' ? 'batch' : 'single')}</p>${this.previewDraft(w.draft,'single')}${this.previewDraft(w.batchDraft,'batch')}${w.paste?`<p class="hint">CSV</p><pre>${this.esc(w.paste)}</pre>`:''}${entries.length?`<div class="table-scroll">${this.tableHTML(entries)}</div>`:''}${w.single?this.resultsHTML(w.single,w.stale,true):''}`,`<button class="btn primary" data-action="restore" data-id="${this.esc(session.id)}">${this.t('restore')}</button>`);
+        this.previewPage=0;this.renderVersionPreview();
+    }
+    versionPreviewView() {
+        const w=this.previewedVersion?.metadata?.workspace;
+        const entries=w?[...(w.single?[w.single]:[]),...(w.batch||[])]:[],total=entries.length,size=8,pages=Math.max(1,Math.ceil(total/size));
+        const current=Math.min(pages-1,Math.max(0,Number.isInteger(this.previewPage)?this.previewPage:0));
+        return {current,pages,total,start:current*size,from:total?current*size+1:0,to:Math.min(total,(current+1)*size),entries:entries.slice(current*size,(current+1)*size)};
+    }
+    renderVersionPreview(focus=false) {
+        const session=this.previewedVersion;if(!session?.metadata?.workspace)return;
+        const w=session.metadata.workspace;
+        const view=this.versionPreviewView();
+        this.dialog('preview',`<p class="lede">${this.t('previewHelp')}</p><p class="meta">${this.date(session.createdAt)}</p><p class="meta">${this.t(w.mode === 'batch' ? 'batch' : 'single')}</p>${this.previewDraft(w.draft,'single')}${this.previewDraft(w.batchDraft,'batch')}${w.paste?`<p class="hint">CSV</p><pre>${this.esc(w.paste)}</pre>`:''}${view.total?`<div class="table-scroll">${this.tableHTML(view.entries)}</div>${this.paginationHTML(view,{action:'preview-page',label:'previewPages'})}`:''}${w.single?this.resultsHTML(w.single,w.stale,true):''}`,`<button class="btn primary" data-action="restore" data-id="${this.esc(session.id)}">${this.t('restore')}</button>`);
+        if(focus)this.focusPagination('preview-page');
     }
     previewDraft(draft, mode) {
         if (!draft || !HistoryManager.hasWork({[mode === 'batch' ? 'batchDraft' : 'draft']:draft})) return '';

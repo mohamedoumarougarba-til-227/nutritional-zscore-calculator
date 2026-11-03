@@ -106,3 +106,21 @@ Navigateur intégré Chromium sur ordinateur, moteur 4.4.0, 67 fiches entièreme
 | Mise à jour | PASS : sauvegarde avant mise à jour et reprise en copie du lot calculé de 67 fiches ; archives précédentes présentes | Pas de purge de caches ; anciens paquets de développement conservés |
 
 La capture d’écran a échoué dans l’outil de navigateur ; elle n’est pas une preuve visuelle disponible. Les observations DOM, dimensions, fichiers CSV/.zscore et leur comparaison sont conservés dans les preuves privées. La console contrôlée n’a fourni aucun avertissement ni erreur. Impression papier, lecteur d’écran, appareil physique, relecture médicale et très gros lot restent des validations distinctes.
+
+## Import de 12 001 fiches — observations du 3 novembre 2026, 5.8.0 puis 5.8.1
+
+Essai dans le navigateur intégré sur ordinateur, origine locale dédiée distincte des historiques de travail précédents. Fichier fictif de 1 464 342 octets : 2 401 fiches OMS 2006, 2 400 OMS 2007, 2 400 CDC et 4 800 postnatales (PMA direct/dérivé). Aucun patient réel, appareil physique, quota artificiellement rempli ou cache utilisateur effacé.
+
+| Parcours exécuté | Résultat observé | Portée |
+|---|---|---|
+| Import via le sélecteur de fichier | PASS : progression de vérification observée ; trois travaux enregistrés en plages 1–5000, 5001–10000 et 10001–12001 | 12 001 lignes / 1,46 Mo ; limite de 50 000 lignes et 50 Mio non saturée |
+| Intégrité de la répartition | PASS : sauvegarde .zscore réelle contrôlée ; 12 001 identifiants fictifs uniques, ordre et mesures conservés, chaque fiche dans une seule plage | Transaction/quota défaillant testé séparément dans le socle de développement |
+| Calcul et export des trois tranches | PASS : 5 000, 5 000 et 2 001 résultats calculés et exportés ; 119 colonnes ; toutes les valeurs affichées et références concordent avec le même code Node | Écart brut maximal 1,4211e−14 ; deux environnements du même code, pas un oracle clinique indépendant ni un benchmark mobile |
+| Erreur dans la dernière ligne | PASS : sexe invalide à la ligne 12002 rejeté ; CSV des 5 000 résultats déjà présents identique ; quatre archives attendues conservées, aucune tranche partielle ajoutée | Validation tardive après lecture du fichier, sans simulation de panne du disque |
+| Aperçu de sauvegarde volumineuse | Défaut reproduit en 5.8.0 : 5 000 lignes rendues dans le dialogue et délai dépassé par l’outil. Corrigé en 5.8.1 : huit lignes visibles par page, compteur/numéros/flèches ; dernière page 625 accessible, focus conservé | Toutes les fiches restent accessibles ; aucun résultat supprimé pour accélérer l’aperçu |
+| Reprise depuis la dernière page | PASS : depuis la page 625, reprise des 5 000 fiches complètes de la deuxième tranche, puis calcul et export | La page visible ne réduit pas le travail repris |
+| Rechargement et reprise de la dernière tranche | PASS : historique retrouvé, dernière page 251 contenant la fiche 12001, reprise en copie des 2 001 résultats, CSV identique | Rechargement sur ordinateur avec serveur disponible ; pas de panne matérielle ou nouvel essai hors ligne physique |
+| Traductions et clavier d’aperçu | PASS : dernières pages en FR/EN/AR, statut traduit, bouton courant conserve le focus ; RTL sans débordement du document | Pas de lecteur d’écran ni audit complet de clavier |
+| CSV français flexible | PASS : trois profils, séparateur point-virgule, virgules décimales, kg/m et dates DD/MM/YYYY ; choix explicites des colonnes/unités/dates ; valeurs exportées 8500/14000/1600 g et 75/95/42 cm, PMA seul conservé | Un format d’exemple, pas tous les fichiers de services destinataires |
+
+La console contrôlée ne rapporte aucun avertissement ou erreur. Les fichiers et comparaisons restent dans les preuves privées. Les estimations de stockage affichées dépendent de l’origine et des copies de versions ; elles ne mesurent ni le transfert réseau ni la consommation d’un téléphone. Les lignes historiques « gros import non exécuté » restent historiques : ce parcours est désormais exécuté dans la portée ci-dessus.

@@ -1,5 +1,11 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.1 — aperçu paginé des sauvegardes
+
+L’aperçu affichait toutes les lignes d’un travail de 5 000 fiches, ralentissant son ouverture. Il affiche désormais huit fiches par page, avec compteur, numéros et flèches FR/EN/AR. Toutes les fiches restent accessibles ; reprendre depuis la dernière page reprend toujours le travail complet. Les mesures, résultats et originaux archivés ne sont pas modifiés.
+
+Cinq tests publics couvrent le parcours complet de 5 001 entrées, les trois langues, la sélection de version, les réponses tardives et la reprise de la version entière. Moteur 4.4.0 et formats inchangés. Les essais navigateur de grands imports sont documentés séparément dans la matrice manuelle ; ils ne prouvent pas les performances d’un téléphone ni une validation clinique.
+
 ## 5.8.0 — correction explicite d’une ligne du lot
 
 Le tableau courant et l’aperçu du contrôle permettent de corriger une fiche sans ressaisir le lot. Le recalcul est explicitement demandé pour cette seule ligne, avec le profil et l’âge saisis. L’ancienne version puis la correction sont enregistrées avant affichage ; une validation ou sauvegarde échouée ne remplace pas la fiche. Les autres lignes, le brouillon d’ajout et les versions antérieures sont conservés. Les onze tests publics ajoutés vérifient notamment les échecs d’enregistrement, les clics répétés, la reprise d’un autre travail, le suivi par visite et le flux de sauvegarde courant.

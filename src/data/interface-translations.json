@@ -659,7 +659,8 @@
     "batchCorrectionChanged": "Le travail a changé. Fermez cette fenêtre et rouvrez la ligne à corriger.",
     "batchCorrectionSaved": "Ligne corrigée et enregistrée ; autres lignes inchangées.",
     "beforeBatchCorrection": "Avant correction du lot",
-    "correctedBatch": "Ligne du lot corrigée"
+    "correctedBatch": "Ligne du lot corrigée",
+    "previewPages": "Pages de l’aperçu"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -1321,7 +1322,8 @@
     "batchCorrectionChanged": "The workspace changed. Close this window and reopen the row to correct.",
     "batchCorrectionSaved": "Row corrected and saved; other rows unchanged.",
     "beforeBatchCorrection": "Before lot correction",
-    "correctedBatch": "Lot row corrected"
+    "correctedBatch": "Lot row corrected",
+    "previewPages": "Preview pages"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1983,6 +1985,7 @@
     "batchCorrectionChanged": "تغير العمل الحالي. أغلق النافذة وافتح الصف المراد تصحيحه من جديد.",
     "batchCorrectionSaved": "تم تصحيح الصف وحفظه؛ الصفوف الأخرى دون تغيير.",
     "beforeBatchCorrection": "قبل تصحيح الدفعة",
-    "correctedBatch": "تم تصحيح صف الدفعة"
+    "correctedBatch": "تم تصحيح صف الدفعة",
+    "previewPages": "صفحات المعاينة"
   }
 }
