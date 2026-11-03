@@ -7,7 +7,7 @@ const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/
 const PretermUI=typeof module!=='undefined'&&module.exports?require('./services/reference-intergrowth.js').IntergrowthPostnatal:globalThis.IntergrowthPostnatal;
 const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
 class WorkspaceApp {
-    static version = '5.7.2';
+    static version = '5.8.0';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});
@@ -477,7 +477,7 @@ class WorkspaceApp {
     batchHTML() {
         const view=this.batchView(),disabled=!view.total;
         return `<div class="workspace-grid batch-workspace"><section class="card" id="measure-card"><div class="card-top"><h2>${this.t('formTitle')}</h2><div class="toolbar compact-toolbar form-top-actions">${this.toolButton('addBatch','plus','',{primary:true,submit:true,showLabel:true,attrs:'form="batch-form"'})}</div></div>${this.formHTML('batch',this.state.batchDraft,true)}<section class="csv-tools" aria-labelledby="csv-tools-toggle"><div class="csv-tools-heading"><div class="csv-heading-label"><button type="button" class="csv-tools-toggle" id="csv-tools-toggle" data-action="toggle-csv" aria-expanded="${!!this.state.paste}" aria-controls="csv-tools-body csv-heading-actions"><span>${this.t('csvTools')}</span></button>${this.infoButton('csvHelp','csvTools','csv-help-button')}</div><div id="csv-heading-actions" class="toolbar compact-toolbar csv-heading-actions"${this.state.paste?'':' hidden'}><label class="icon-button action-with-label file-label desktop-format-action" title="${this.esc(this.t('importCSV'))}">${this.icon('csv')}${this.actionLabelHTML('importCSV',true)}<input class="file-input" type="file" id="csv-file" aria-label="${this.esc(this.t('importCSV'))}" accept=".csv,text/csv"></label>${this.toolButton('csvTemplate','csv','csv-template',{showLabel:true,labelKey:'csvTemplateShort'})}</div></div><div id="csv-tools-body" class="csv-tools-body"${this.state.paste?'':' hidden'}><div class="field"><label for="paste-data">${this.t('pasteLabel')}</label><textarea id="paste-data" rows="3">${this.esc(this.state.paste)}</textarea></div><p id="csv-progress" role="status" aria-live="polite"></p><button id="csv-parse-button" class="btn" data-action="parse-csv">${this.t('parseCSV')}</button></div></section></section>
-          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?`<div data-lot-quality>${this.qualityHTML()}</div>`+this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
+          <section class="card batch-results-card"><div class="card-top"><div class="batch-heading"><h2 id="batch-results-title" class="flow-focus" tabindex="-1">${this.t('batchList')} <span class="batch-count">(${this.number(view.total,0)})</span></h2>${this.batchContextNotes().length?this.infoButton('batchContext','batchList','batch-context-info'):''}</div><div class="toolbar compact-toolbar batch-actions">${this.toolButton('computeBatch','run','calculate-batch',{primary:true,disabled,showLabel:true,labelKey:'calculateShort'})}${this.toolButton('exportCSV','csv','csv-results',{disabled,showLabel:true,labelKey:'csvShort'})}${this.toolButton('exportPDF','pdf','export-pdf',{disabled:disabled||this.pdfBusy,showLabel:true,labelKey:'pdfShort'})}${this.toolButton('exportPDFCompact','compact','export-pdf',{disabled:disabled||this.pdfBusy,attrs:'data-layout="compact"',showLabel:true,labelKey:'pdfCompactShort'})}${this.toolButton('print','print','print',{disabled,showLabel:true})}${this.toolButton('saveNow','save','save',{showLabel:true,labelKey:'saveShort'})}</div></div><div class="batch-browser">${view.total?`<div class="table-scroll">${this.tableHTML(view.entries,{compact:true,editable:true,offset:view.start})}</div>${this.batchPagination(view)}`:`<div class="empty">${this.t('emptyBatch')}</div>`}</div>${view.total?`<div data-lot-quality>${this.qualityHTML()}</div>`+this.lotSummaryHTML():''}</section></div><div id="batch-print" class="print-only"></div>`;
     }
     qualityHTML({open=false}={}) {
         if(this.qualityWorkspace!==this.state){this.qualityWorkspace=this.state;this.qualityPage=0;}
@@ -497,19 +497,70 @@ class WorkspaceApp {
         const csv='\uFEFF'+rows.map(row=>row.map(CSVManager.cell).join(',')).join('\r\n');
         this.download(csv,analysis?'zscore-preparation-analyse.csv':'zscore-controle-qualite.csv','text/csv');
     }
+    static correctedBatch(workspace,index,draft,engine) {
+        if(!Number.isInteger(index)||index<0||!workspace?.batch?.[index])throw Error('batchCorrectionChanged');
+        const original=workspace.batch[index].child,raw={...original,...draft,growthProfile:draft.growthProfile||original.growthProfile||'who',visitId:original.visitId};
+        delete raw.id;
+        const entry=engine.calculate(raw);
+        HistoryManager.checkChild(entry.child);HistoryManager.checkResult(entry.result,new Set([entry.child.id]));HistoryManager.checkPair(entry.child,entry.result);
+        const next=HistoryManager.clone(workspace);next.batch[index]=entry;
+        return next;
+    }
+    openBatchCorrection(index) {
+        if(this.batchComputing||this.csvBusy||this.csvReading||this.batchCorrection?.busy)return;
+        const entry=this.state.batch[index];if(!Number.isInteger(index)||index<0||!entry)return;
+        this.batchCorrection={workspace:this.state,index,entry,draft:{...this.emptyDraft('who'),...HistoryManager.clone(entry.child),growthProfile:entry.child.growthProfile||'who'}};
+        this.renderBatchCorrection();
+    }
+    readBatchCorrection() {
+        const context=this.batchCorrection,form=document.getElementById('correction-form');if(!context||!form)return;
+        context.draft={...context.draft,...Object.fromEntries(new FormData(form))};
+        if(context.draft.growthProfile==='intergrowth'&&context.draft.ageMode!=='pma')context.draft.postmenstrualDays='';
+    }
+    renderBatchCorrection(focus='correction-weight') {
+        const context=this.batchCorrection;if(!context)return;
+        this.dialog('batchCorrectionTitle',`<p>${this.t('qualityRecord')} ${this.number(context.index+1,0)} · <bdi>${this.esc(context.entry.child.name||context.entry.child.caseId||this.t('unknown'))}</bdi></p><p class="hint">${this.t('batchCorrectionHelp')}</p><p id="correction-progress" role="status" aria-live="polite"></p>${this.formHTML('correction',context.draft)}`,`<button class="btn primary" data-action="save-batch-correction">${this.t('batchCorrectionApply')}</button>`);
+        const form=document.getElementById('correction-form');
+        form.addEventListener('submit',event=>{event.preventDefault();this.saveBatchCorrection();});
+        form.addEventListener('change',event=>{
+            if(!['ageMode','growthProfile'].includes(event.target.name))return;
+            this.readBatchCorrection();
+            context.draft=event.target.name==='growthProfile'?WorkspaceApp.draftForProfile(context.draft,event.target.value):WorkspaceApp.draftForAgeMode(context.draft,event.target.value);
+            this.renderBatchCorrection('correction-'+event.target.name);
+        });
+        document.getElementById(focus)?.focus();
+    }
+    async saveBatchCorrection() {
+        const context=this.batchCorrection;if(!context||context.busy)return;
+        const current=()=>this.batchCorrection===context&&this.state===context.workspace&&this.state.batch[context.index]===context.entry;
+        this.readBatchCorrection();context.busy=true;
+        const dialog=document.getElementById('workspace-dialog'),form=document.getElementById('correction-form');
+        const buttons=[...dialog.querySelectorAll('button')];buttons.forEach(b=>{b.disabled=true;});if(form)form.inert=true;
+        dialog.setAttribute('aria-busy','true');document.getElementById('correction-progress').textContent=this.t('saving');
+        try{
+            const next=WorkspaceApp.correctedBatch(context.workspace,context.index,context.draft,this.engine);
+            await this.saveImmediate('beforeBatchCorrection',true);
+            if(!current())throw Error('batchCorrectionChanged');
+            await this.history.save(next,'correctedBatch',true);
+            if(!current())throw Error('batchCorrectionChanged');
+            this.batchCorrection=null;this.state=next;this.batchPage=Math.floor(context.index/8);this.saveState='saved';this.checkpoint(false);
+            dialog.close();this.render('batch-correct-'+context.index);this.toast('batchCorrectionSaved');
+        }catch(error){if(form)form.inert=false;if(current())this.formError('correction',error.message);else this.toast(error.message,true);}
+        finally{context.busy=false;dialog.removeAttribute('aria-busy');buttons.forEach(b=>{b.disabled=false;});if(form)form.inert=false;const progress=document.getElementById('correction-progress');if(progress)progress.textContent='';}
+    }
     preparePrint() {
         const target=document.getElementById('batch-print');
         if(target)target.innerHTML=this.page==='batch'?this.lotSummaryHTML({open:true,exportButton:false})+this.tableHTML(this.state.batch):'';
     }
-    tableHTML(entries, {compact=false} = {}) {
+    tableHTML(entries, {compact=false,editable=false,offset=0} = {}) {
         const indicators = ClinicalEngine.indicators.filter(key=>entries.some(e=>WorkspaceApp.resultIndicators(e.result).includes(key)));
         const columns = ['name','weight','height',...indicators];
         const number = (value,digits=2) => `<bdi class="score-number" dir="ltr">${this.number(value,digits)}</bdi>`;
         const note = key => `<div class="${compact&&key==='withinReference'?'sr-only':'item-sub'}">${this.esc(this.t(key))}</div>`;
         const cell = (key,value) => `<td role="cell"${indicators.includes(key)?' class="score"':''}><span class="cell-label" aria-hidden="true">${this.esc(this.t(key))}</span><div class="cell-value">${value}</div></td>`;
-        return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result})=>{
+        return `<table class="results-table" role="table" aria-label="${this.esc(this.t('resultsTitle'))}"><thead role="rowgroup"><tr role="row">${columns.map(key=>`<th role="columnheader" scope="col"><abbr title="${this.esc(this.t(key))}">${this.esc(this.t(compact?({weightForAge:'shortWFA',heightForAge:'shortHFA',weightForHeight:'shortWFH',bmiForAge:'shortBFA',weight:'weightShort',height:'heightShort'}[key]||key):key))}</abbr></th>`).join('')}</tr></thead><tbody role="rowgroup">${entries.map(({child,result},i)=>{
             const identity=`<bdi dir="auto" class="item-title">${this.esc(child.name||child.caseId||this.t('unknown'))}</bdi><div class="item-sub"><bdi dir="auto">${this.esc(child.name?child.caseId||'':'')}</bdi></div>${child.measurementDate?`<div class="${compact?'sr-only':'item-sub'}">${this.esc(this.t('measurementDate'))} : <bdi>${this.esc(this.calendarDate(child.measurementDate))}</bdi></div>`:''}${result?.nutrition?`<div class="item-sub">${this.t('muac')} : ${result.nutrition.muacMm==null?this.t('unknown'):this.esc(this.number(result.nutrition.muacMm,1))+' mm'}</div>${compact?`<details class="row-assessment ${result.nutrition.category==='nutritionSevere'||['orientationUrgent','orientationInpatient'].includes(result.nutrition.orientation)?'clinical-urgent':''}"><summary>${this.esc(this.t(result.nutrition.category+'Short'))} · ${this.esc(this.t(result.nutrition.orientation+'Short'))}</summary><p>${this.esc(this.t(result.nutrition.category))}</p><p>${this.esc(this.t(result.nutrition.orientation))}</p><p>${(result.nutrition.criteria||[]).map(k=>this.esc(this.t(k))).join(' · ')}</p>${result.referenceFamily==='INTERGROWTH2015'?(result.warnings||[]).map(note).join(''):''}</details>`:`<div class="item-sub">${this.esc(this.t(result.nutrition.category))} · ${this.esc(this.t(result.nutrition.orientation))}</div>`}`:''}${this.additionalResultsHTML(result)}${!result?note('notCalculated'):''}${result?.imported&&!compact?note('importedResult'):''}${(result?.warnings||[]).filter(key=>!compact||result?.referenceFamily!=='INTERGROWTH2015'&&key!=='estimatedAge').map(note).join('')}`;
-            return `<tr role="row">${cell('name',identity)}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
+            return `<tr role="row">${cell('name',identity+(editable?`<button type="button" id="batch-correct-${offset+i}" class="btn row-correction" data-action="batch-correct" data-index="${offset+i}" aria-label="${this.esc(this.t('batchCorrectionEdit')+' · '+this.t('qualityRecord')+' '+this.number(offset+i+1,0)+' · '+(child.name||child.caseId||this.t('unknown')))}">${this.icon('edit')}<span>${this.t('batchCorrectionEdit')}</span></button>`:''))}${cell('weight',number(child.weight,0))}${cell('height',number(child.height,1))}${indicators.map(key=>{
                 const value=key==='bmiForAge'&&result?.schemaVersion!==4?null:result?.[key],hasValue=typeof value?.zscore==='number'&&Number.isFinite(value.zscore);
                 const category=value?.classification;
                 return cell(key,`${hasValue?number(value.zscore):'<span class="score-number">—</span>'}${this.percentileHTML(value,result)}${note(hasValue?(category||(result?.referenceFamily==='INTERGROWTH2015'?'intergrowthDescriptive':'unknown')):key==='bmiForAge'&&result&&!result.schemaVersion===4?'indicatorNotStored':'notCalculated')}${value?.flagged?note('flagged'):''}${value?.error?note(value.error):''}`);
@@ -607,7 +658,9 @@ class WorkspaceApp {
             if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) header.close();
         });
         window.addEventListener('resize',()=>{if(innerWidth>680&&header.open&&header.classList.contains('mobile-actions-dialog'))header.close();});
-        document.getElementById('workspace-dialog').addEventListener('close',()=>{document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;this.previewRequest=(this.previewRequest||0)+1;this.importRequest=(this.importRequest||0)+1;this.previewedVersion=null;this.stagePreviewSession=null;if(this.preparedImport?.format==='stream'){this.transfers().release(this.preparedImport);this.preparedImport=null;}});
+        document.getElementById('workspace-dialog').addEventListener('cancel',event=>{if(this.batchCorrection?.busy)event.preventDefault();});
+        document.getElementById('workspace-dialog').addEventListener('keydown',event=>this.workspaceDialogKey(event));
+        document.getElementById('workspace-dialog').addEventListener('close',()=>this.workspaceDialogClosed());
         document.getElementById('app-root').addEventListener('submit', async event => {
             if(header.open&&header.classList.contains('mobile-actions-dialog'))header.close();
             event.preventDefault(); this.readForms();
@@ -649,6 +702,24 @@ class WorkspaceApp {
             const button = event.target.closest('[data-action]'); if (!button) return;
             event.preventDefault(); this.action(button.dataset.action,button).catch(error => this.toast(error.message,true));
         });
+    }
+    workspaceDialogKey(event) {
+        const dialog=document.getElementById('workspace-dialog');
+        if(event.key!=='Tab'||event.defaultPrevented||!dialog.open)return;
+        const controls=[...dialog.querySelectorAll('button,input,select,textarea,summary,a[href],[tabindex]')].filter(e=>e.tabIndex>=0&&!e.disabled&&e.getClientRects().length&&!e.closest('[inert]'));
+        if(!controls.length){event.preventDefault();return;}
+        const first=controls[0],last=controls.at(-1),active=document.activeElement;
+        if(event.shiftKey&&active===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&active===last){event.preventDefault();first.focus();}
+    }
+    workspaceDialogClosed() {
+        // Native close events are queued: a dialog may already have been reopened.
+        if(document.getElementById('workspace-dialog').open)return;
+        this.batchCorrection=null;
+        document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});
+        this.encryptedPending=null;this.previewRequest=(this.previewRequest||0)+1;this.importRequest=(this.importRequest||0)+1;
+        this.previewedVersion=null;this.stagePreviewSession=null;
+        if(this.preparedImport?.format==='stream'){this.transfers().release(this.preparedImport);this.preparedImport=null;}
     }
     readForms() {
         for (const prefix of ['single','batch']) {
@@ -770,9 +841,11 @@ class WorkspaceApp {
             const page=action==='quality-page'?Number(button.dataset.page):(this.qualityPage||0)+(action==='quality-next'?1:-1);
             if(Number.isInteger(page)&&page>=0){this.qualityPage=page;this.renderQuality();}
         }
+        else if(action==='batch-correct')this.openBatchCorrection(Number(button.dataset.index));
+        else if(action==='save-batch-correction')await this.saveBatchCorrection();
         else if(action==='quality-view'){
             const index=Number(button.dataset.index),entry=this.state.batch[index];
-            if(Number.isInteger(index)&&index>=0&&entry)this.dialog('qualityRecord',`<p>${this.t('qualityRecord')} ${this.number(index+1,0)} · ${this.t('qualityReadOnly')}</p>${entry.result?this.resultsHTML(entry,false,true):this.tableHTML([entry])}`);
+            if(Number.isInteger(index)&&index>=0&&entry)this.dialog('qualityRecord',`<p>${this.t('qualityRecord')} ${this.number(index+1,0)} · ${this.t('qualityReadOnly')}</p>${entry.result?this.resultsHTML(entry,false,true):this.tableHTML([entry])}`,`<button class="btn" data-action="batch-correct" data-index="${index}">${this.icon('edit')}${this.t('batchCorrectionEdit')}</button>`);
         }
         else if(action==='quality-csv'||action==='analysis-csv')this.downloadQuality(action==='analysis-csv');
         else if(action==='reporting')this.reportingDialog();
@@ -789,7 +862,7 @@ class WorkspaceApp {
         else if(action==='history-previous'||action==='history-next'){this.historyPage+=action==='history-next'?1:-1;this.renderHistoryList();this.focusPagination('history-page');}
         else if(action==='history-page'){const page=Number(button.dataset.page);if(Number.isInteger(page)&&page>=0){this.historyPage=page;this.renderHistoryList();this.focusPagination('history-page');}}
         else if(action==='preview')await this.previewSession(this.sessions.find(s=>s.id===button.dataset.id));
-        else if(action==='close-dialog'){document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;document.getElementById('workspace-dialog').close();}
+        else if(action==='close-dialog'){if(this.batchCorrection?.busy)return;document.querySelectorAll('#workspace-dialog input[type="password"]').forEach(input=>{input.value='';});this.encryptedPending=null;document.getElementById('workspace-dialog').close();}
         else if(action==='restore'){const selected=this.previewedVersion||this.sessions.find(s=>s.id===button.dataset.id);if(selected?.id===button.dataset.id&&selected.metadata?.workspace)await this.restore(selected);else this.toast('historyReadFailed',true);}
         else if(action==='commit-import'){
             if(!this.preparedImport)return;button.disabled=true;

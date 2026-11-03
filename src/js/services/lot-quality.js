@@ -11,6 +11,10 @@ class LotQuality {
     static indicators=['weightForAge','heightForAge','weightForHeight','bmiForAge',
         'headCircumferenceForAge','armCircumferenceForAge','tricepsForAge','subscapularForAge'];
     static present(v){return v!==undefined&&v!==null&&v!=='';}
+    static integer(v,min,max=Infinity){
+        if(typeof v!=='number'&&(typeof v!=='string'||!v.trim()))return false;
+        const n=Number(v);return Number.isInteger(n)&&n>=min&&n<=max;
+    }
     static validDate(v){
         if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;
         const time=Date.parse(v+'T00:00:00Z');
@@ -36,7 +40,7 @@ class LotQuality {
             if(this.present(c.birthDate)&&!this.validDate(c.birthDate))signal(index,'qualityInvalidDate');
             if(!['M','F'].includes(c.gender))signal(index,'qualityInvalidSex');
             const usableAge=c.ageMode==='pma'?this.profile(c)==='intergrowth'&&Number.isInteger(c.postmenstrualDays)&&c.postmenstrualDays>=189&&c.postmenstrualDays<=448:
-                c.ageMode==='months'?Number.isInteger(c.ageYears)&&c.ageYears>=0&&Number.isInteger(c.ageMonths)&&c.ageMonths>=0&&c.ageMonths<12:
+                c.ageMode==='months'?this.integer(c.ageYears,0)&&this.integer(c.ageMonths,0,11):
                 ['days','dates'].includes(c.ageMode)&&Number.isInteger(c.ageDays)&&c.ageDays>=0&&(c.ageMode!=='dates'||date&&this.validDate(c.birthDate));
             if(!usableAge)signal(index,'qualityAgeUnusable');
             if(this.measures.some(k=>this.present(c[k])&&(!Number.isFinite(c[k])||c[k]<=0)))signal(index,'qualityInvalidMeasure');

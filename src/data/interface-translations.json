@@ -651,7 +651,15 @@
     "sourceIntergrowth": "INTERGROWTH : courbes postnatales des prématurés",
     "sourceIntergrowthUse": "INTERGROWTH : contexte d’utilisation",
     "sourceIntergrowthCode": "Équations postnatales GIGS et licence GPL",
-    "pdfRowContinuation": "Ligne du lot {number} · suite"
+    "pdfRowContinuation": "Ligne du lot {number} · suite",
+    "batchCorrectionTitle": "Corriger une ligne du lot",
+    "batchCorrectionEdit": "Corriger",
+    "batchCorrectionHelp": "Seule cette ligne sera recalculée avec la référence choisie. La version précédente sera conservée dans les sauvegardes avant application. Les autres lignes et le formulaire d’ajout restent inchangés. Fermer abandonne les saisies de cette fenêtre.",
+    "batchCorrectionApply": "Recalculer et enregistrer",
+    "batchCorrectionChanged": "Le travail a changé. Fermez cette fenêtre et rouvrez la ligne à corriger.",
+    "batchCorrectionSaved": "Ligne corrigée et enregistrée ; autres lignes inchangées.",
+    "beforeBatchCorrection": "Avant correction du lot",
+    "correctedBatch": "Ligne du lot corrigée"
   },
   "en": {
     "brand": "Z-score Niger",
@@ -1305,7 +1313,15 @@
     "sourceIntergrowth": "INTERGROWTH: preterm postnatal curves",
     "sourceIntergrowthUse": "INTERGROWTH: context of use",
     "sourceIntergrowthCode": "GIGS postnatal equations and GPL licence",
-    "pdfRowContinuation": "Lot row {number} · continued"
+    "pdfRowContinuation": "Lot row {number} · continued",
+    "batchCorrectionTitle": "Correct a lot row",
+    "batchCorrectionEdit": "Correct",
+    "batchCorrectionHelp": "Only this row will be recalculated using the selected reference. Its previous version will be saved before applying changes. Other rows and the add form stay unchanged. Closing discards the edits in this window.",
+    "batchCorrectionApply": "Recalculate and save",
+    "batchCorrectionChanged": "The workspace changed. Close this window and reopen the row to correct.",
+    "batchCorrectionSaved": "Row corrected and saved; other rows unchanged.",
+    "beforeBatchCorrection": "Before lot correction",
+    "correctedBatch": "Lot row corrected"
   },
   "ar": {
     "brand": "مؤشر Z — النيجر",
@@ -1959,6 +1975,14 @@
     "sourceIntergrowth": "INTERGROWTH: منحنيات الخدّج بعد الولادة",
     "sourceIntergrowthUse": "INTERGROWTH: سياق الاستخدام",
     "sourceIntergrowthCode": "معادلات GIGS بعد الولادة وترخيص GPL",
-    "pdfRowContinuation": "صف الدفعة {number} · تابع"
+    "pdfRowContinuation": "صف الدفعة {number} · تابع",
+    "batchCorrectionTitle": "تصحيح صف من الدفعة",
+    "batchCorrectionEdit": "تصحيح",
+    "batchCorrectionHelp": "يعاد حساب هذا الصف فقط بالمرجع المحدد. تحفظ النسخة السابقة قبل تطبيق التغييرات. تبقى الصفوف الأخرى ونموذج الإضافة دون تغيير. إغلاق النافذة يلغي التعديلات المدخلة فيها.",
+    "batchCorrectionApply": "إعادة الحساب والحفظ",
+    "batchCorrectionChanged": "تغير العمل الحالي. أغلق النافذة وافتح الصف المراد تصحيحه من جديد.",
+    "batchCorrectionSaved": "تم تصحيح الصف وحفظه؛ الصفوف الأخرى دون تغيير.",
+    "beforeBatchCorrection": "قبل تصحيح الدفعة",
+    "correctedBatch": "تم تصحيح صف الدفعة"
   }
 }

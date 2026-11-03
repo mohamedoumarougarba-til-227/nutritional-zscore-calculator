@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.7.2",
+  "version": "5.8.0",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 8248119,
-  "sha256": "cdb99674e2e1389c600b4cd02fed774cb7090fd084ecc66b73d8ef887bccec22",
+  "bytes": 8278741,
+  "sha256": "0374fdb637dc85e53c93eaf0c18657ccf3967b0fb9fbae8aead67f8b998b8ef7",
   "files": [
     {
       "file": ".gitattributes",
@@ -33,8 +33,8 @@
     },
     {
       "file": ".gitignore",
-      "bytes": 9795,
-      "sha256": "6d717ed92a246440da23ae6cadc709ff864f872361482cb212b6d4920d449bee"
+      "bytes": 9842,
+      "sha256": "d4a9e0818e41f33f635db15ba243a8f79ffb681368f517d5c08f96cb411e653e"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -54,7 +54,7 @@
     {
       "file": "README.md",
       "bytes": 10140,
-      "sha256": "d0b6f3da5d40455bee22f95a4bb1796178ab67fe6045d9e82842249af8e8abd0"
+      "sha256": "b5aa481dcf50486b8594e749cd6a31cb895533b74380f37f6c6520e7300ad1d7"
     },
     {
       "file": "SECURITY.md",
@@ -69,7 +69,7 @@
     {
       "file": "docs/README.md",
       "bytes": 2856,
-      "sha256": "1983946fa5b7ca8d3f2222ef3c204271e4f93b2f7356463995f5750c4313c217"
+      "sha256": "f8d43a4504404d2fb43aac8b5d79ed9e1e42341aa2b3cd470942bd4672477565"
     },
     {
       "file": "docs/assets/individual-fr.jpg",
@@ -94,17 +94,17 @@
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "3f486d47d3408d9f9720696380f1ed92845a1b28249cd96186be4e1112dbca7c"
+      "sha256": "41ad50af4a13b48dfe415e15e3520f65fe88be1cda82547a6bd4597e521524ea"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 13421,
-      "sha256": "5e61d9c01cc5546265d729b230b1e0e8abcefd7647b359e86eabc200fa841bc5"
+      "bytes": 14529,
+      "sha256": "f8321a35abba36f23279b7160957ff512404b0cae94af591414568ee06356d9c"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
       "bytes": 5374,
-      "sha256": "783eddcd5aa2ece79eb3fcca90b99cb881094da3b7595c5d2427be72010ef528"
+      "sha256": "e5a578f9cd2141616dd04da95aedea45b22eb5554ccf236c4374d9022854fd3a"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
@@ -113,8 +113,8 @@
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
-      "bytes": 32634,
-      "sha256": "8941821d0bf447ead35b71570413b19bfdf3dfbbdcbfdc2bf797dfc1f57fc7a4"
+      "bytes": 33894,
+      "sha256": "aa1d2ce6588e941068c49552db6182e96da7cada62337b70609674dceb8cd601"
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
@@ -133,8 +133,8 @@
     },
     {
       "file": "docs/maintenance/VALIDATION_MANUELLE.md",
-      "bytes": 12667,
-      "sha256": "479b60a1daee0f9c0edcc8a95ce0433bf338ef978b2d121276fa5acc16034e0b"
+      "bytes": 16062,
+      "sha256": "8acf248d1699db67e843e6237bb54f8d563e92f725f7a3ee73792b0efb7c9ca1"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",
@@ -144,7 +144,7 @@
     {
       "file": "docs/references/CDC.md",
       "bytes": 9943,
-      "sha256": "d5d12d978f0f497562559d39f6cf7b77c9aa066937bfd1f445587aa5e73bde3f"
+      "sha256": "d86bf1c9eef06aa37c624844caf2909cc871da0fbf477e96e8617956bb7fe412"
     },
     {
       "file": "docs/references/DISTRIBUTION_GPL.md",
@@ -169,7 +169,7 @@
     {
       "file": "docs/references/INTERGROWTH.md",
       "bytes": 6845,
-      "sha256": "baf9c26f32cf8a53912f150cac010bdb4101b6f9b617edf73d0d484a7af8c628"
+      "sha256": "9b7e3af46a4929d4755a3296abe33a9ce0b82cb16bca6932a7ef4e1da3fb117c"
     },
     {
       "file": "docs/references/INTEROPERABILITE.md",
@@ -179,7 +179,7 @@
     {
       "file": "docs/references/METHODE.md",
       "bytes": 6879,
-      "sha256": "fca1c3255956f9a189308af266e28740b329e8111bb953732615ce1c581b4237"
+      "sha256": "45c5cd33aea60d572a2b33b1f1999646f62ad8416da7b7100234db410e1616b2"
     },
     {
       "file": "docs/references/REFERENCES_NATIONALES.md",
@@ -194,12 +194,12 @@
     {
       "file": "package-lock.json",
       "bytes": 720,
-      "sha256": "18a493a059e92ebe5ae853cdc600e6293431f9c5a43e8de82c91da21a37a7fb6"
+      "sha256": "3ff9dc82211047052c38c43e106e1949c6a24250c52273a647eea0fac8b02174"
     },
     {
       "file": "package.json",
       "bytes": 983,
-      "sha256": "888b43fee120dba19a95db7dccb81d5077b5d0302dc18dfe26a39176f342c85f"
+      "sha256": "9a25d3892ace1de3b7d69fd6bc62632ecfa9d18a2595ae8a3de3b9e2680aec6b"
     },
     {
       "file": "src/assets/icons/icon-128.png",
@@ -248,8 +248,8 @@
     },
     {
       "file": "src/css/workspace.css",
-      "bytes": 57990,
-      "sha256": "67589a0ba1e1452f87c6cc216901e18a36dafe6aa7db949557abddc8a2c70927"
+      "bytes": 58241,
+      "sha256": "0a6a1af476cefaa7ed86d3c0c4f2be0530b5677efe74b72996a04c5fede9b983"
     },
     {
       "file": "src/data/LICENSE-TIL.txt",
@@ -278,8 +278,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 170139,
-      "sha256": "4b3680db3d9221e544c4a2b5329e19b842236f1c8fe98225873ae36f5b191cb5"
+      "bytes": 172444,
+      "sha256": "745103fd517bcf7a6d0ae1eb778c1dedfba7c09466e4abf688a09f0a18113b54"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -373,8 +373,8 @@
     },
     {
       "file": "src/js/services/lot-quality.js",
-      "bytes": 9604,
-      "sha256": "60185be5f9fd293884bdeee0aba000fabae6062b22e08e863fba4d0ead2f1808"
+      "bytes": 9751,
+      "sha256": "dfcce9a9f9d4063c82365419172f20ace7e78e28384f5aa6efe1459ce3475e6d"
     },
     {
       "file": "src/js/services/nutrition-assessment.js",
@@ -423,8 +423,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 131544,
-      "sha256": "37379b59e82c3411f0f2d86c89f9f448ad64ef8a97917df22bbbe35d8bf8349d"
+      "bytes": 138026,
+      "sha256": "9700a212bc967c941546f52201227188dff73783ccfa12b8986635869903e683"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -493,8 +493,13 @@
     },
     {
       "file": "tools/git-sync-allowlist.json",
-      "bytes": 9016,
-      "sha256": "08b33968ec0e68a6c5c5bded2137bf9dd264c21c5a7909bae07b99fc6b0fadbe"
+      "bytes": 9068,
+      "sha256": "a6a649fb64254aa475ff78f65e010f6dd93ad687dcc78f1bb0b2f13d5abe869a"
+    },
+    {
+      "file": "tools/public-tests/batch-correction.test.cjs",
+      "bytes": 15411,
+      "sha256": "d11eb471f8735670266de6c9fa990826100d73a194152ffdfda99c99c9aaad8b"
     },
     {
       "file": "tools/public-tests/cdc.test.cjs",

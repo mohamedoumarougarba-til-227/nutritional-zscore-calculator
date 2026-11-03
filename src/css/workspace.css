@@ -383,3 +383,5 @@ th{font-size:13px;color:var(--ink)}table{font-size:13px}
 }
 
 .additional-fields,.additional-results{margin-block:12px;border-block-start:1px solid var(--line);padding-block:10px}.additional-fields>summary,.additional-results>summary{cursor:pointer;font-weight:650;color:var(--accent)}.additional-fields .form-grid{margin-block-start:12px}.additional-results .measurement-snapshot p{font-size:13px;margin:4px 0}.additional-results .centile{margin-inline-start:8px}.additional-results .hint{margin-block:8px}
+.row-correction{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-block-start:8px;padding:6px 10px;font-size:13px}.row-correction .ui-icon{width:18px;height:18px;flex-shrink:0}
+@media print{.row-correction{display:none!important}}

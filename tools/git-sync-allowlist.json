@@ -205,6 +205,7 @@
     "docs/assets/individual-fr.jpg",
     "docs/assets/postnatal-ar.jpg",
     "docs/maintenance/PRESENTATION_PUBLIQUE.md",
-    "tools/scripts/build-social-preview.py"
+    "tools/scripts/build-social-preview.py",
+    "tools/public-tests/batch-correction.test.cjs"
   ]
 }

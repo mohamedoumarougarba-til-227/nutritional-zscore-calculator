@@ -87,3 +87,22 @@ Le lot comprend trois mesures OMS d’un même identifiant fictif (deux identiqu
 | PDF | Fichiers détaillés FR/AR et compact AR effectivement téléchargés ; pages rendues et inspectées. Défaut de repère sur continuation trouvé et corrigé en 5.7.2 ; notes uniques et contexte conservés | Rendus numériques ; aucune impression papier. Le rapport détaillé peut garder des fiches sur plusieurs pages |
 
 La grille historique n’est pas intégralement terminée : modification d’une fiche au sein du lot, très gros import, toutes les langues/layouts du PDF au navigateur, lecteurs d’écran, mobile réel et quotas restent des scénarios distincts. Les preuves et fichiers fictifs détaillés restent privés ; les droits et l’architecture locale sont inchangés.
+
+## Correction de lignes — observations du 3 novembre 2026, version 5.8.0
+
+Navigateur intégré Chromium sur ordinateur, moteur 4.4.0, 67 fiches entièrement fictives OMS/CDC/INTERGROWTH. La grille historique ci-dessus reste datée ; la modification de ligne est désormais parcourue dans la portée suivante.
+
+| Parcours exécuté | Résultat observé | Limite |
+|---|---|---|
+| Import, calcul puis correction ciblée | PASS : ligne 1 OMS de 8 500 à 9 000 g ; ligne 55 CDC de 12 300 à 12 400 g ; ligne 61 postnatale de 42 à 43 cm | Trois corrections, pas toutes les combinaisons cliniques |
+| Conservation du lot | PASS : 64 autres lignes identiques cellule par cellule dans les 119 colonnes du CSV ; 67 lignes conservées ; références et identifiants de visite des trois lignes inchangés | Comparaison des fichiers réellement téléchargés |
+| Historique et sauvegarde | PASS : trois paires avant/après présentes dans le fichier .zscore réellement exporté, intégrité vérifiée ; une seule fiche différente par paire, nouveaux identifiants de résultat et de fiche, même visite | Export local sur données fictives, pas récupération après panne matérielle |
+| Saisie et annulation | PASS : brouillon d’ajout conservé ; poids nul refusé avec focus sur le message ; changement de mode d’âge postnatal puis annulation sans perte ; export après annulations/langues identique à celui après correction | Les échecs de sauvegarde et doubles clics sont testés séparément dans le socle public |
+| PMA seul | PASS : PMA 224 conservé ; âge chronologique et gestation inconnus restent vides après correction | Pas de reconstitution d’un âge inconnu |
+| Années/mois issus du formulaire | Faux signal d’âge incomplet reproduit après correction CDC, puis supprimé : le contrôle accepte les entiers conservés en texte ; CSV final identique avant/après ce correctif | Aucun calcul ni résultat archivé modifié ; test public des âges absents/invalides conservé |
+| Aperçu du contrôle vers correction | PASS : ouverture de la ligne 4 depuis le contrôle, passage à la correction puis fermeture sans changement exporté | Un parcours d’aperçu |
+| Clavier | PASS : Tab du dernier bouton revient au premier ; Maj+Tab du premier revient au dernier, en français et arabe ; retour au bouton de ligne après enregistrement | Pas de lecteur d’écran ni certification d’accessibilité |
+| FR/EN/AR et petite largeur RTL | PASS : titres et aides traduits ; erreur de poids arabe ; largeur réellement observée 480 × 844 CSS px, dialogue de 411,6 px dans la fenêtre, aucun débordement horizontal | Override sur ordinateur ; ni écran réel de 390 px, ni essai TECNO. Dimensions réinitialisées après test |
+| Mise à jour | PASS : sauvegarde avant mise à jour et reprise en copie du lot calculé de 67 fiches ; archives précédentes présentes | Pas de purge de caches ; anciens paquets de développement conservés |
+
+La capture d’écran a échoué dans l’outil de navigateur ; elle n’est pas une preuve visuelle disponible. Les observations DOM, dimensions, fichiers CSV/.zscore et leur comparaison sont conservés dans les preuves privées. La console contrôlée n’a fourni aucun avertissement ni erreur. Impression papier, lecteur d’écran, appareil physique, relecture médicale et très gros lot restent des validations distinctes.

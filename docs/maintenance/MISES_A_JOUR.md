@@ -1,5 +1,16 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.0 — correction explicite d’une ligne du lot
+
+Le tableau courant et l’aperçu du contrôle permettent de corriger une fiche sans ressaisir le lot. Le recalcul est explicitement demandé pour cette seule ligne, avec le profil et l’âge saisis. L’ancienne version puis la correction sont enregistrées avant affichage ; une validation ou sauvegarde échouée ne remplace pas la fiche. Les autres lignes, le brouillon d’ajout et les versions antérieures sont conservés. Les onze tests publics ajoutés vérifient notamment les échecs d’enregistrement, les clics répétés, la reprise d’un autre travail, le suivi par visite et le flux de sauvegarde courant.
+
+Le dialogue garde le focus au clavier entre ses contrôles visibles ; la fermeture native tardive d’une fenêtre déjà rouverte ne nettoie plus le nouvel état.
+
+Le contrôle du lot accepte les années/mois numériques conservés sous forme de texte par le formulaire. Il ne les signale plus à tort comme âge incomplet ; les parties absentes, non entières ou hors domaine restent signalées. Aucun score ni âge de calcul n’est modifié.
+
+Moteur 4.4.0 et formats de sauvegarde/résultat inchangés ; aucune nouvelle règle médicale, dépendance ou requête distante.
+
+
 ## 5.7.2 — repère de continuation des rapports de lot
 
 Une fiche très longue peut continuer sur une autre page du PDF détaillé. Cette page porte maintenant « Ligne du lot N · suite » dans les trois langues, en conservant les cellules et la pagination d’AutoTable. Les notes strictement identiques sont conservées une seule fois, dans leur ordre initial ; aucune note distincte, référence, mesure ou résultat archivé n’est modifié. Les rapports compacts restent disponibles avec leur légende. Les compteurs de sauvegarde parlent de fiches de mesures enregistrées : leurs copies ne sont pas présentées comme des enfants distincts.
