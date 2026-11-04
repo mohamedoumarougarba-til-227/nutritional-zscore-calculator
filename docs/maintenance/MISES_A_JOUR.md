@@ -1,5 +1,11 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.2 — exporter une copie de secours après un échec de sauvegarde
+
+Lorsque l’écriture locale échouait, l’interface proposait d’exporter mais la sauvegarde complète tentait d’abord la même écriture et échouait aussi. Elle peut désormais inclure dans le fichier un instantané de la saisie en mémoire, du brouillon et des résultats, en plus de l’historique lisible. Cet instantané n’est pas écrit dans le navigateur ; les versions originales restent conservées. Les espaces de travail identiques ne sont pas dupliqués dans le fichier.
+
+Le message FR/EN/AR distingue la copie créée de l’enregistrement local toujours échoué. La variante chiffrée protège le même contenu. Une archive illisible ou un instantané invalide empêche la création d’un fichier présenté comme complet. Six tests publics supplémentaires couvrent ces cas, les données fictives, la déduplication, la capture de la saisie et le chiffrement. Aucun changement de moteur 4.4.0, référence, calcul, schéma ou format de sauvegarde.
+
 ## 5.8.1 — aperçu paginé des sauvegardes
 
 L’aperçu affichait toutes les lignes d’un travail de 5 000 fiches, ralentissant son ouverture. Il affiche désormais huit fiches par page, avec compteur, numéros et flèches FR/EN/AR. Toutes les fiches restent accessibles ; reprendre depuis la dernière page reprend toujours le travail complet. Les mesures, résultats et originaux archivés ne sont pas modifiés.

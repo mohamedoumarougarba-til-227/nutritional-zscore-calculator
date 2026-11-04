@@ -7,7 +7,7 @@ const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/
 const PretermUI=typeof module!=='undefined'&&module.exports?require('./services/reference-intergrowth.js').IntergrowthPostnatal:globalThis.IntergrowthPostnatal;
 const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
 class WorkspaceApp {
-    static version = '5.8.1';
+    static version = '5.8.2';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});
@@ -916,10 +916,14 @@ class WorkspaceApp {
         if(this.transferBusy)return;this.transferBusy=true;this.transferStatus(true);this.toast('transferPreparing');
         document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"]').forEach(b=>{b.disabled=true;});
         try{
-            await this.saveImmediate('beforeExport');
-            let content=await this.transfers().export(this.prefs,n=>this.transferStatus(n));
+            this.readForms();
+            const snapshot=HistoryManager.hasWork(this.state)?this.history.makeSnapshot(this.state,'beforeExport'):null;
+            let unsaved=null;
+            try{await this.saveImmediate('beforeExport');}
+            catch(error){if(!snapshot)throw error;unsaved=snapshot;}
+            let content=await this.transfers().export(this.prefs,n=>this.transferStatus(n),unsaved);
             if(password!==null)content=await SecureBackup.encrypt(content,password);
-            this.download(content,'zscore-sauvegarde-'+new Date().toISOString().replace(/[:.]/g,'-')+(password!==null?'.zscore.enc':'.zscore'),password!==null?'application/octet-stream':'application/x-ndjson');this.toast(password!==null?'encryptedReady':'exportSensitive');
+            this.download(content,'zscore-sauvegarde-'+new Date().toISOString().replace(/[:.]/g,'-')+(password!==null?'.zscore.enc':'.zscore'),password!==null?'application/octet-stream':'application/x-ndjson');this.toast(unsaved?'exportUnsaved':password!==null?'encryptedReady':'exportSensitive',!!unsaved);
             if(this.page==='history'){this.sessions=await this.history.catalog();this.renderHistoryList();await this.refreshCapacity();}
         }finally{this.transferBusy=false;this.transferStatus();document.querySelectorAll('[data-action="export-backup"],[data-action="password-export"]').forEach(b=>{b.disabled=false;});}
     }

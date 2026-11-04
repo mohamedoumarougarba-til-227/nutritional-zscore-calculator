@@ -124,3 +124,30 @@ Essai dans le navigateur intégré sur ordinateur, origine locale dédiée disti
 | CSV français flexible | PASS : trois profils, séparateur point-virgule, virgules décimales, kg/m et dates DD/MM/YYYY ; choix explicites des colonnes/unités/dates ; valeurs exportées 8500/14000/1600 g et 75/95/42 cm, PMA seul conservé | Un format d’exemple, pas tous les fichiers de services destinataires |
 
 La console contrôlée ne rapporte aucun avertissement ou erreur. Les fichiers et comparaisons restent dans les preuves privées. Les estimations de stockage affichées dépendent de l’origine et des copies de versions ; elles ne mesurent ni le transfert réseau ni la consommation d’un téléphone. Les lignes historiques « gros import non exécuté » restent historiques : ce parcours est désormais exécuté dans la portée ci-dessus.
+
+## Hors ligne, mise à jour et clavier — observations du 4 novembre 2026, 5.8.1
+
+Navigateur intégré Chromium, données fictives et origines locales neuves ; aucun téléphone ni effacement de cache. Ce relevé décrit les parcours exécutés, pas la totalité de la matrice générale.
+
+| Parcours exécuté | Observation | Limite |
+|---|---|---|
+| Premier chargement et cache | 104 réponses / 14 662 243 octets de corps ; rechargement à chaud : seul sw.js, 10 474 octets | Corps HTTP locaux non compressés, pas un débit mobile ou temps de rendu |
+| Serveur arrêté | Rechargement, import/calcul de deux fiches OMS/INTERGROWTH, CSV/PDF et aller-retour chiffré réussis ; deux versions originales conservées et deux copies ajoutées | Réseau système actif, pas un mode avion physique ; PDF deux pages rendu, pas de tirage papier |
+| Paquets réels 5.8.0 vers 5.8.1 | Fichier corrompu refusé ; activation refusée avec second onglet, réussie après fermeture ; sauvegardes préalables et six originaux strictement conservés | Mêmes moteur et formats, pas toutes les migrations possibles ; aucun cache purgé |
+| Reprise après mise à jour | Brouillon, texte CSV non importé et résultats retrouvés ; CSV identique octet pour octet ; nouvelle version et archives accessibles après arrêt du serveur | Estimation de stockage 26,5 puis 26,6 MiB comprenant caches et historique |
+| Clavier partiel FR/EN/AR | Évitement puis huit Tab, liste âge par Fin/Entrée, erreurs focalisées comme alertes, aide par Échap avec retour au bouton ; focus contenu dans l’aperçu | Pas de lecteur d’écran ni de certification WCAG ; RTL mesuré sur fenêtre desktop de 2560 CSS px |
+
+Un essai instrumenté distinct sur 5.8.1 a ensuite reproduit un export complet bloqué après échec d’écriture locale, alors que l’interface invitait à exporter. Le correctif 5.8.2 est décrit dans les notes de mise à jour ; ses preuves et essais doivent être distingués des observations ci-dessus. La simulation d’une exception de quota n’est pas une saturation physique du disque ou du quota du navigateur.
+
+## Échecs de stockage simulés — observations du 4 novembre 2026, 5.8.2
+
+Page privée instrumentée sur une nouvelle origine locale, mêmes scripts applicatifs et contrôles d’intégrité des données. Des commandes QA visibles font lever `QuotaExceededError` sur les ajouts à la seule base fictive et, séparément, sur le journal local. Le worker est désactivé dans ce banc d’essai ; ce n’est pas un essai hors ligne ou une saturation réelle du disque. Aucun quota, historique ou cache de l’utilisateur n’est modifié.
+
+| Scénario exécuté | Résultat observé |
+|---|---|
+| IndexedDB refuse les écritures | Échec local signalé ; export de secours créé avec le brouillon courant et les deux fiches calculées ; archives originales conservées |
+| IndexedDB et journal refusent les écritures | « Nouveau travail » ne remplace pas la saisie ; sauvegardes ordinaire et chiffrée créées avec la dernière saisie restée uniquement en mémoire ; message distingue export et enregistrement local |
+| Deuxième écriture de correction refusée | Dialogue reste ouvert avec 9000 g, tableau courant garde 8500 g ; réessai après levée du défaut enregistre la correction et conserve l’ancienne version |
+| Deuxième ajout d’import refusé | Message d’annulation, aucun ajout partiel dans l’export réel comparé à l’archive précédente ; réimport après levée du défaut ajoute les copies attendues sans changer les originaux |
+
+Les fichiers fictifs exportés sont contrôlés par le validateur réel du format courant et les contenus sont comparés. Les six tests publics de ce correctif sont indépendants de ce banc privé. Cette preuve d’erreur injectée ne remplace pas une validation de quota réellement atteint sur un appareil cible.

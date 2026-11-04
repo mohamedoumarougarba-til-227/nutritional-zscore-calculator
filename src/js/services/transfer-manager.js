@@ -29,8 +29,16 @@ class TransferManager {
             }
         }};
     }
-    async export(preferences,onProgress=()=>{}){
+    async export(preferences,onProgress=()=>{},unsavedSnapshot=null){
         const groups=Object.fromEntries(TransferManager.stores.map(s=>[s,[]])),journals=[],recovery=[];
+        // A failed local write must not prevent a verified rescue export. This
+        // snapshot is included in the file only; no storage write is required.
+        if(unsavedSnapshot){
+            const snapshot=HistoryManager.clone(unsavedSnapshot);
+            if(!snapshot.metadata?.workspace)throw new Error('importInvalid');
+            HistoryManager.checkWorkspace(snapshot.metadata.workspace);
+            journals.push({snapshot,signature:JSON.stringify(snapshot.metadata.workspace)});
+        }
         for(const key of Object.keys(localStorage))if(key.startsWith('zscore-work-v5-')){
             const raw=localStorage.getItem(key);
             try{const snapshot=HistoryManager.parse(raw);HistoryManager.checkWorkspace(snapshot?.metadata?.workspace);journals.push({snapshot,signature:JSON.stringify(snapshot.metadata.workspace)});}

@@ -1,10 +1,10 @@
 {
   "format": 1,
-  "version": "5.8.1",
+  "version": "5.8.2",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 8290166,
-  "sha256": "5684f98e5a0aea23ceda19405a566492f4f369ffff70429a4fa3e6eb600b7615",
+  "bytes": 8304743,
+  "sha256": "0c97c307c3d561007efa1bcf6d9188b96fcc61da38de20d9537eadc07e2ff663",
   "files": [
     {
       "file": ".gitattributes",
@@ -33,8 +33,8 @@
     },
     {
       "file": ".gitignore",
-      "bytes": 9888,
-      "sha256": "d1a99a2ba0b287357bd07922542433699fae74c033674972b487b8bba38794be"
+      "bytes": 9932,
+      "sha256": "f22f477a7b2561aeab4d22f8dff15efdf69a79af5475c4d68d0f429b0bce18f4"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -54,7 +54,7 @@
     {
       "file": "README.md",
       "bytes": 10140,
-      "sha256": "4a6d55959fef1a9ae69bd1eebd1c8a62ea4bff933fb76f08bb4ed41518965a48"
+      "sha256": "dd9fa5d67c2520801a2a52a775daf269bcbd40f49f50e274e112df4b2adb0cd9"
     },
     {
       "file": "SECURITY.md",
@@ -69,7 +69,7 @@
     {
       "file": "docs/README.md",
       "bytes": 2856,
-      "sha256": "cb39ccc591507fc9eaf5712d50d3164178656494f941ab466c08d3e6e2b34d0f"
+      "sha256": "ee84caa005ea4dbabcfdb3d290eb3088ea5ed1d8da420061790ccb1d6b5748bf"
     },
     {
       "file": "docs/assets/individual-fr.jpg",
@@ -94,17 +94,17 @@
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
       "bytes": 10286,
-      "sha256": "2b862832a097ed946eab79b393e9ba515fee6fadcf7bcde2246c73793dd2edb4"
+      "sha256": "13148186ba9ca7053261bddd53af3cc7923c614b17198b70f23d7b2806479d6b"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
-      "bytes": 14900,
-      "sha256": "f0476fda7ff6157b9994b6cdc9def81659ee9a3afe2734bbaf18c4257234319c"
+      "bytes": 15558,
+      "sha256": "4bfe04b4a0e501a759576f57e4d270a345104ebd9d744e2e483816d402cf3c0e"
     },
     {
       "file": "docs/guides/PERIMETRE_ET_VERIFICATION.md",
       "bytes": 5403,
-      "sha256": "094fdda2a0e11646768dcae8e14989c7fbd318f080579420e08a61b2ee0bc74c"
+      "sha256": "caf453eff943d3f956dc08813b938a5165dd780c5e7b94d1cc7e8dbc183ef915"
     },
     {
       "file": "docs/maintenance/COMPOSANTS_ET_RELEASES.md",
@@ -113,8 +113,8 @@
     },
     {
       "file": "docs/maintenance/MISES_A_JOUR.md",
-      "bytes": 34704,
-      "sha256": "41651616e5091574798957b103751c006cd8fd205987ca64e12de48d182e31e1"
+      "bytes": 35753,
+      "sha256": "844313490e83342c6a12cfa647c8a232b6f26042ed4ce7f811365fd6274f2df6"
     },
     {
       "file": "docs/maintenance/PREPARATION_PUBLICATION.md",
@@ -133,8 +133,8 @@
     },
     {
       "file": "docs/maintenance/VALIDATION_MANUELLE.md",
-      "bytes": 19557,
-      "sha256": "ef1d95d85bd2b39077d9daf9ffe6b4c725905f3498ec4c82ad54cdcea1264b99"
+      "bytes": 23454,
+      "sha256": "2f73b745fac61f914d5f241f7163db6fd2320a43c19c695974a9af7d91ac3383"
     },
     {
       "file": "docs/references/AUDIT_DROITS_DISTRIBUTION.md",
@@ -144,7 +144,7 @@
     {
       "file": "docs/references/CDC.md",
       "bytes": 9943,
-      "sha256": "7e083041869a9e004880a165aeabebd7c448269bde1af73a553073a6868bac46"
+      "sha256": "086348812ef560aca61fe0e2c1082cd76c43079ff80500f1ba709ace6cf2093c"
     },
     {
       "file": "docs/references/DISTRIBUTION_GPL.md",
@@ -163,13 +163,13 @@
     },
     {
       "file": "docs/references/FORMAT_SAUVEGARDE.md",
-      "bytes": 4485,
-      "sha256": "4d783d5de42a9c897fd0011d44f4095f84cf366135be7fda8c45a1b0a1c908a2"
+      "bytes": 4962,
+      "sha256": "d78f699739dfb48bd7eb7a10a6c8afa77fbf7db42d1ed3966ebd6d2e7b39d5ea"
     },
     {
       "file": "docs/references/INTERGROWTH.md",
       "bytes": 6845,
-      "sha256": "c20f058de95860ec1e36641c31888857b92271e8f7f4f897ac584d5e2c12a462"
+      "sha256": "616c4bec5e4d6c03c589ede0e3ea852d033d807231a12c4f973964af2950cac7"
     },
     {
       "file": "docs/references/INTEROPERABILITE.md",
@@ -194,12 +194,12 @@
     {
       "file": "package-lock.json",
       "bytes": 720,
-      "sha256": "c2b937b8dcc20de578134c9205dcc0426f8dd78290a83ed553d8c30ab7241ec5"
+      "sha256": "abc81edfd5671cdd9e0666ae67261a4bd42eed6ffe21c99a92f68d1d97f5345e"
     },
     {
       "file": "package.json",
       "bytes": 983,
-      "sha256": "1ca697b3014012364c56a16d342bb38d3fea95a2b6accea36fd278e38f59d852"
+      "sha256": "ea20c5104325b86ff3d38e954c71ae598db33106eab28d7b2ac70b4093f56cdb"
     },
     {
       "file": "src/assets/icons/icon-128.png",
@@ -278,8 +278,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 172576,
-      "sha256": "cd69891d389bf47a273c5be4ee67dc7c15cec3d0373909659c7fc1aeb47c7e5d"
+      "bytes": 173326,
+      "sha256": "c004b7b8cb431f46a742511159463bc50e6a1e676b9c6d1af769b7204ec8917d"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -418,13 +418,13 @@
     },
     {
       "file": "src/js/services/transfer-manager.js",
-      "bytes": 24222,
-      "sha256": "51439c8af0e4ff03769d81b3438b468aeef1c8a9a89d1fe24dcc622d17460f72"
+      "bytes": 24752,
+      "sha256": "f4b6b9ad4a89a7d020da1227be4d4263234543e283374d869dd83793afb1f0a8"
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 139081,
-      "sha256": "2ebca7057af4f198036793de936ad41a9873b201b310696ee06d059007e7c659"
+      "bytes": 139378,
+      "sha256": "dfe0edfe69da2c525e5a16e92b452a1170f78c44082aa574ec8520820c729133"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -493,8 +493,8 @@
     },
     {
       "file": "tools/git-sync-allowlist.json",
-      "bytes": 9119,
-      "sha256": "185d78b0df58b5566739963ef2f778d6dab21ed7414f4767cd928109f48bae40"
+      "bytes": 9168,
+      "sha256": "7b2c53396cd0a068599e89426b053c4eb36eb8ccdaa15fb1830b6f7763893aee"
     },
     {
       "file": "tools/public-tests/batch-correction.test.cjs",
@@ -540,6 +540,11 @@
       "file": "tools/public-tests/reporting.test.cjs",
       "bytes": 3595,
       "sha256": "76cdb9ec46a5ec354b9757a06c68c3396af0a3e4a94ad2c94c78c75d3e1b6067"
+    },
+    {
+      "file": "tools/public-tests/rescue-export.test.cjs",
+      "bytes": 6668,
+      "sha256": "7afd473fcfcfdafaaeeba156e05ec8371076b75abf292ed4efd7f16b06d87f5d"
     },
     {
       "file": "tools/public-tests/version-preview.test.cjs",

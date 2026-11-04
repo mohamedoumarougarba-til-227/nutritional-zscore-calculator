@@ -285,3 +285,4 @@
 !/tools/scripts/build-social-preview.py
 !/tools/public-tests/batch-correction.test.cjs
 !/tools/public-tests/version-preview.test.cjs
+!/tools/public-tests/rescue-export.test.cjs

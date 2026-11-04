@@ -10,6 +10,8 @@ Tout le contenu est vérifié avant aperçu : structure, limites, identifiants, 
 
 Les journaux de secours illisibles sont conservés pour récupération technique, jamais activés comme mesures. Les préparations d’import sont séparées de l’historique. Ce stockage et les exportations ordinaires ne sont pas chiffrés.
 
+Si l’enregistrement local échoue, l’export peut joindre un instantané de la saisie courante directement au fichier, sans devoir l’écrire dans le navigateur. Le format reste identique et la copie est vérifiée par le même validateur. L’interface indique que la copie a été créée et que la sauvegarde locale reste à réessayer ; conserver le fichier sur un support sûr. Un historique illisible ne donne pas lieu à un export partiel présenté comme complet.
+
 ## Protection facultative
 
 Le bouton **Sauvegarde chiffrée** demande une phrase secrète et confirmation : 12 caractères minimum, 1 024 octets UTF-8 maximum. Choisir une phrase longue et unique, la conserver séparément. Elle n’est ni enregistrée dans les dossiers ou préférences, ni récupérable en cas d’oubli.
