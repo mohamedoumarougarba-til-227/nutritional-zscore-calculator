@@ -1,10 +1,12 @@
 /** Independent implementation of the published WHO LMS method. Reference data are read-only. */
 const NutritionCore=typeof module!=='undefined'&&module.exports?require('./nutrition-assessment.js').NutritionAssessment:NutritionAssessment;
+const SupplementaryCore=typeof module!=='undefined'&&module.exports?require('./supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
+const ProfileCore=typeof module!=='undefined'&&module.exports?require('./growth-profile.js').GrowthProfile:GrowthProfile;
 class ClinicalEngine {
     static version = '4.1.0';
     static indicators = ['weightForAge', 'heightForAge', 'weightForHeight', 'bmiForAge'];
     static resultIndicators(result) { return this.indicators.slice(); }
-    static applicable(family,age) { return family==='WHO2006'?this.indicators.slice():age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
+    static applicable(family,age) { if(family==='INTERGROWTH2015')return ['weightForAge','heightForAge'];return family==='WHO2006'?this.indicators.slice():family==='CDC2000'||age<121?['weightForAge','heightForAge','bmiForAge']:['heightForAge','bmiForAge']; }
     constructor(data) {
         if (data?.schemaVersion !== 1 || !data.referenceVersion) throw new Error('referenceInvalid');
         for (const key of ['weightForAge', 'heightForAge', 'weightForLength', 'weightForHeight', 'bmiForAge']) {
@@ -46,6 +48,8 @@ class ClinicalEngine {
     }
 
     static normalize(raw, { forArchive = false, extended = false } = {}) {
+        if(raw?.growthProfile==='intergrowth'){const adapter=typeof module!=='undefined'&&module.exports?require('./intergrowth-result.js').IntergrowthResult:IntergrowthResult;return adapter.normalize(raw);}
+        const profile=ProfileCore.read(raw),maximumMonths=extended?(profile==='us'?240:229):60;
         const ageMode = raw.ageMode || 'months';
         if (raw.measurementDate !== undefined && raw.measurementDate !== '') {
             if (this.dateDays(raw.measurementDate) > this.dateDays(this.today())) throw new Error('dateFuture');
@@ -56,7 +60,7 @@ class ClinicalEngine {
             if (this.dateDays(raw.measurementDate) > this.dateDays(this.today())) throw new Error('dateFuture');
             ageMonths = ageDays / 30.4375;
         } else if (ageMode === 'days') {
-            ageDays = this.numeric(raw.ageDays, 0, extended ? 6970 : 1826, 'ageInvalid');
+            ageDays = this.numeric(raw.ageDays, 0, extended ? Math.ceil(maximumMonths*30.4375)-1 : 1826, 'ageInvalid');
             if (!Number.isInteger(ageDays)) throw new Error('ageInvalid');
             ageMonths = ageDays / 30.4375;
         } else if (ageMode === 'months') {
@@ -66,7 +70,7 @@ class ClinicalEngine {
             ageMonths = years * 12 + months;
             ageDays = Math.floor(ageMonths * 30.4375 + 0.5);
         } else throw new Error('ageInvalid');
-        if (ageMonths < 0 || ageMonths >= (extended ? 229 : 60) || ageDays < 0) throw new Error('ageInvalid');
+        if (ageMonths < 0 || ageMonths >= maximumMonths || ageDays < 0) throw new Error('ageInvalid');
         // Archive validation retains the previous accepted domain without
         // recalculating a stored result. New calculations/CSV use the strict rule.
         if (!extended && !forArchive && ageMode === 'dates' && !this.beforeFifthBirthday(this.dateDays(raw.birthDate), this.dateDays(raw.measurementDate))) throw new Error('ageInvalid');
@@ -85,9 +89,10 @@ class ClinicalEngine {
         const name = (raw.name || '').trim();
         const caseId = (raw.caseId || '').trim();
         if (name.length > 100 || caseId.length > 100) throw new Error('nameInvalid');
-        const clinical = NutritionCore.normalize(raw);
+        const clinical = {...NutritionCore.normalize(raw),...SupplementaryCore.normalize(raw)};
         const child = { ...raw, ...clinical, id: raw.id || 'child_' + crypto.randomUUID(), visitId: raw.visitId || 'visit_' + crypto.randomUUID(), name, caseId, ageMode, ageDays, totalAgeMonths: ageMonths, weight, height, createdAt: raw.createdAt || new Date().toISOString() };
-        child.ageDomainVersion=2;
+        child.ageDomainVersion=profile==='us'?3:2;
+        if(profile==='us')child.growthProfile='us';else delete child.growthProfile;
         if (ageMode !== 'months') {
             child.ageYears = Math.floor(ageMonths / 12);
             child.ageMonths = Math.floor(ageMonths % 12);

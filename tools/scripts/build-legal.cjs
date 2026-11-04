@@ -8,6 +8,7 @@ function legalPages(){
     const links=[['Z-score · GPLv3','data/LICENSE-TIL.txt'],['Z-score · Source ZIP','data/zscore-sources.zip'],['Source ZIP · SHA-256','data/zscore-sources.json'],['WHO · Data source ZIP','data/who-data-sources.zip'],['WHO 2006','https://www.who.int/tools/child-growth-standards'],['WHO 2007','https://www.who.int/tools/growth-reference-data-for-5to19-years'],
         ['Anthro · b776d8a12b1c','https://github.com/WorldHealthOrganization/anthro/tree/b776d8a12b1c97369c748b561159fd2ec4f4db58'],
         ['AnthroPlus · 7cfcdb39026e','https://github.com/WorldHealthOrganization/anthroplus/tree/7cfcdb39026e9a55de55732bc3cf14c82261bcf7'],
+        ['CDC 2000','https://www.cdc.gov/growthcharts/cdc-data-files.htm'],['CDC · Extended BMI 2022','https://www.cdc.gov/growthcharts/extended-bmi-data-files.htm'],['CDC · Content reuse','https://www.cdc.gov/Other/imagereuse.html'],
         ['GPL · Anthro','data/LICENSE-anthro.txt'],['GPL · AnthroPlus','data/LICENSE-anthroplus.txt'],['MIT · jsPDF','vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt'],
         ['MIT · AutoTable','vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt'],['PDF · Notices','vendor/pdf/NOTICE-report.txt'],['OFL · Amiri','vendor/pdf/OFL.txt'],
         ['HAPDP · Niger','https://www.hapdp.ne/legislation-nationale'],['Vercel · Privacy','https://vercel.com/legal/privacy-notice'],['TIL',publisher.website]];

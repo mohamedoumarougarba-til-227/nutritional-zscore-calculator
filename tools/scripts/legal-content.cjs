@@ -127,4 +127,13 @@ const content = {
         ], links: 'الوثائق والمصادر', contact: 'التواصل المهني'
     }
 };
+const cdcAttribution = {
+    fr: 'Profil américain explicite : OMS avant 24 mois, puis tables CDC 2000 et méthode IMC étendue 2022 jusqu’à moins de 240 mois. Source : Centers for Disease Control and Prevention (CDC), National Center for Health Statistics. Les fichiers originaux, empreintes et méthodes sont fournis avec les sources. Cette utilisation ne constitue aucune approbation par le CDC, le HHS ou le gouvernement des États-Unis ; aucun logo CDC n’est utilisé. Les notices et conditions des contenus tiers restent applicables.',
+    en: 'Explicit US profile: WHO under 24 months, then CDC 2000 tables and the 2022 extended BMI method to under 240 months. Source: Centers for Disease Control and Prevention (CDC), National Center for Health Statistics. Original files, hashes and methods are included in the sources. This use does not imply endorsement by CDC, HHS or the United States Government; no CDC logo is used. Third-party content notices and conditions remain applicable.',
+    ar: 'الملف الأمريكي الصريح: منظمة الصحة العالمية قبل 24 شهرا، ثم جداول CDC 2000 وطريقة مؤشر كتلة الجسم الموسعة 2022 حتى أقل من 240 شهرا. المصدر: Centers for Disease Control and Prevention (CDC)، National Center for Health Statistics. تتضمن المصادر الملفات الأصلية والبصمات والطرق. لا يعني الاستخدام أي اعتماد من CDC أو HHS أو حكومة الولايات المتحدة؛ لا يستخدم شعار CDC. تظل إشعارات وشروط محتويات الغير سارية.'
+};
+for (const [lang, c] of Object.entries(content)) {
+    c.sections.find(section => section[0] === 'sources')[2].push(cdcAttribution[lang]);
+    c.updated = {fr:'Mise à jour : 27 octobre 2026',en:'Updated: 27 October 2026',ar:'التحديث: 27 أكتوبر 2026'}[lang];
+}
 module.exports = { publisher, content };

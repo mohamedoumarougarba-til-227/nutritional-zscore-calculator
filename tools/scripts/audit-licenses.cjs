@@ -43,6 +43,25 @@ function auditLicenses(options={}){
     const plusLicense=plusDownloads.files.find(x=>x.localFile==='LICENSE.md');if(!plusLicense)throw new Error('Missing WHO 2007 licence');
     verify('src/data/LICENSE-anthroplus.txt',plusLicense);verify('tools/reference/who2007/LICENSE.md',plusLicense,false);
     for(const source of plusManifest.sources){const original=plusDownloads.files.find(x=>x.localFile===source.localFile);if(!original||original.sha256!==source.sha256||original.bytes!==source.bytes)throw new Error('WHO 2007 source mismatch');verify('tools/reference/who2007/'+source.localFile,source,false);}
+    const extraManifest=json('src/data/who-additional-manifest.json'),extra=json('src/data/who-additional.json');
+    verify('src/data/who-additional.json',extraManifest);
+    if(extra.sourceCommit!==who.sourceCommit||extraManifest.referenceVersion!==extra.referenceVersion||JSON.stringify(extraManifest.sources.map(s=>s.file).sort())!==JSON.stringify(['acanthro.txt','hcanthro.txt','ssanthro.txt','tsanthro.txt']))throw Error('Additional WHO provenance mismatch');
+    for(const source of extraManifest.sources)verify('tools/reference/who-additional/'+source.file,source,false);
+    const cdcManifest=json('src/data/cdc-growth-manifest.json');
+    // Reference bytes are now integrity-pinned and available offline; no endorsement is implied.
+    verify('src/data/cdc-growth.json',cdcManifest);
+    const cdcData=json('src/data/cdc-growth.json');
+    if(cdcManifest.referenceVersion!==cdcData.referenceVersion||cdcManifest.sources.length!==3||!cdcData.endorsement?.includes('does not imply endorsement'))throw Error('CDC provenance or attribution missing');
+    const cdcOriginals=json('tools/reference/additional-references.json').files.filter(s=>s.file.startsWith('cdc/'));
+    for(const source of cdcManifest.sources){
+        const original=cdcOriginals.find(item=>item.file===source.file);
+        if(!original||source.bytes!==original.bytes||source.sha256!==original.sha256)throw Error('CDC original provenance mismatch');
+        verify('tools/reference/'+source.file,source,false);
+    }
+    const ig=json('tools/reference/intergrowth/provenance.json');
+    if(ig.commit!=='fb58fe6596d4b289d5362c5efe00f882984d3186'||ig.declaredLicense!=='GPL-3.0-or-later'||ig.sources.length!==3)throw Error('Unexpected prepared INTERGROWTH provenance');
+    for(const source of ig.sources)verify('tools/reference/intergrowth/'+source.file,source,false);
+    if(!read('tools/reference/intergrowth/DESCRIPTION').toString().includes('License: GPL (>= 3)'))throw Error('Missing GIGS licence declaration');
     const gpl=read('COPYING');if(!gpl.equals(read('src/data/LICENSE-anthro.txt')))throw Error('Application GPL text differs');
     const own=read('src/data/LICENSE-TIL.txt');if(!own.includes(gpl)||!own.toString().includes('GNU GPL version 3.'))throw Error('Missing application GPL notice');
     const pack=require('./build-source-archive.cjs').sourceArchive(),dataPack=require('./build-who-source-package.cjs').sourcePackage();
@@ -58,6 +77,8 @@ function auditLicenses(options={}){
     return {technicalPassed:true,licenseDistributionReady:true,legalReady:false,noticeFamilies:[
         {component:'WHO Anthro source/data',declaredLicense:'GPL-3',sourceCommit:downloads.commit,notice:'src/data/LICENSE-anthro.txt',scopeDecision:'Covered source tables and conversions supplied alongside the GPLv3 application'},
         {component:'WHO AnthroPlus source/data',declaredLicense:'GPL-3-or-later',sourceCommit:plusDownloads.commit,notice:'src/data/LICENSE-anthroplus.txt',scopeDecision:'Covered source tables and conversions supplied alongside the GPLv3 application'},
+        {component:'CDC 2000 LMS data and prepared independent CDC 2022 method',declaredLicense:'CDC public-domain materials reuse conditions; original application code GPL-3.0-only',notice:'NOTICE.md',scopeDecision:'Attribution and no endorsement; originals and numerical checks supplied; explicit US profile with offline tables'},
+        {component:'GIGS INTERGROWTH postnatal equations',declaredLicense:'GPL-3.0-or-later upstream; GPL-3.0-only TIL adaptation',sourceCommit:ig.commit,notice:'tools/reference/intergrowth/LICENSE.md',scopeDecision:'Original R, attribution, runtime equations and visit context supplied in corresponding sources; explicit postnatal profile; Oxford PDF tables not redistributed'},
         {component:'jsPDF 4.2.1 TIL report 1',declaredLicense:'MIT upstream; GPL-3.0-only TIL modifications; fflate MIT',notice:'src/vendor/pdf/NOTICE-report.txt'},
         {component:'AutoTable 5.0.8',declaredLicense:'MIT',notice:'src/vendor/pdf/autotable-5.0.8.min.js.LICENSE.txt'},
         {component:'Amiri Regular/Bold',declaredLicense:'OFL-1.1',notice:'src/vendor/pdf/OFL.txt'},

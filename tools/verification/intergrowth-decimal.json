@@ -1,0 +1,908 @@
+{
+  "format": 1,
+  "reference": "INTERGROWTH2015-postnatal-gigs-fb58fe6596d4",
+  "precision": 60,
+  "scope": "Independent Decimal arithmetic; GIGS R and official app not executed; no clinical validation.",
+  "fixtures": [
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 0.3601632921789056,
+      "expectedZ": -3.0,
+      "mu": -0.39774612824632194,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 0.6718325653252831,
+      "expectedZ": -4.076683644773515e-16,
+      "mu": -0.39774612824632194,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 1.2532065472328735,
+      "expectedZ": 3.0,
+      "mu": -0.39774612824632194,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 0.3735421498235337,
+      "expectedZ": -2.9999999999999996,
+      "mu": -0.366197072760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 0.6933661441643794,
+      "expectedZ": -1.035445234080405e-16,
+      "mu": -0.366197072760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 1.2870210499685106,
+      "expectedZ": 3.0,
+      "mu": -0.366197072760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 0.966381433223187,
+      "expectedZ": -3.0000000000000004,
+      "mu": 0.46700169435586303,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 1.5952041062581408,
+      "expectedZ": -2.1442332426938667e-16,
+      "mu": 0.46700169435586303,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 2.6332005698159326,
+      "expectedZ": 2.9999999999999996,
+      "mu": 0.46700169435586303,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 2.276875339219583,
+      "expectedZ": -3.0,
+      "mu": 1.2429729675893348,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 3.465902178022116,
+      "expectedZ": -2.637843351621587e-16,
+      "mu": 1.2429729675893348,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 5.275861045486935,
+      "expectedZ": 3.0,
+      "mu": 1.2429729675893348,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 5.298965059974111,
+      "expectedZ": -2.9999999999999996,
+      "mu": 2.052515265234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 7.787464030561327,
+      "expectedZ": 6.76815024072442e-16,
+      "mu": 2.052515265234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "weightForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 11.444611417683655,
+      "expectedZ": 3.0000000000000004,
+      "mu": 2.052515265234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 0.32878157285903076,
+      "expectedZ": -2.9999999999999996,
+      "mu": -0.48891002824632196,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 0.6132945036937365,
+      "expectedZ": 2.816521880581267e-17,
+      "mu": -0.48891002824632196,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 1.1440122540633295,
+      "expectedZ": 3.0,
+      "mu": -0.48891002824632196,
+      "sigma": 0.20781721091345964
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 0.3409947049437766,
+      "expectedZ": -2.9999999999999996,
+      "mu": -0.457360972760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 0.6329518204546162,
+      "expectedZ": 1.252869024304622e-16,
+      "mu": -0.457360972760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 1.1748804342368557,
+      "expectedZ": 3.0000000000000004,
+      "mu": -0.457360972760587,
+      "sigma": 0.20617578569423664
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 0.882178763067995,
+      "expectedZ": -3.0000000000000004,
+      "mu": 0.375837794355863,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 1.456210908984616,
+      "expectedZ": 7.092184603432635e-20,
+      "mu": 0.375837794355863,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 2.4037647472617265,
+      "expectedZ": 3.0,
+      "mu": 0.375837794355863,
+      "sigma": 0.1670661195508174
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 2.078486818308793,
+      "expectedZ": -2.9999999999999996,
+      "mu": 1.1518090675893349,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 3.1639114651906564,
+      "expectedZ": -1.8403515620974659e-16,
+      "mu": 1.1518090675893349,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 4.81616514061418,
+      "expectedZ": 3.0000000000000004,
+      "mu": 1.1518090675893349,
+      "sigma": 0.14005630994131177
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 4.837256057949193,
+      "expectedZ": -3.0,
+      "mu": 1.961351365234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 7.108927334213874,
+      "expectedZ": 1.671500571253403e-16,
+      "mu": 1.961351365234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "weightForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 10.447420446160715,
+      "expectedZ": 3.0000000000000004,
+      "mu": 1.961351365234375,
+      "sigma": 0.1283345784824327
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 26.58721385599012,
+      "expectedZ": -3.0000000000000004,
+      "mu": 3.487772895336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 32.713011217927885,
+      "expectedZ": 1.1959288547217046e-15,
+      "mu": 3.487772895336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 40.250216090362244,
+      "expectedZ": 3.0000000000000013,
+      "mu": 3.487772895336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 26.87516250154948,
+      "expectedZ": -3.0,
+      "mu": 3.4960228542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 32.984008537891604,
+      "expectedZ": -3.513316180358132e-16,
+      "mu": 3.4960228542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 40.48142291846537,
+      "expectedZ": 2.9999999999999996,
+      "mu": 3.4960228542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 35.53644705555355,
+      "expectedZ": -3.0000000000000027,
+      "mu": 3.7169698546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 41.139546247337364,
+      "expectedZ": -1.2481080549294788e-15,
+      "mu": 3.7169698546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 47.62609674487185,
+      "expectedZ": 3.0,
+      "mu": 3.7169698546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 45.72712800176489,
+      "expectedZ": -3.0000000000000013,
+      "mu": 3.9329292987737166,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 51.056318040957166,
+      "expectedZ": 1.6828600888241796e-15,
+      "mu": 3.9329292987737166,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 57.00658943196164,
+      "expectedZ": 2.9999999999999982,
+      "mu": 3.9329292987737166,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 60.13203095896845,
+      "expectedZ": -3.000000000000001,
+      "mu": 4.201017138671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 66.75419479468569,
+      "expectedZ": 1.6844784854016166e-15,
+      "mu": 4.201017138671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 74.10563807045718,
+      "expectedZ": 3.0000000000000044,
+      "mu": 4.201017138671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 25.76287025875407,
+      "expectedZ": -3.0,
+      "mu": 3.456276795336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 31.698735653369834,
+      "expectedZ": -7.709144640290397e-18,
+      "mu": 3.456276795336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 39.00224749533843,
+      "expectedZ": 3.0,
+      "mu": 3.456276795336077,
+      "sigma": 0.06911415907291202
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 26.041890980402886,
+      "expectedZ": -2.9999999999999996,
+      "mu": 3.4645267542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 31.961330629756294,
+      "expectedZ": 6.981311134447226e-16,
+      "mu": 3.4645267542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 39.22628569458799,
+      "expectedZ": 2.999999999999999,
+      "mu": 3.4645267542540563,
+      "sigma": 0.06827344041840892
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 34.4346301161241,
+      "expectedZ": -2.999999999999999,
+      "mu": 3.6854737546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 39.864003735591695,
+      "expectedZ": -2.4569743502501276e-16,
+      "mu": 3.6854737546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 46.14943701942512,
+      "expectedZ": 2.999999999999999,
+      "mu": 3.6854737546875,
+      "sigma": 0.04880366908597351
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 44.30934630442636,
+      "expectedZ": -3.0000000000000004,
+      "mu": 3.9014331987737165,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 49.47330339702041,
+      "expectedZ": -2.7206331890521136e-16,
+      "mu": 3.9014331987737165,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 55.23908504985376,
+      "expectedZ": 2.9999999999999982,
+      "mu": 3.9014331987737165,
+      "sigma": 0.03674585548290022
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 58.2676214357172,
+      "expectedZ": -3.0,
+      "mu": 4.169521038671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 64.6844633303168,
+      "expectedZ": 1.065434011992385e-15,
+      "mu": 4.169521038671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "lengthForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 71.80797316305619,
+      "expectedZ": 2.9999999999999987,
+      "mu": 4.169521038671875,
+      "sigma": 0.0348248260187608
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 19.573257885185186,
+      "expectedZ": -2.9999999999999996,
+      "mu": 24.776186225925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 24.776186225925926,
+      "expectedZ": 4.271099036328155e-17,
+      "mu": 24.776186225925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 29.979114566666667,
+      "expectedZ": 3.0,
+      "mu": 24.776186225925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 19.802679292797784,
+      "expectedZ": -3.0,
+      "mu": 24.942269247368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 24.942269247368422,
+      "expectedZ": 5.529828815682875e-16,
+      "mu": 24.942269247368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 30.081859201939057,
+      "expectedZ": 2.999999999999999,
+      "mu": 24.942269247368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 26.004598090625,
+      "expectedZ": -3.0,
+      "mu": 29.706775925,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 29.706775925,
+      "expectedZ": 0.0,
+      "mu": 29.706775925,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 33.408953759375,
+      "expectedZ": 3.0,
+      "mu": 29.706775925,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 32.14766488348299,
+      "expectedZ": -2.999999999999995,
+      "mu": 35.1076140366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 35.1076140366548,
+      "expectedZ": -4.328245938491024e-15,
+      "mu": 35.1076140366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 38.06756318982662,
+      "expectedZ": 2.999999999999997,
+      "mu": 35.1076140366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 39.44474154765625,
+      "expectedZ": -3.0,
+      "mu": 43.0193681125,
+      "sigma": 1.19154218828125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 43.0193681125,
+      "expectedZ": 0.0,
+      "mu": 43.0193681125,
+      "sigma": 1.19154218828125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "M",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 46.59399467734375,
+      "expectedZ": 3.0,
+      "mu": 43.0193681125,
+      "sigma": 1.19154218828125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": -3,
+      "measure": 18.777467585185185,
+      "expectedZ": -3.0,
+      "mu": 23.980395925925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 0,
+      "measure": 23.980395925925926,
+      "expectedZ": 4.271099036328155e-17,
+      "mu": 23.980395925925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 189,
+      "z": 3,
+      "measure": 29.183324266666666,
+      "expectedZ": 2.9999999999999996,
+      "mu": 23.980395925925926,
+      "sigma": 1.7343094469135802
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": -3,
+      "measure": 19.006888992797784,
+      "expectedZ": -3.0,
+      "mu": 24.146478947368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 0,
+      "measure": 24.146478947368422,
+      "expectedZ": 5.529828815682875e-16,
+      "mu": 24.146478947368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 190,
+      "z": 3,
+      "measure": 29.286068901939057,
+      "expectedZ": 2.999999999999999,
+      "mu": 24.146478947368422,
+      "sigma": 1.7131966515235457
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": -3,
+      "measure": 25.208807790625,
+      "expectedZ": -3.0,
+      "mu": 28.910985625,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 0,
+      "measure": 28.910985625,
+      "expectedZ": 0.0,
+      "mu": 28.910985625,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 224,
+      "z": 3,
+      "measure": 32.613163459375,
+      "expectedZ": 3.0,
+      "mu": 28.910985625,
+      "sigma": 1.234059278125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": -3,
+      "measure": 31.351874583482985,
+      "expectedZ": -3.0000000000000004,
+      "mu": 34.3118237366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 0,
+      "measure": 34.3118237366548,
+      "expectedZ": -4.328245938491024e-15,
+      "mu": 34.3118237366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 281,
+      "z": 3,
+      "measure": 37.27177288982662,
+      "expectedZ": 2.999999999999997,
+      "mu": 34.3118237366548,
+      "sigma": 0.9866497177239396
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": -3,
+      "measure": 38.64895124765625,
+      "expectedZ": -3.0,
+      "mu": 42.2235778125,
+      "sigma": 1.19154218828125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 0,
+      "measure": 42.2235778125,
+      "expectedZ": 0.0,
+      "mu": 42.2235778125,
+      "sigma": 1.19154218828125
+    },
+    {
+      "key": "headCircumferenceForAge",
+      "sex": "F",
+      "pmaDays": 448,
+      "z": 3,
+      "measure": 45.79820437734375,
+      "expectedZ": 3.0,
+      "mu": 42.2235778125,
+      "sigma": 1.19154218828125
+    }
+  ]
+}

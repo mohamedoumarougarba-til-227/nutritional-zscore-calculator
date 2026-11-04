@@ -1,0 +1,42 @@
+{
+  "format": 1,
+  "scope": "Synthetic regression fixtures, preserved WHO R outputs, and independently evaluated WHO/CDC equations; no patient or terrain records.",
+  "who2006Commit": "b776d8a12b1c97369c748b561159fd2ec4f4db58",
+  "who2007Commit": "7cfcdb39026e9a55de55732bc3cf14c82261bcf7",
+  "expectedYoungCases": 7652,
+  "expectedOlderCases": 3093,
+  "expectedCentileCases": 6001,
+  "files": [
+    {
+      "file": "who2006-fixtures.json",
+      "bytes": 2407301,
+      "sha256": "ef7872c5330a792152d22d9dfde05c7ef458caca32b0db7736d178e1ba2f013d"
+    },
+    {
+      "file": "who2007-oracle.csv",
+      "bytes": 327995,
+      "sha256": "0891c7780cf14f68c8c68fd1a0ebfbd4756bad4b010ea27d94949f8905a77949"
+    },
+    {
+      "file": "normal-cdf.csv",
+      "bytes": 146398,
+      "sha256": "7d1a3dfe2314a54d8d67351102944f105b2654bd97c509a5b3ef99b91eabc83b"
+    },
+    {
+      "file": "who-additional-decimal.json",
+      "bytes": 98617,
+      "sha256": "01cef09089b87003ae0faa8a70c0d4d023f1ff91aa7f8fcee488969d5450af3b"
+    },
+    {
+      "file": "cdc-decimal.json",
+      "bytes": 83591,
+      "sha256": "c6a81a7c8da9b108fc2003339072ef062d73fd6ace25736486f1f147ae0c83c0"
+    }
+  ],
+  "expectedAdditionalDecimalCases": 962,
+  "additionalMethod": "Python Decimal 60-digit evaluation of published WHO LMS equations, read directly from original TSV; not execution of WHO R software.",
+  "expectedCDCDecimalCases": 254,
+  "expectedCDCNormalCases": 161,
+  "cdcMethod": "Python Decimal 60-digit LMS/sigma evaluation and standard-library libm erfc, directly from pinned CDC 2000 CSVs and published CDC 2022 equations; CDC SAS/R not executed; UI not yet activated.",
+  "expectedCDCCurveCases": 120
+}

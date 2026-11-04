@@ -1,0 +1,99 @@
+{
+  "format": 1,
+  "reference": "INTERGROWTH2015-postnatal-gigs-fb58fe6596d4",
+  "status": "Prepared numerical core; NOT active in application",
+  "repository": "https://github.com/ropensci/gigs",
+  "commit": "fb58fe6596d4b289d5362c5efe00f882984d3186",
+  "declaredLicense": "GPL-3.0-or-later",
+  "adaptationLicense": "GPL-3.0-only",
+  "copyright": "London School of Hygiene & Tropical Medicine and GIGS authors; see DESCRIPTION",
+  "scientificReference": "Villar et al. Lancet Global Health 2015;3:e681-e691. doi:10.1016/S2214-109X(15)00163-1",
+  "domains": {
+    "pmaDays": [
+      189,
+      448
+    ],
+    "pmaDaysInclusive": true,
+    "sex": [
+      "M",
+      "F"
+    ],
+    "units": {
+      "weightForAge": "kg",
+      "lengthForAge": "cm",
+      "headCircumferenceForAge": "cm"
+    }
+  },
+  "sources": [
+    {
+      "file": "DESCRIPTION",
+      "upstreamPath": "DESCRIPTION",
+      "url": "https://raw.githubusercontent.com/ropensci/gigs/fb58fe6596d4b289d5362c5efe00f882984d3186/DESCRIPTION",
+      "bytes": 2110,
+      "sha256": "11f256967f9283fad4d5e9c7644aeb127712ca1614dfabd732c930c2e9aa099c"
+    },
+    {
+      "file": "LICENSE.md",
+      "upstreamPath": "LICENSE.md",
+      "url": "https://raw.githubusercontent.com/ropensci/gigs/fb58fe6596d4b289d5362c5efe00f882984d3186/LICENSE.md",
+      "bytes": 33012,
+      "sha256": "2e593e33a53b2a63bd702bd2710dccb2fef31473fd0506c2683a7f9d538d35e0"
+    },
+    {
+      "file": "R__ig_png.R",
+      "upstreamPath": "R/ig_png.R",
+      "url": "https://raw.githubusercontent.com/ropensci/gigs/fb58fe6596d4b289d5362c5efe00f882984d3186/R/ig_png.R",
+      "bytes": 5033,
+      "sha256": "609d37f02dd8ed6532a40313c8790a28fedf4b32491596aa15e603340bdc42cb"
+    }
+  ],
+  "officialTablesCrosscheckedNotRedistributed": [
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-boys_bw_table.pdf",
+      "bytes": 220751,
+      "sha256": "9092b6b5409c01e40fae424ed489053e707f31a465b646f157ef3d6b324d5d54"
+    },
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-girls_bw_table.pdf",
+      "bytes": 142685,
+      "sha256": "c651faf16caf61c68dc54c000897f106066289db2bdfa0c139965aa4d1b178dc"
+    },
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-boys_lt_table.pdf",
+      "bytes": 244619,
+      "sha256": "e56115d43d5a27728229b4c2515777e72b43e7c0696feeeb1dbed7a7099cd9d2"
+    },
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-girls_lt_table.pdf",
+      "bytes": 220469,
+      "sha256": "9a8c482e20578a2b92b0158f3a3bbb81f555dabbd275cc6185653869e9dc19a8"
+    },
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-boys_hc_table.pdf",
+      "bytes": 232596,
+      "sha256": "1da15e9ad97e151e8ddd6658c45fc01bbc257f70539d8b7bf072312f4744b206"
+    },
+    {
+      "url": "https://intergrowth21.com/sites/default/files/2023-02/grow_preterm-zs-girls_hc_table.pdf",
+      "bytes": 232569,
+      "sha256": "d063de49236a712c9cb70e5b00c489e41b2ab995304d4e81a94a50049b47d179"
+    }
+  ],
+  "exclusions": [
+    "Size at birth",
+    "Weight for length (separate unpublished source in upstream code)",
+    "Clinical classification",
+    "Automatic age correction",
+    "User interface and patient backup importer"
+  ],
+  "verification": "Independent Decimal oracle and private crosscheck of 1596 printed table cells; GIGS R and official app not executed.",
+  "preparedVisit": {
+    "file": "visit.cjs",
+    "version": 1,
+    "status": "Prepared contract; not accepted by application profiles or patient backup importer",
+    "birthGestationScope": "26 to less than 37 weeks, initial study-cohort scope; not a general eligibility claim",
+    "chronologicalAgePrecision": "whole days or exact ISO dates",
+    "centiles": "Standard normal CDF shared with the existing CDC module; not CDC growth data or categories",
+    "clinicalEligibilityAssessed": false
+  }
+}

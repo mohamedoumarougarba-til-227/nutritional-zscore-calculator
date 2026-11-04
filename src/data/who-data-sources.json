@@ -1,14 +1,49 @@
 {
   "format": 1,
   "file": "who-data-sources.zip",
-  "bytes": 961125,
-  "sha256": "c1930fd2946173b2b712336206b52e5473276c7f8ed525cfeaa050323dd51ce5",
+  "bytes": 1839531,
+  "sha256": "b1af0334e74603f1825193f2a8d0bd1cffcce285fe0ad422e14541150a760b37",
   "purpose": "Editable WHO reference data and upstream licences; no original application code or patient records",
   "files": [
     {
       "file": "README.txt",
       "bytes": 1121,
       "sha256": "99ad36eb7f9653e62789b9ed9c9cee0c4022237386c02f8a51c1154c7a022271"
+    },
+    {
+      "file": "WHO-child-additional/LICENSE.txt",
+      "bytes": 35141,
+      "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2"
+    },
+    {
+      "file": "WHO-child-additional/converted/who-additional-manifest.json",
+      "bytes": 1448,
+      "sha256": "4958da28fcc6e239b08b9905f1dc8d6df746c0985423633c87b22430a11dd927"
+    },
+    {
+      "file": "WHO-child-additional/converted/who-additional.json",
+      "bytes": 431694,
+      "sha256": "43d5a81d25819100880e2ce23b7f480ac674b93626e2040727a44a4ba11184e9"
+    },
+    {
+      "file": "WHO-child-additional/originals/acanthro.txt",
+      "bytes": 107829,
+      "sha256": "1b588802bc66534abb42ead27fe6f8e8d62b26967d764eecf16d0f4a8660a7bd"
+    },
+    {
+      "file": "WHO-child-additional/originals/hcanthro.txt",
+      "bytes": 91947,
+      "sha256": "e794e46f06b91223ad2c6435148dc08794a1d75b67613a652c3151201a98bf7c"
+    },
+    {
+      "file": "WHO-child-additional/originals/ssanthro.txt",
+      "bytes": 104662,
+      "sha256": "3e6e1bce0cd87998b5f061a44730860f1393cf8f6b1f5545f80b372085b40ea1"
+    },
+    {
+      "file": "WHO-child-additional/originals/tsanthro.txt",
+      "bytes": 104527,
+      "sha256": "babc2a2a6252080f4ad9ca39a27e59248142820add3151e76d959dd104146a48"
     },
     {
       "file": "WHO2006/LICENSE.txt",

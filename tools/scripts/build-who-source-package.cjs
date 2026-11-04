@@ -30,6 +30,14 @@ function sourcePackage(){
         if(bytes.length!==m.bytes||sha(bytes)!==m.sha256)throw Error('Changed converted table '+data);
         names[family+'/converted/'+data]=bytes;names[family+'/converted/'+manifest]=Buffer.from(JSON.stringify(m,null,2)+'\n');
     }
+    const additional=JSON.parse(fs.readFileSync(path.join(root,'src/data/who-additional-manifest.json')));
+    for(const item of additional.sources){
+        const b=fs.readFileSync(path.join(root,'tools/reference/who-additional',item.file));
+        if(b.length!==item.bytes||sha(b)!==item.sha256)throw Error('Changed additional WHO table '+item.file);
+        names['WHO-child-additional/originals/'+item.file]=b;
+    }
+    for(const file of ['who-additional.json','who-additional-manifest.json'])names['WHO-child-additional/converted/'+file]=fs.readFileSync(path.join(root,'src/data',file));
+    names['WHO-child-additional/LICENSE.txt']=fs.readFileSync(path.join(root,'src/data/LICENSE-anthro.txt'));
     names['README.txt']=Buffer.from('WHO growth reference data - editable source package\n\nWHO2006: WHO Anthro b776d8a12b1c97369c748b561159fd2ec4f4db58 (GPL version 3).\nWHO2007: WHO AnthroPlus 7cfcdb39026e9a55de55732bc3cf14c82261bcf7 (GPL version 3 or later).\n\nThe originals folders contain the unchanged, editable upstream LMS tables.\nThe converted folders contain the exact readable JSON data distributed with Z-score Niger and their manifests.\nChanges by Tout Informatique Lazaret: tabular columns encoded as JSON, keys renamed for the local data interface; numeric reference values unchanged.\nFor WHO2007, the last duplicate upstream month is retained for interpolation.\nSex 1 corresponds to M; sex 2 to F. Each table entry records L, M and S.\n\nThe full upstream licences and provenance are included. Preserve their notices and the rights granted by those licences.\nThis package contains reference data and explanatory metadata only, no application code and no patient records.\nThe TIL copyright over its original application code does not restrict these data licences.\nThis note may be redistributed with the data package. No WHO endorsement is claimed.\n');
     const zip=zipRecords(names);
     const records=Object.entries(names).sort(([a],[b])=>a<b?-1:a>b?1:0);

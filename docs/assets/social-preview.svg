@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+<title id="title">Z-score Niger — Growth calculation, offline</title>
+<desc id="desc">Local records, FR EN AR, no account. WHO, CDC and INTERGROWTH reference choices. Open source GPL-3.0. No automatic diagnosis.</desc>
+<rect width="1280" height="640" fill="#f5f8f6"/>
+<rect x="0" y="0" width="12" height="640" rx="0" fill="#176348"/>
+<rect x="72" y="60" width="84" height="84" rx="18" fill="#176348"/>
+<text x="96" y="76" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="65" font-weight="700" fill="#ffffff">Z</text>
+<text x="182" y="69" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="66" font-weight="700" fill="#153d31">Z-score Niger</text>
+<text x="72" y="190" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="48" font-weight="700" fill="#153d31">Growth calculation, offline.</text>
+<text x="72" y="266" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="32" font-weight="400" fill="#153d31">Local records  ·  FR / EN / AR  ·  No account</text>
+<text x="72" y="310" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="22" font-weight="400" fill="#153d31">Works offline after the first complete load</text>
+<rect x="72" y="348" width="346" height="88" rx="14" fill="#ffffff" stroke="#bdd2c7" stroke-width="2"/>
+<text x="92" y="373" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="31" font-weight="700" fill="#153d31">WHO 2006 / 2007</text>
+<rect x="454" y="348" width="346" height="88" rx="14" fill="#ffffff" stroke="#bdd2c7" stroke-width="2"/>
+<text x="474" y="373" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="31" font-weight="700" fill="#153d31">CDC 2000 / 2022</text>
+<rect x="836" y="348" width="346" height="88" rx="14" fill="#ffffff" stroke="#bdd2c7" stroke-width="2"/>
+<text x="856" y="373" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="31" font-weight="700" fill="#153d31">INTERGROWTH</text>
+<text x="72" y="478" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="28" font-weight="400" fill="#153d31">Explicit reference choices  ·  No automatic diagnosis</text>
+<rect x="72" y="550" width="1136" height="2" rx="0" fill="#c6d7ce"/>
+<text x="72" y="574" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="25" font-weight="400" fill="#153d31">GPL-3.0  ·  Open source</text>
+<text x="870" y="574" dominant-baseline="text-before-edge" font-family="Amiri,serif" font-size="25" font-weight="400" fill="#153d31">zscore-niger.vercel.app</text>
+</svg>
