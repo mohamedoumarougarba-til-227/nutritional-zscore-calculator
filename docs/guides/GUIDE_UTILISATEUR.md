@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.8.3
+# Guide utilisateur — Z-score Niger 5.8.4
 
 ## Créer une copie après un échec de sauvegarde
 
@@ -27,7 +27,7 @@ Télécharger le contrôle des lignes pour retrouver leurs numéros dans ce trav
 Sélectionner explicitement ce profil dans les réglages pour les nouveaux travaux, ou dans la référence de la visite. Entrer le PMA exact en jours (189–448), ou l’âge gestationnel à la naissance et l’âge chronologique exact (jours/deux dates). Les mois estimés ne sont pas convertis. Renseigner au moins un poids en g, une longueur couchée en cm ou un périmètre crânien en cm. Les âges inconnus restent inconnus. Les résultats décrivent une position dans cette référence postnatale, sans catégorie de diagnostic OMS ni admission/prescription. Naissance, perte/reprise de poids et PMA avant 32 semaines demandent une interprétation particulière avec le soignant. Voir [méthode et limites](../references/INTERGROWTH.md).
 
 
-## Profil américain explicite — sources 5.8.3 / moteur 4.4.0
+## Profil américain explicite — sources 5.8.4 / moteur 4.4.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).
 
@@ -59,7 +59,7 @@ Les groupes de courbes se déplient à la demande. Les trois courbes de croissan
 - **Poids pour longueur/taille (P/T)** : situe le poids par rapport à la longueur/taille ; non applicable dans OMS 2007.
 - **IMC pour âge** : IMC = poids en kg / taille en mètres au carré, comparé à la référence selon âge et sexe.
 
-Z = 0 correspond à la médiane de référence. Une valeur négative n’est pas automatiquement une maladie. Le libellé concerne uniquement l’indicateur affiché. Les centiles P sont fournis entre −3 et +3 ; un tiret ne signifie pas zéro. Les domaines et suspensions propres à chaque indicateur sont explicités. Les valeurs hors table ne sont pas extrapolées.
+Z = 0 correspond à la médiane de référence. Une valeur négative n’est pas automatiquement une maladie. Le libellé concerne uniquement l’indicateur affiché. Les centiles OMS sont fournis entre −3 et +3 Z ; CDC et INTERGROWTH ont leurs propres règles de disponibilité. Un tiret ne signifie pas zéro. Un centile disponible très proche d’une extrémité est affiché `P < 0,1` ou `P > 99,9`, sans changer la valeur conservée et exportée en CSV. Les domaines et suspensions propres à chaque indicateur sont explicités. Les valeurs hors table ne sont pas extrapolées.
 
 ### PB et évaluation clinique
 

@@ -166,3 +166,11 @@ Navigateur intégré sur ordinateur, moteur 4.4.0, nouvelle origine locale et ca
 | Réouverture et reprise sans serveur | Serveur et ancien onglet absents, application chargée depuis le cache à la même origine ; aperçu, reprise en copie et exports CSV/.zscore réussis. Formulaire repris exact ; les 12 sessions précédentes restent identiques, une copie ajoutée | Réseau système actif ; aucune purge, panne matérielle ou saturation physique simulée |
 
 Aucun calcul, domaine ou format n’a été modifié par ce lot de vérification. Les résultats ne constituent ni diagnostic ni avis clinique. Les lignes générales NOT RUN restent ouvertes dans leur portée complète, notamment appareils physiques, lecteur d’écran et quotas réellement atteints.
+
+## Centile CDC extrême — observation du 5 novembre 2026, correction 5.8.4
+
+Navigateur intégré Chromium sur ordinateur, moteur 4.4.0 ; cas entièrement fictif masculin à 10 ans estimés, 70 000 g, 140 cm debout, œdèmes absents, profil américain explicite. Âge déclaré 120 mois, calcul CDC à 120,5 mois. L’IMC de 35,7142857 utilise la méthode étendue 2022 ; son centile enregistré est 99,981455. Cela décrit ce cas technique et ne constitue pas une validation clinique.
+
+L’affichage 5.8.3 arrondissait ce centile en `P 100,0`. L’aperçu d’une version archivée, puis sa reprise en copie en 5.8.4, affichent `P > 99,9` sans recalcul. Résultats et libellés observés en FR/EN/AR, direction arabe RTL et valeur mathématique en LTR. Le CSV téléchargé après reprise est strictement identique à celui exporté avant correction ; les CSV des trois langues sont également identiques. Les PDF FR/AR du cas sont téléchargés et rendus pour contrôle numérique, distinct d’une impression papier. La version originale et les autres sauvegardes restent conservées ; aucun cache n’est purgé.
+
+La convention d’affichage est couverte par trois régressions publiques : cas CDC réel, bornes hautes/basses dans les trois langues, modèles PDF et mesures complémentaires, valeurs indisponibles et absence de mutation du CSV/résultat. Ces contrôles ne ferment ni tous les scénarios de profils, ni le parcours lecteur d’écran, ni les essais physiques.

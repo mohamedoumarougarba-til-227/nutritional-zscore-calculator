@@ -1,5 +1,11 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.4 — centiles proches de 0 et 100
+
+Un centile CDC de 99,981455 s’affichait comme `P 100,0` après arrondi à une décimale. L’écran, les tableaux d’historique et les PDF présentent désormais `P > 99,9` au-dessus de 99,9 et `P < 0,1` en dessous de 0,1. Les valeurs centrales conservent une décimale ; les centiles indisponibles ou signalés restent indisponibles. Les notes PDF des mesures complémentaires utilisent la même règle. L’aide l’explique en FR/EN/AR.
+
+Cette correction de présentation ne modifie ni Z-score, centile enregistré, classification, référence, moteur 4.4.0, CSV ou format de sauvegarde. Trois tests publics supplémentaires couvrent le cas CDC reproduit, les bornes d’affichage dans les trois langues, les PDF et la conservation des données. L’interface/package passe à 5.8.4 et les manifestes/sources GPL sont reconstruits ; aucun ancien résultat n’est recalculé.
+
 ## 5.8.3 — documentation après la première release publique
 
 La documentation identifie la release signée 5.8.2, les protections main, le signalement privé et la liaison automatique GitHub/Vercel réellement appliqués. Elle distingue ces faits datés des réglages futurs, captures historiques et versions d’une branche de développement. Le README donne accès aux releases et sources ; les canaux de sécurité privés sont explicites.

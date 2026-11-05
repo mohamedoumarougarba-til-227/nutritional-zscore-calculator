@@ -178,3 +178,51 @@ test('CDC result views, compact/detailed PDF models and charts explain the actua
     }
     assert.equal(JSON.stringify(entry),before);
 });
+
+test('extended CDC centiles near 100 remain bounded in results, history and PDF without changing CSV or stored scores',()=>{
+    const entry=engine.calculate(input({growthProfile:'us',gender:'M',ageYears:10,ageMonths:0,weight:70000,height:140}));
+    const before=JSON.stringify(entry),csv=CSVManager.results([entry]),translations=data('interface-translations.json');
+    assert.equal(entry.result.bmiForAge.method,'CDC2022-extended-BMI');assert.ok(entry.result.bmiForAge.percentile>99.95&&entry.result.bmiForAge.percentile<100);
+    for(const language of ['fr','en','ar']){
+        const ui=Object.assign(Object.create(WorkspaceApp.prototype),{translations,prefs:{language,growthProfile:'us',theme:'light'},engine,state:{batch:[entry]}});
+        const bounded=ui.esc('> '+ui.number(99.9,1));
+        assert.ok(ui.percentileHTML(entry.result.bmiForAge,entry.result).includes('P '+bounded));
+        assert.ok(ui.resultsHTML(entry,false,true).includes('P '+bounded));
+        assert.ok(ui.chartsHTML([entry]).includes('P '+bounded));
+        const model=PDFManager.model([entry],{language,translations});assert.ok(model.rows[0].percentiles.includes('P > 99.9'));
+        assert.ok(JSON.stringify(PDFManager.compact(model)).includes('P > 99.9'));
+    }
+    assert.equal(JSON.stringify(entry),before);assert.equal(CSVManager.results([entry]),csv);
+});
+
+test('centile presentation distinguishes tails, exact display boundaries and unavailable values in all languages',()=>{
+    // Presentation-only inputs; these are not fixtures for recomputing a medical result.
+    const entry=engine.calculate(input({growthProfile:'us'})),translations=data('interface-translations.json');
+    for(const language of ['fr','en','ar']){
+        const ui=Object.assign(Object.create(WorkspaceApp.prototype),{translations,prefs:{language}});
+        for(const [percentile,operator,bound] of [[.000001,'< ',.1],[.099999,'< ',.1],[.1,'',.1],[50,'',50],[99.9,'',99.9],[99.900001,'> ',99.9],[99.999999,'> ',99.9]]){
+            const copy=structuredClone(entry);Object.assign(copy.result.bmiForAge,{percentile,flagged:false,zscore:1});
+            assert.ok(ui.percentileHTML(copy.result.bmiForAge,copy.result).includes('P '+ui.esc(operator+ui.number(bound,1))));
+            assert.ok(PDFManager.model([copy],{language,translations}).rows[0].percentiles.includes('P '+operator+bound.toFixed(1)));
+        }
+        for(const percentile of [null,undefined,NaN,Infinity,0,100,-1,101,'99.99']){
+            const copy=structuredClone(entry);copy.result.bmiForAge.percentile=percentile;
+            assert.ok(ui.percentileHTML(copy.result.bmiForAge,copy.result).includes('P —'));
+            assert.ok(PDFManager.model([copy],{language,translations}).rows[0].percentiles.includes('P --'));
+        }
+        const flagged=structuredClone(entry);flagged.result.bmiForAge.flagged=true;
+        assert.ok(ui.percentileHTML(flagged.result.bmiForAge,flagged.result).includes('P —'));
+        assert.ok(PDFManager.model([flagged],{language,translations}).rows[0].percentiles.includes('P --'));
+    }
+});
+
+test('PDF supplementary centiles use the same bounds and omit flagged or unavailable positions without mutating measurements',()=>{
+    const entry=engine.calculate(input({growthProfile:'who',ageYears:1,ageMonths:0,weight:8500,height:75,position:'L',headCircumference:46})),translations=data('interface-translations.json');
+    for(const language of ['fr','en','ar'])for(const [percentile,flagged,expected] of [[99.999999,false,'P > 99.9'],[.000001,false,'P < 0.1'],[50,false,'P 50.0'],[99.999999,true,null],[null,false,null]]){
+        const copy=structuredClone(entry),v=copy.result.additionalGrowth.indicators.headCircumferenceForAge;Object.assign(v,{percentile,flagged});
+        const before=JSON.stringify(copy),notes=PDFManager.model([copy],{language,translations}).rows[0].notes;
+        const note=notes.find(n=>n.startsWith(translations[language].headCircumferenceForAge+' : '));assert.ok(note);
+        if(expected)assert.ok(note.includes(expected));else assert.ok(!note.includes(' | P '));
+        assert.equal(JSON.stringify(copy),before);
+    }
+});
