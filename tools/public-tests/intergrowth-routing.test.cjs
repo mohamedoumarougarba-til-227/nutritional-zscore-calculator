@@ -167,6 +167,22 @@ test('INTERGROWTH round-trips the current backup and encrypted envelope, retaini
     await assert.rejects(TransferManager.inspect(new Blob([(await clear.text()).replace('FICTIF-PRETERM','ALTERED')])),/importChecksum/);
 });
 
+test('PDF includes a centile legend for a head-only postnatal result, but not when no stored centile is printed',()=>{
+    const entry=engine.calculate(raw({ageMode:'pma',postmenstrualDays:224,ageDays:'',gestationalAgeWeeks:'',gestationalAgeDays:'',weight:'',height:'',position:'',oedema:''}));
+    const before=JSON.stringify(entry);
+    for(const language of ['fr','en','ar']){
+        const model=PDFManager.model([entry],{language,translations});
+        assert.ok(model.rows[0].percentiles.every(p=>p===''));
+        assert.ok(model.rows[0].notes.some(n=>n.includes(' | P ')));
+        assert.equal(model.hasPercentiles,true);
+        const missing=structuredClone(entry);missing.result.additionalGrowth.indicators.headCircumferenceForAge.percentile=null;
+        assert.equal(PDFManager.model([missing],{language,translations}).hasPercentiles,false);
+        const flagged=structuredClone(entry);flagged.result.additionalGrowth.indicators.headCircumferenceForAge.flagged=true;
+        assert.equal(PDFManager.model([flagged],{language,translations}).hasPercentiles,false);
+    }
+    assert.equal(JSON.stringify(entry),before);
+});
+
 test('classic-browser service order loads INTERGROWTH without CommonJS, extra network or undeclared globals',()=>{
     const context={crypto,console,Date};context.window=context;context.globalThis=context;vm.createContext(context);
     const html=fs.readFileSync(path.join(root,'src/index.html'),'utf8');

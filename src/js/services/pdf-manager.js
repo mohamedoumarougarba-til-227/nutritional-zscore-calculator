@@ -101,7 +101,8 @@ class PDFManager {
             if(c.muac!==undefined&&c.muac!==''){const pb=field('muac',number(c.muac,1)+' mm');compactMeasures.push(pb);briefMeasures.push(pb);}
             return {index:i+1,identity,measures,compactMeasures,briefMeasures,briefIdentity:[this.clean(c.name||t('unknown')),this.clean(c.caseId||t('unknown'))],measurementDate:this.clean(c.measurementDate||t('unknown')),scores,percentiles,notes:[...new Set(notes.filter(Boolean))],provenance,calculatedAt:this.clean(r?.calculatedAt||t('unknown'))};
         });
-        return {language, t, indicators, rows, stale, provenances,keys:['pdfNumber','pdfIdentity','pdfMeasures',...indicators,'pdfNotes']};
+        const hasPercentiles=rows.some(row=>row.percentiles.some(Boolean))||entries.some(entry=>Object.values(entry.result?.additionalGrowth?.indicators||{}).some(value=>CentilePDF.text(value)!==null));
+        return {language, t, indicators, rows, stale, provenances,hasPercentiles,keys:['pdfNumber','pdfIdentity','pdfMeasures',...indicators,'pdfNotes']};
     }
     static compact(model) {
         const categories=[],notes=[];
@@ -162,7 +163,7 @@ class PDFManager {
         };
         header();let y=29;
         y=text(t('appUsageNotice'),y,10);
-        if(rows.some(r=>r.percentiles.some(Boolean)))y=text(t('percentileReportHelp'),y,9);
+        if(model.hasPercentiles)y=text(t('percentileReportHelp'),y,9);
         if(model.stale) y=text(t('stale'),y,10,true);
         const base = {theme:'grid',margin:{top:29,bottom:compact?24:19,left:margin,right:margin},startY:y,
             styles:{font:'Amiri',fontStyle:'normal',fontSize:11,textColor:25,lineColor:210,lineWidth:.15,cellPadding:2,overflow:'linebreak',halign:rtl?'right':'left',valign:'top'},

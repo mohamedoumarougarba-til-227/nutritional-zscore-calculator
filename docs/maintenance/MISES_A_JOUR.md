@@ -1,5 +1,11 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.5 — légende du centile des mesures complémentaires seules
+
+Lorsqu’un rapport individuel ne comportait qu’un périmètre crânien calculé, le centile figurait dans les notes mais sa légende était absente : l’en-tête ne regardait que les indicateurs principaux. Le modèle et le générateur PDF tiennent désormais compte des centiles effectivement imprimés des mesures complémentaires. La légende reste absente si aucune position n’est imprimée.
+
+Le cas postnatal partiel et les variantes sans centile/signalées sont couverts en FR/EN/AR par un test public supplémentaire. Aucun changement de calcul, classification, mesure, moteur4.4.0, CSV, sauvegarde ou référence. L’interface/package et les sources du rapport sont identifiés5.8.5 ; la correction5.8.4 reste un lot distinct dans l’historique.
+
 ## 5.8.4 — centiles proches de 0 et 100
 
 Un centile CDC de 99,981455 s’affichait comme `P 100,0` après arrondi à une décimale. L’écran, les tableaux d’historique et les PDF présentent désormais `P > 99,9` au-dessus de 99,9 et `P < 0,1` en dessous de 0,1. Les valeurs centrales conservent une décimale ; les centiles indisponibles ou signalés restent indisponibles. Les notes PDF des mesures complémentaires utilisent la même règle. L’aide l’explique en FR/EN/AR.
