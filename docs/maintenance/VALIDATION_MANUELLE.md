@@ -1,5 +1,7 @@
 # Matrice de validation manuelle
 
+Les tableaux de protocole ci-dessous restent des grilles à exécuter sur le matériel et la version visés. Leurs cases NOT RUN ne suppriment pas les observations datées des sections suivantes ; elles ne signifient pas non plus que tous les parcours ont été essayés sur tous les appareils.
+
 CURRENT — protocole à exécuter sur une version identifiée, **pas une liste d’essais déjà réussis**. Données fictives uniquement. Aucun nouvel accès au TECNO n’est autorisé dans le chantier actuel.
 
 Pour chaque exécution, noter date, SHA/ID de release, version UI/moteur, navigateur/version, système, appareil, taille et résultat observé. Marquer PASS, FAIL, NOT RUN ou NOT APPLICABLE ; joindre une preuve synthétique si utile. La maintenance ne garantit pas la disponibilité de tous les matériels ou technologies d’assistance.
@@ -174,3 +176,23 @@ Navigateur intégré Chromium sur ordinateur, moteur 4.4.0 ; cas entièrement fi
 L’affichage 5.8.3 arrondissait ce centile en `P 100,0`. L’aperçu d’une version archivée, puis sa reprise en copie en 5.8.4, affichent `P > 99,9` sans recalcul. Résultats et libellés observés en FR/EN/AR, direction arabe RTL et valeur mathématique en LTR. Le CSV téléchargé après reprise est strictement identique à celui exporté avant correction ; les CSV des trois langues sont également identiques. Les PDF FR/AR du cas sont téléchargés et rendus pour contrôle numérique, distinct d’une impression papier. La version originale et les autres sauvegardes restent conservées ; aucun cache n’est purgé.
 
 La convention d’affichage est couverte par trois régressions publiques : cas CDC réel, bornes hautes/basses dans les trois langues, modèles PDF et mesures complémentaires, valeurs indisponibles et absence de mutation du CSV/résultat. Ces contrôles ne ferment ni tous les scénarios de profils, ni le parcours lecteur d’écran, ni les essais physiques.
+
+## Bornes du profil américain — observations du 5 novembre 2026, 5.8.4
+
+Navigateur intégré Chromium sur ordinateur, moteur 4.4.0, données fictives. À 23 mois estimés, le profil américain utilise OMS 2006 ; à 24 mois révolus, CDC avec âge de calcul 24,5 mois et conversion de longueur couchée 86 cm en taille debout 85,2 cm. À 19 ans et 11 mois, CDC utilise 239,5 mois ; 20 ans est refusé avec une alerte focalisée, sans effacer le résultat précédent. À 731 jours exacts, le calcul utilise 24,016427104722794 mois, sans ajouter un demi-mois.
+
+Quatre CSV réels de 119 colonnes ont été comparés au même moteur sous Node : écart brut maximal 1,4211e-14, arrondis identiques. Changer le défaut général en OMS ne modifie ni le résultat américain ni son CSV ; nouvelle visite conserve le profil et efface les anciennes mesures, nouveau travail prend le défaut OMS. La reprise d’une version américaine conserve son profil sans changer le défaut. Les neuf sessions initiales restent strictement identiques dans les 26 sessions finales. Ce contrôle de parcours ne constitue pas un oracle numérique indépendant, un essai physique ou une validation clinique.
+
+## Mesure postnatale partielle — observations des 5–6 novembre 2026, correctif 5.8.5
+
+Même navigateur sur ordinateur et moteur 4.4.0. Garçon fictif, PMA exact 224 jours, périmètre crânien 29 cm ; âge chronologique, gestation à la naissance, poids, longueur, position et œdèmes volontairement inconnus. Résultat PC : Z −0,57 et P 28,3 ; les indicateurs privés de mesure restent non calculés. Aucun âge, poids nul, catégorie OMS ou dépistage PB n’est inventé.
+
+| Parcours exécuté | Résultat observé | Portée |
+|---|---|---|
+| Bornes PMA | 189 et 448 jours acceptés ; 188 et 449 refusés avec alerte focalisée et précédent résultat conservé | Trois cas calculés, deux refus ; pas de test de toutes les mesures possibles |
+| Nouvelle visite | Profil/identité/sexe conservés ; PMA et mesures effacés ; calcul refusé sans aucune mesure | Pas de reprise silencieuse des valeurs du dossier |
+| Reprise et langues | Résultat repris dans une copie ; CSV avant/après correctif et FR/EN/AR strictement identiques, 119 colonnes | Même code Node/navigateur pour la comparaison ; contrôles Decimal séparés |
+| PDF réels | Trois PDF téléchargés, six pages rendues et inspectées ; légende P présente dès la première page malgré l’absence de centiles principaux | Correction de présentation ; ni impression papier ni lecture d’écran attestée |
+| Conservation | Les 26 sessions initiales restent strictement identiques dans les 41 finales ; trois versions calculées valides ajoutées, aucun calcul pour les PMA refusés | Inclut brouillons, copies et sauvegarde avant mise à jour ; aucun original supprimé |
+
+Le correctif est couvert par une régression publique FR/EN/AR incluant centile absent ou signalé. Aucun calcul, référence, catégorie, CSV ou format de sauvegarde modifié. Les autres essais d’accessibilité, de matériel cible et d’adoption restent distincts.
