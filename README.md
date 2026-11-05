@@ -1,12 +1,12 @@
 # Z-score Niger
 
-**[Essayer l’application](https://zscore-niger.vercel.app/) · [Méthode et limites](docs/references/METHODE.md) · [Contribuer](CONTRIBUTING.md)**
+**[Essayer l’application](https://zscore-niger.vercel.app/) · [Versions et sources](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/releases) · [Méthode et limites](docs/references/METHODE.md) · [Contribuer](CONTRIBUTING.md)**
 
 Application web gratuite et sans compte pour calculer les indicateurs de croissance OMS selon l’âge, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
 
 *Offline-first WHO / CDC growth Z-score calculator — local records, FR/EN/AR, no account.*
 
-Version des sources de l’interface : **5.8.2** ; moteur combiné : **4.4.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
+Version des sources de l’interface : **5.8.3** ; moteur combiné : **4.4.0**. La version hébergée se vérifie dans son pied de page et peut différer d’un checkout de développement. OMS Child Growth Standards avant 60 mois moyens : poids/âge, taille/âge, poids/longueur-taille et IMC/âge. OMS 2007 de 60 à moins de 229 mois : taille/âge et IMC/âge, poids/âge avant 121 mois. Aucun poids/taille extrapolé après cinq ans. Centiles OMS entre −3 et +3. Profil américain explicite : OMS avant 24 mois, puis CDC 2000 et IMC étendu 2022 de 24 à moins de 240 mois ; catégories CDC séparées du dépistage OMS. Les quatre mesures complémentaires facultatives et leurs domaines sont décrits dans [Méthode](docs/references/METHODE.md).
 
 Un [profil INTERGROWTH postnatal](docs/references/INTERGROWTH.md) explicite ajoute poids, longueur couchée et périmètre crânien selon le PMA exact 27–64 semaines, sans catégories cliniques OMS transposées.
 

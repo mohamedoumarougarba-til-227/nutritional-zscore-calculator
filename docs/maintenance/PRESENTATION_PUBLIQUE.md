@@ -1,14 +1,16 @@
 # Présentation publique et images
 
-CURRENT — préparation du 29 octobre 2026, interface 5.7.1 / moteur 4.4.0. Cette page prépare les réglages du dépôt ; elle ne prouve ni leur application sur GitHub, ni la fusion de la branche, ni la mise à jour du site hébergé.
+CURRENT — état public vérifié les 4–5 novembre 2026. Les captures ci-dessous restent celles de l’interface 5.7.1 / moteur 4.4.0, datées du 29 octobre ; elles ne sont pas présentées comme des essais rejoués sur chaque release.
 
-## Réglages proposés
+## Réglages appliqués et release identifiable
 
-Description exacte proposée (en anglais pour la découvrabilité) :
+Description appliquée (en anglais pour la découvrabilité) :
 
 > Offline-first WHO/CDC growth Z-score calculator with an explicit INTERGROWTH postnatal profile, local records, FR/EN/AR, PDF/CSV and no account.
 
-Topics proposés : `nutrition`, `anthropometry`, `z-score`, `child-growth`, `public-health`, `offline-first`, `pwa`, `javascript`, `arabic`, `niger`, `global-health`, `open-source`.
+Topics appliqués : `nutrition`, `anthropometry`, `z-score`, `who`, `child-growth`, `public-health`, `offline-first`, `pwa`, `javascript`, `arabic`, `niger`, `global-health`, `open-source`.
+
+La [release v5.8.2](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/releases/tag/v5.8.2) a été publiée le 4 novembre 2026 au commit signé `ffe86a5d12f8a4af1473581736b0d2ea0f627c35` : moteur 4.4.0, sources GPL, manifeste et empreintes joints. La fusion de la PR #1 a déclenché le déploiement Vercel automatique du même commit ; interface et ressources servies ont été vérifiées. Ce constat est daté : consulter les [releases](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/releases) et le pied de page pour une version ultérieure, sans supposer qu’une branche de développement est déjà déployée.
 
 Lien du site : https://zscore-niger.vercel.app/. Vérifier sa version affichée avant d’annoncer une fonctionnalité de la branche. Aucun topic ou libellé ne doit suggérer un diagnostic, une certification OMS ou une validation gouvernementale. L’application nécessite un premier chargement complet pour préparer le fonctionnement hors ligne.
 
@@ -29,7 +31,7 @@ Les résultats arrondis ci-dessus permettent de reproduire les captures ; la cla
 
 Le générateur optionnel `tools/scripts/build-social-preview.py` utilise Python et Pillow déjà disponibles dans l’environnement choisi. Il ne télécharge aucune ressource. Sa réexécution n’est nécessaire ni pour lancer l’application, ni pour les tests publics, ni pour corriger la documentation. Ne pas installer une dépendance uniquement pour une faute dans le README. SVG et PNG sont des ressources documentaires ; ils ne sont pas ajoutés au cache de l’application.
 
-GitHub accepte une image de moins de 1 Mo et recommande 1280 × 640 : [documentation officielle](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview). Le PNG préparé respecte ces dimensions. L’envoi de la preview et la modification de description/topics restent un lot externe annoncé séparément ; aucune publication ou sollicitation automatique n’est prévue.
+GitHub accepte une image de moins de 1 Mo et recommande 1280 × 640 : [documentation officielle](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview). Le PNG préparé respecte ces dimensions. L’envoi de la preview reste une opération externe distincte, non réalisée par sa présence dans les sources. Description/topics ont été appliqués dans le lot autorisé du 4 novembre. Aucune sollicitation ou publication sociale automatique n’est prévue.
 
 ## Support et portée
 
