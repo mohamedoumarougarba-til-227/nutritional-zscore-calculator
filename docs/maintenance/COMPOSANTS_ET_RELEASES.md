@@ -26,15 +26,15 @@ Les schémas sont des structures internes du format courant, pas des options d�
 
 La CI publique prépare un paquet sans le déployer. Aucun badge de succès n’est annoncé avant une exécution GitHub correspondante.
 
-## Tag, notes et paramètres GitHub — à préparer, pas appliqués par ce document
+## Tags, notes et paramètres GitHub
 
-Convention proposée : tag `v<version-interface>` sur un commit examiné. Les notes indiquent SHA, version UI, moteur, références, ID de release, changements utilisateurs/calculs/formats, compatibilité et validations encore manquantes. Publier l’inventaire/checksum déjà produit ; ne pas créer un second système de mise à jour. La citation d’un résultat doit identifier la version du moteur et sa référence, pas seulement le nom du site.
+Convention utilisée : tag signé `v<version-interface>` sur un commit examiné. La première release versionnée [v5.8.2](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/releases/tag/v5.8.2), publiée le 4 novembre 2026, cible le commit de fusion signé `ffe86a5d12f8a4af1473581736b0d2ea0f627c35`. Les notes indiquent SHA, version UI, moteur, références, ID de release, changements utilisateurs/calculs/formats, compatibilité et validations encore manquantes. L’inventaire/checksum existant accompagne les sources GPL ; aucun second système de mise à jour n’est créé. La citation d’un résultat doit identifier la version du moteur et sa référence, pas seulement le nom du site.
 
-Description proposée : `Offline-first WHO growth Z-score calculator with local records, FR/EN/AR, PDF/CSV exports and no account.`
+La description et les topics effectivement appliqués sont documentés dans [présentation publique](PRESENTATION_PUBLIQUE.md). Le dépôt est public ; les preuves privées restent exclues. La fusion sur main utilise la liaison GitHub/Vercel existante : la CI vérifie et prépare, Vercel déploie. Vérifier après chaque livraison le SHA du déploiement, le manifeste servi et la version affichée ; un check vert ne prouve pas à lui seul la production.
 
-Topics préparés : `nutrition`, `anthropometry`, `z-score`, `who`, `child-growth`, `public-health`, `offline-first`, `pwa`, `javascript`, `arabic`, `niger`, `global-health`, `open-source`.
+Au 5 novembre 2026, main exige une PR, les checks GitHub Actions Node 20/24, une branche à jour, les conversations résolues et les signatures ; force-push et suppression sont interdits, administrateurs inclus. Zéro review d’une autre personne est imposée au mainteneur unique. La PR #1 a été fusionnée normalement, sans squash/rebase ni réécriture des commits signés.
 
-Après une vraie CI réussie, préparer une protection de main demandant les checks utiles, interdisant force-push/suppression et autorisant les PR externes. Ne pas imposer une approbation impossible au mainteneur unique. Vérifier les possibilités du compte avant application. L’activation de Private Vulnerability Reporting et toute mutation de settings doivent être annoncées et autorisées dans leur lot ; elles ne sont pas réalisées par l’ajout de ce fichier.
+Le signalement privé GitHub est activé ; voir [SECURITY](../../SECURITY.md). Ces réglages ont été relus après le lot explicitement autorisé. Une évolution des protections, une fusion ou une publication ultérieure reste une action à annoncer et autoriser selon le chantier ; la modification d’un document n’applique aucun réglage à distance. Ne jamais contourner les checks ou déplacer un tag publié pour actualiser une notice.
 
 ## Veille des ressources embarquées
 

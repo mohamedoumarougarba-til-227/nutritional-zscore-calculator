@@ -1,5 +1,11 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.3 — documentation après la première release publique
+
+La documentation identifie la release signée 5.8.2, les protections main, le signalement privé et la liaison automatique GitHub/Vercel réellement appliqués. Elle distingue ces faits datés des réglages futurs, captures historiques et versions d’une branche de développement. Le README donne accès aux releases et sources ; les canaux de sécurité privés sont explicites.
+
+La matrice manuelle reçoit les observations des 4–5 novembre sur les quatre mesures facultatives, les CSV/PDF FR/EN/AR et la reprise d’un dossier fictif à deux visites. Aucun nouveau test physique, quota saturé ou avis clinique n’est présumé. Ce patch ne change ni moteur 4.4.0, règle numérique, référence, format, traduction ou comportement de saisie. L’interface/package change de version parce que les documents font partie des sources GPL distribuées et du paquet hors ligne ; les archives, empreintes et manifestes sont reconstruits par le mécanisme existant.
+
 ## 5.8.2 — exporter une copie de secours après un échec de sauvegarde
 
 Lorsque l’écriture locale échouait, l’interface proposait d’exporter mais la sauvegarde complète tentait d’abord la même écriture et échouait aussi. Elle peut désormais inclure dans le fichier un instantané de la saisie en mémoire, du brouillon et des résultats, en plus de l’historique lisible. Cet instantané n’est pas écrit dans le navigateur ; les versions originales restent conservées. Les espaces de travail identiques ne sont pas dupliqués dans le fichier.

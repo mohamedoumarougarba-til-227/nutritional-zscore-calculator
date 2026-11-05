@@ -151,3 +151,18 @@ Page privée instrumentée sur une nouvelle origine locale, mêmes scripts appli
 | Deuxième ajout d’import refusé | Message d’annulation, aucun ajout partiel dans l’export réel comparé à l’archive précédente ; réimport après levée du défaut ajoute les copies attendues sans changer les originaux |
 
 Les fichiers fictifs exportés sont contrôlés par le validateur réel du format courant et les contenus sont comparés. Les six tests publics de ce correctif sont indépendants de ce banc privé. Cette preuve d’erreur injectée ne remplace pas une validation de quota réellement atteint sur un appareil cible.
+
+## Mesures facultatives et deux visites — observations des 4–5 novembre 2026, 5.8.2
+
+Navigateur intégré sur ordinateur, moteur 4.4.0, nouvelle origine locale et cas entièrement fictifs. Les quatre champs facultatifs ont été saisis dans le formulaire individuel : périmètre crânien 46 cm, PB 130 mm, plis tricipital 8 mm/sous-scapulaire 6 mm ; garçon d’un an estimé, 8 500 g, 75 cm couché, œdèmes absents, mesure du 2026-11-04. Les autres observations cliniques restent inconnues. Les positions complémentaires ne modifient pas les critères absolus de PB.
+
+| Parcours exécuté | Résultat observé | Limite |
+|---|---|---|
+| Quatre résultats complémentaires | Z −0,05/−1,54/−0,07/−0,43 ; centiles 48,0/6,2/47,3/33,5 ; unités et source conservées | Un cas fictif, comparaison au même code Node ; contrôles numériques indépendants séparés |
+| FR/EN/AR et exports réels | Trois CSV de 119 colonnes strictement identiques, y compris les valeurs brutes et références ; trois PDF de deux pages rendus et inspectés, quatre résultats complémentaires présents | Six pages numériques, pas d’impression papier ; extraction arabe contrôlée aussi en mode layout car le mode plain omettait des nombres présents au rendu |
+| Actions et petite fenêtre | Panneau compact pour calcul/PDF/CSV, sans export placé hors du menu ; dimensions réellement mesurées 480 × 844 CSS px en FR/AR, document 449 px, direction arabe RTL ; panneaux sur une colonne | Fenêtre réduite, pas un téléphone de 390 px. Capture native mobile non probante ; traces DOM/dimensions et fichiers conservés |
+| Nouvelle visite du même dossier | Identité/sexe conservés ; anciennes mesures non reprises silencieusement. Visite rétrospective 2026-10-04 à 11 mois estimés, 8 200 g, 74 cm, PC 45,8 cm, PB 128 mm, plis 7,8/5,8 mm ; nouveau visitId | Identifiant local commun, pas preuve d’identité réelle |
+| Courbes et évolution | Quatre courbes physiques et quatre tendances complémentaires : deux points pour deux visites ; une ligne par tendance entre les dates connues | Aucune prédiction ou interpolation de visite inventée |
+| Réouverture et reprise sans serveur | Serveur et ancien onglet absents, application chargée depuis le cache à la même origine ; aperçu, reprise en copie et exports CSV/.zscore réussis. Formulaire repris exact ; les 12 sessions précédentes restent identiques, une copie ajoutée | Réseau système actif ; aucune purge, panne matérielle ou saturation physique simulée |
+
+Aucun calcul, domaine ou format n’a été modifié par ce lot de vérification. Les résultats ne constituent ni diagnostic ni avis clinique. Les lignes générales NOT RUN restent ouvertes dans leur portée complète, notamment appareils physiques, lecteur d’écran et quotas réellement atteints.
