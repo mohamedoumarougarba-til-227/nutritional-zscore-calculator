@@ -286,3 +286,4 @@
 !/tools/public-tests/batch-correction.test.cjs
 !/tools/public-tests/version-preview.test.cjs
 !/tools/public-tests/rescue-export.test.cjs
+!/src/js/services/percentile-display.js

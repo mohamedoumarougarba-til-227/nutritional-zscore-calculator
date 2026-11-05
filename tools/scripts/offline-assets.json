@@ -14,6 +14,7 @@
   "js/services/transfer-manager.js",
   "js/services/csv-manager.js",
   "js/services/pdf-manager.js",
+  "js/services/percentile-display.js",
   "vendor/pdf/jspdf-4.2.1-til1.umd.min.js",
   "vendor/pdf/jspdf-4.2.1.umd.min.js.LICENSE.txt",
   "vendor/pdf/autotable-5.0.8.min.js",

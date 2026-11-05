@@ -1,5 +1,6 @@
 /** Local reports of stored results. Never recalculate, write history or parse patient text as HTML. */
 const SupplementaryPDF=typeof module!=='undefined'&&module.exports?require('./supplementary-growth.js').SupplementaryGrowth:SupplementaryGrowth;
+const CentilePDF=typeof module!=='undefined'&&module.exports?require('./percentile-display.js').PercentileDisplay:globalThis.PercentileDisplay;
 class PDFManager {
     static fontPaths = ['vendor/pdf/Amiri-Regular.ttf', 'vendor/pdf/Amiri-Bold.ttf'];
     static async loadFonts(fetcher = fetch, pins = JSON.parse(document.querySelector('meta[name="zscore-data-integrity"]')?.content || '{}')) {
@@ -44,7 +45,7 @@ class PDFManager {
             if (r?.schemaVersion===4 && typeof r.bmi==='number' && Number.isFinite(r.bmi)) measures.push(field('bmi',number(r.bmi,2)+' kg/m²'));
             const notes = [];
             for(const key of SupplementaryPDF.fields)if(SupplementaryPDF.present(c[key]))measures.push(field(key,number(c[key],1)));
-            if(r?.additionalGrowth){notes.push(t('additionalResults')+' · '+r.additionalGrowth.referenceVersion);for(const [key,v] of Object.entries(r.additionalGrowth.indicators)){const score=Number.isFinite(v.zscore)?'Z = '+number(v.zscore,2)+(typeof v.percentile==='number'?' | P '+number(v.percentile,1):'')+' | '+t(v.classification||'intergrowthDescriptive'):t(v.error);notes.push(t(key)+' : '+number(v.measure,1)+' '+v.unit+' | '+score+(v.flagged?' | '+t('flagged'):''));}}
+            if(r?.additionalGrowth){notes.push(t('additionalResults')+' · '+r.additionalGrowth.referenceVersion);for(const [key,v] of Object.entries(r.additionalGrowth.indicators)){const centile=CentilePDF.text(v);const score=Number.isFinite(v.zscore)?'Z = '+number(v.zscore,2)+(centile===null?'':' | P '+centile)+' | '+t(v.classification||'intergrowthDescriptive'):t(v.error);notes.push(t(key)+' : '+number(v.measure,1)+' '+v.unit+' | '+score+(v.flagged?' | '+t('flagged'):''));}}
             if(c.muac!==undefined&&c.muac!=='')measures.push(field('muac',number(c.muac,1)+' mm'));
             if(r?.nutrition)notes.push(t(r.nutrition.category),...(r.nutrition.criteria||[]).map(t),t(r.nutrition.muac),t(r.nutrition.orientation),...r.nutrition.reasons.map(t),t('clinicalReference')+' : '+r.nutrition.reference+' v'+r.nutrition.version,...(r.nutrition.missing.length?[t('assessmentMissing')+' : '+r.nutrition.missing.map(t).join(', ')]:[]));
             let provenance=null;
@@ -82,7 +83,7 @@ class PDFManager {
             const percentiles=indicators.map(key=>{
                 const v=r?.[key];
                 if(r?.schemaVersion!==4||r.percentileVersion!==1||!Number.isFinite(v?.zscore))return '';
-                return typeof v.percentile==='number'&&Number.isFinite(v.percentile)&&v.percentile>0&&v.percentile<100&&!v.flagged?'P '+v.percentile.toFixed(1):'P --';
+                return 'P '+(CentilePDF.text(v)??'--');
             });
             const compactMeasures=[...(r?.intergrowthContext?[field('postmenstrualDays',number(r.intergrowthContext.age.postmenstrualDays,0))]:[]),field('ageDays',number(c.ageDays,0)),field('weight',number(c.weight,0)),field('height',number(c.height,1)),
                 t(c.gender==='M'?'male':c.gender==='F'?'female':'unknown')+' | '+t(c.position==='L'?'lying':c.position==='H'?'standing':'unknown'),

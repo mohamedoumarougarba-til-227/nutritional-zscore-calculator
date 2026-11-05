@@ -6,8 +6,9 @@ const SupplementaryUI=typeof module!=='undefined'&&module.exports?require('./ser
 const ProfileUI=typeof module!=='undefined'&&module.exports?require('./services/growth-profile.js').GrowthProfile:globalThis.GrowthProfile;
 const PretermUI=typeof module!=='undefined'&&module.exports?require('./services/reference-intergrowth.js').IntergrowthPostnatal:globalThis.IntergrowthPostnatal;
 const QualityUI=typeof module!=='undefined'&&module.exports?require('./services/lot-quality.js').LotQuality:globalThis.LotQuality;
+const CentileUI=typeof module!=='undefined'&&module.exports?require('./services/percentile-display.js').PercentileDisplay:globalThis.PercentileDisplay;
 class WorkspaceApp {
-    static version = '5.8.3';
+    static version = '5.8.4';
     static resultIndicators(result) { return result?.applicableIndicators||ClinicalEngine.indicators; }
     static draftForProfile(draft,profile) {
         ProfileUI.read({growthProfile:profile});
@@ -24,9 +25,9 @@ class WorkspaceApp {
     }
     percentileHTML(value,result) {
         if (result?.schemaVersion!==4 || result.percentileVersion!==1 || !Number.isFinite(value?.zscore)) return '';
-        const numeric=typeof value.percentile==='number'&&Number.isFinite(value.percentile)&&value.percentile>0&&value.percentile<100&&!value.flagged;
-        const label=numeric?this.t('percentileLabel')+' : '+this.number(value.percentile,1):this.t('percentileExtreme');
-        return `<span class="centile" title="${this.esc(numeric?this.t('centileHelp'):label)}" aria-label="${this.esc(label)}"><bdi dir="ltr">P ${numeric?this.number(value.percentile,1):'—'}</bdi></span>`;
+        const display=CentileUI.text(value,n=>this.number(n,1));
+        const label=display===null?this.t('percentileExtreme'):this.t('percentileLabel')+' : '+display;
+        return `<span class="centile" title="${this.esc(display===null?label:this.t('centileHelp'))}" aria-label="${this.esc(label)}"><bdi dir="ltr">P ${this.esc(display??'—')}</bdi></span>`;
     }
     constructor() {
         this.storage = new StorageManager(); this.history = new HistoryManager(this.storage);

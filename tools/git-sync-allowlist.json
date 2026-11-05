@@ -54,6 +54,7 @@
     "src/js/services/history-manager.js",
     "src/js/services/nutrition-assessment.js",
     "src/js/services/pdf-manager.js",
+    "src/js/services/percentile-display.js",
     "src/js/services/reference-2007.js",
     "src/js/services/reporting-export.js",
     "src/js/services/storage-manager.js",

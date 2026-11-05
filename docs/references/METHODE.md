@@ -38,6 +38,8 @@ Le PB absolu et l’évaluation clinique sont séparés du PB/âge. Pour les 6 �
 
 Les centiles OMS utilisent le score avant arrondi, dans le domaine −3 à +3. Le profil CDC suit ses méthodes LMS/IMC étendu et la fonction normale décrites dans [CDC](CDC.md), avec centile indisponible s’il s’arrondit à 0 ou 100 ; la limite OMS −3/+3 ne lui est pas appliquée. `P 12,4` est une position dans la distribution de référence, pas une probabilité de maladie. Les valeurs manquantes, signalées ou issues d’une autre référence ne sont pas reliées artificiellement dans les courbes.
 
+L’affichage à une décimale utilise `P < 0,1` pour un centile disponible inférieur à 0,1 et `P > 99,9` pour un centile supérieur à 99,9, afin de ne pas le présenter comme exactement 0 ou 100. Les bornes 0,1 et 99,9 s’affichent sans inégalité. C’est une convention de présentation commune aux résultats, à l’historique et aux PDF ; la valeur numérique conservée/exportée en CSV, sa disponibilité et les classifications du moteur ne changent pas.
+
 Les résultats enregistrés conservent leur référence et version ; leur lecture, impression et export ne les recalculent pas. Les agrégats décrivent des fiches de mesure et non automatiquement des enfants uniques ou une population représentative. Voir [DHIS2 préparatoire](INTEROPERABILITE.md).
 
 ## Vérifier et interpréter
