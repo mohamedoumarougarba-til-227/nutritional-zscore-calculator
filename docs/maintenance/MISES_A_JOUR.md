@@ -1,5 +1,12 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.7 — retours utilisateurs FR / EN / AR
+
+Le pied de page ouvre sur demande le formulaire Tally de la langue choisie, dans un onglet distinct, avec connexion Internet requise. Les formulaires existants sont conservés ; aucun dossier, résultat, mesure ou identifiant n’est prérempli ou envoyé automatiquement. Les retours et captures doivent être fictifs ou anonymisés ; l’e-mail est facultatif. Le formulaire externe suit ses propres règles de traitement des données. Le lien est accessible au clavier et masqué à l’impression. Le calcul et la conservation locale restent disponibles sans ce service.
+
+Reprise des deux modifications de la [PR #6](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/pull/6) dans un historique local signé, sans réécriture de ses commits d’origine. Interface 5.8.7, moteur 4.4.0 et formats inchangés ; aucun changement de calcul, référence, classification, historique, CSV ou PDF clinique.
+
+
 ## 5.8.6 — liens de documentation publique
 
 Trente liens de guides et notes historiques ouvraient des fichiers internes absents d’un clone public. Leur mention est conservée comme référence interne non distribuée, sans lien trompeur. Aucune preuve privée n’est publiée ou supprimée. Un test public vérifie que les cibles Markdown locales appartiennent à la sélection distribuée ; il ne valide ni les URL distantes ni tous les fragments d’ancrage.

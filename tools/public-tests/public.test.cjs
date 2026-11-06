@@ -28,6 +28,25 @@ test('public Markdown local links stay inside the distributed file selection',()
 });
 const engine=new GrowthEngine(json('src/data/who-official.json'),json('src/data/who-2007.json'),json('src/data/who-additional.json'));
 const translations=json('src/data/interface-translations.json');
+test('feedback links route FR EN AR on every view without embedding local records or navigating away',()=>{
+    const previous=global.document,root={innerHTML:''};
+    global.document={getElementById:id=>{assert.equal(id,'app-root');return root;}};
+    try{
+        for(const [language,id,label] of [['fr','bZ9xb7','Donner un avis ou signaler un problème'],['en','o9Dy6b','Send feedback or report a problem'],['ar','GeKzve','إرسال ملاحظة أو الإبلاغ عن مشكلة']]){
+            for(const page of ['single','batch','history','references','settings']){
+                const state={single:null,draft:{caseId:'FICTIF-NOT-FOR-TALLY',weight:8500},batch:[]};
+                const app=Object.assign(Object.create(WorkspaceApp.prototype),{prefs:{language},translations,page,state,history:{recoveryErrors:[]}}),before=JSON.stringify(state);
+                for(const method of ['closeChoice','closeInfo','observeHeader','updateConnection','updateSaveStatus','updateToast','syncImportNotice','renderHistoryList','refreshCapacity','enhanceSelects','updateCSVControls'])app[method]=()=>{};
+                for(const method of ['updateHTML','singleHTML','batchHTML','historyHTML','referencesHTML','settingsHTML','toolButton','icon'])app[method]=()=>'';
+                app.render();
+                const links=[...root.innerHTML.matchAll(/<a class="feedback-footer-link"([^>]*)>([^<]*)<\/a>/g)];assert.equal(links.length,1);
+                const [markup,attributes,text]=links[0];assert.equal(text,label);assert.ok(attributes.includes(`href="https://tally.so/r/${id}"`));assert.ok(attributes.includes('target="_blank"'));assert.ok(attributes.includes('rel="noopener noreferrer"'));assert.ok(attributes.includes('title="'));
+                assert.ok(!markup.includes('FICTIF-NOT-FOR-TALLY'));assert.ok(!/[?&]|onclick=|data-action=/.test(markup));assert.equal(JSON.stringify(state),before);
+                assert.ok(!/<(?:iframe|script)[^>]+tally\.so/i.test(root.innerHTML));
+            }
+        }
+    }finally{if(previous===undefined)delete global.document;else global.document=previous;}
+});
 const example=extra=>({name:'FICTIF-PUBLIC',caseId:'FICTIF-PUBLIC',measurementDate:'2026-10-26',ageMode:'days',ageDays:365,gender:'M',weight:8500,height:75,position:'L',oedema:'n',...extra});
 const workspace=entry=>({version:1,mode:'single',draft:entry.child,batchDraft:{},single:entry,batch:[],paste:'',stale:false});
 global.localStorage=Object.create(null);

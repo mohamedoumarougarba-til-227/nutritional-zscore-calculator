@@ -193,6 +193,9 @@ main{padding:12px 16px;max-width:none;min-width:0;width:100%}
 
 .lot-analysis .action-with-label{width:auto;padding:6px 10px;max-width:100%}.lot-analysis .action-label{display:inline}
 
+.compact-footer .feedback-footer-link{display:inline-flex;align-items:center;min-height:40px;font-size:inherit;font-weight:600;text-underline-offset:3px;white-space:normal}
+.compact-footer .feedback-footer-link:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media print{.compact-footer .feedback-footer-link{display:none!important}}
 .compact-footer .legal-footer-link{margin-inline-end:auto;font-size:inherit}@media print{.compact-footer .legal-footer-link{display:none}}
 
 .clinical-fields{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}.clinical-fields summary,.nutrition-result summary{cursor:pointer;min-height:36px;font-size:14px;font-weight:600}.clinical-fields .hint{margin:8px 0}.nutrition-result{border:1px solid var(--line);border-inline-start:4px solid var(--accent);padding:10px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}.nutrition-result p{margin:6px 0}.nutrition-result details{font-size:12px;color:var(--muted)}

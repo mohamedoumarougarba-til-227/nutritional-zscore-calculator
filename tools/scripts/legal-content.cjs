@@ -10,7 +10,7 @@ const publisher = {
 };
 const content = {
     fr: {
-        title: 'Informations légales et confidentialité', back: 'Retour à Z-score', updated: 'Mise à jour : 20 octobre 2026',
+        title: 'Informations légales et confidentialité', back: 'Retour à Z-score', updated: 'Mise à jour : 6 novembre 2026',
         intro: 'Z-score Niger est édité par Tout Informatique Lazaret. Cette page décrit le fonctionnement de cette application et les droits liés à son utilisation.',
         sections: [
             ['legal', 'Mentions légales', [
@@ -19,6 +19,7 @@ const content = {
                 'La marque Z-score Niger et l’identité de TIL ne constituent aucune affiliation, approbation ou certification par l’OMS ou l’UNICEF. Les droits des ressources tierces restent applicables.'
             ]],
             ['privacy', 'Confidentialité et données personnelles', [
+                "Retours facultatifs : le lien du pied de page ouvre un formulaire externe Tally, uniquement à votre demande et avec une connexion Internet. Aucun dossier, mesure ou résultat n’est transmis ou prérempli par l’application. Le contenu que vous choisissez de saisir, les captures jointes et l’e-mail facultatif sont transmis au service externe lors de votre utilisation du formulaire, selon ses propres informations de confidentialité. Utilisez uniquement des données fictives et des captures anonymisées ; n’envoyez aucune fiche patient ni sauvegarde réelle. Ce service n’est pas nécessaire au calcul ou au stockage local.",
                 'Les données saisies peuvent comprendre un identifiant de dossier, un nom ou pseudonyme facultatif, le sexe, l’âge ou la date de naissance, la date de mesure, le poids, la taille, la position de mesure, les œdèmes constatés, le périmètre brachial et les observations cliniques facultatives, ainsi que les résultats calculés. Elles servent aux calculs, aux visites, aux lots et à leur sauvegarde locale.',
                 'Les calculs, imports, graphiques et exports sont effectués sur cet appareil. L’application ne transmet pas les mesures ni les dossiers à TIL, à l’OMS ou à un service de synchronisation. Un autre appareil ou une autre adresse du site ne retrouve pas automatiquement vos dossiers : exportez puis importez une sauvegarde pour les transférer.',
                 'Le professionnel ou l’établissement qui saisit les données détermine les finalités et les conditions de leur utilisation : information des personnes concernées, fondement juridique approprié, autorisations applicables aux données de santé et aux mineurs, durée de conservation et habilitations. Le stockage local ne dispense pas de ces obligations.',
@@ -49,7 +50,7 @@ const content = {
         ], links: 'Documents et sources', contact: 'Contact professionnel'
     },
     en: {
-        title: 'Legal information and privacy', back: 'Back to Z-score', updated: 'Updated: 20 October 2026',
+        title: 'Legal information and privacy', back: 'Back to Z-score', updated: 'Updated: 6 November 2026',
         intro: 'Z-score Niger is published by Tout Informatique Lazaret. This page explains how this application works and the rights associated with its use.',
         sections: [
             ['legal', 'Legal notice', [
@@ -58,6 +59,7 @@ const content = {
                 'Z-score Niger and TIL are not affiliated with, endorsed or certified by WHO or UNICEF. Third-party resource rights continue to apply.'
             ]],
             ['privacy', 'Privacy and personal data', [
+                "Optional feedback: the footer link opens an external Tally form only when you choose to follow it and have internet access. The application does not transmit or prefill records, measurements or results. Content you choose to enter, attached screenshots and an optional email are sent to the external service when you use its form, under its own privacy information. Use fictitious data and anonymised screenshots only; never send patient files or real backups. This service is not needed for calculations or local storage.",
                 'Entered data may include a record identifier, optional name or pseudonym, sex, age or birth date, measurement date, weight, height, measurement position, observed oedema, optional MUAC and clinical observations, and calculated results. They support calculations, visits, batches and local saving.',
                 'Calculations, imports, charts and exports run on this device. The application does not send measurements or records to TIL, WHO or a synchronisation service. A different device or site address does not automatically recover them: export and import a backup to transfer them.',
                 'The professional or institution entering records determines their purposes and conditions of use, including informing people, a suitable legal basis, requirements for health data and minors, retention periods and access permissions. Local storage does not remove these obligations.',
@@ -88,7 +90,7 @@ const content = {
         ], links: 'Documents and sources', contact: 'Business contact'
     },
     ar: {
-        title: 'المعلومات القانونية والخصوصية', back: 'العودة إلى Z-score', updated: 'آخر تحديث: 20 أكتوبر 2026',
+        title: 'المعلومات القانونية والخصوصية', back: 'العودة إلى Z-score', updated: 'آخر تحديث: 6 نوفمبر 2026',
         intro: 'تنشر شركة Tout Informatique Lazaret تطبيق Z-score Niger. توضح هذه الصفحة طريقة عمل التطبيق والحقوق المرتبطة باستخدامه.',
         sections: [
             ['legal', 'الإشعار القانوني', [
@@ -97,6 +99,7 @@ const content = {
                 'لا تعني تسمية Z-score Niger أو هوية TIL وجود انتساب أو اعتماد أو تصديق من منظمة الصحة العالمية أو اليونيسف. تبقى حقوق موارد الجهات الأخرى سارية.'
             ]],
             ['privacy', 'الخصوصية والبيانات الشخصية', [
+                "الملاحظات الاختيارية: يفتح رابط التذييل نموذج Tally خارجيًا فقط عند اختيارك فتحه ومع توفر الإنترنت. لا يرسل التطبيق الملفات أو القياسات أو النتائج ولا يملؤها تلقائيًا. يُرسل المحتوى الذي تختار إدخاله ولقطات الشاشة المرفقة والبريد الإلكتروني الاختياري إلى الخدمة الخارجية عند استخدام نموذجها، وفق معلومات الخصوصية الخاصة بها. استخدم بيانات وهمية ولقطات مجهولة الهوية فقط، ولا ترسل ملفات مرضى أو نسخًا احتياطية حقيقية. هذه الخدمة غير ضرورية للحساب أو التخزين المحلي.",
                 'قد تشمل البيانات معرف الملف والاسم أو الاسم المستعار الاختياري والجنس والعمر أو تاريخ الميلاد وتاريخ القياس والوزن والطول ووضعية القياس والوذمة الملحوظة والنتائج المحسوبة. تستخدم للحسابات والزيارات والمجموعات والحفظ المحلي.',
                 'تجري الحسابات والاستيراد والرسوم والتصدير على هذا الجهاز. لا يرسل التطبيق القياسات أو الملفات إلى TIL أو منظمة الصحة العالمية أو خدمة مزامنة. لا يسترجع جهاز آخر أو عنوان آخر للموقع الملفات تلقائياً؛ يتطلب نقلها تصدير نسخة احتياطية ثم استيرادها.',
                 'يحدد المهني أو المؤسسة التي تدخل البيانات أغراض استخدامها وشروطه، بما يشمل إبلاغ الأشخاص والأساس القانوني المناسب ومتطلبات البيانات الصحية والقاصرين ومدد الاحتفاظ وصلاحيات الوصول. لا يلغي التخزين المحلي هذه الالتزامات.',
