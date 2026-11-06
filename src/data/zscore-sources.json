@@ -3,8 +3,8 @@
   "version": "5.8.7",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 8332866,
-  "sha256": "4e25038a7c52ca4b02e958e5cbef41368d091f8e607ef43a6410f8eb3757cb53",
+  "bytes": 8332860,
+  "sha256": "410dd5a2e1301783322e4b0d9b6e06e23c240edaba94698a642f43e8b2eef7d0",
   "files": [
     {
       "file": ".gitattributes",
@@ -53,13 +53,13 @@
     },
     {
       "file": "README.md",
-      "bytes": 10252,
-      "sha256": "ee0139ce4a66306674cb5810d32fc193e6367594e664b28bab78802cc9ec8eb9"
+      "bytes": 10251,
+      "sha256": "a69065cc0f84a0756d032aa86c4fc44663c3c7e6cc32c3a58b7cdd6e969312b7"
     },
     {
       "file": "SECURITY.md",
-      "bytes": 2438,
-      "sha256": "b5eb1daf7944b7c842fd84092fa965aa88d0ad980f1921168b97c60446e27c21"
+      "bytes": 2437,
+      "sha256": "56dbea13cd77c8a5aa773c0e707c015be61d1cbbe16ad8233ad51b3d972be442"
     },
     {
       "file": "SOURCE-README.txt",
@@ -93,8 +93,8 @@
     },
     {
       "file": "docs/guides/GUIDE_ADMINISTRATEUR.md",
-      "bytes": 10250,
-      "sha256": "9fff6ab203ecffbd4898a85caa8f471579fe1ce8569da0495ac74b8fe5918a34"
+      "bytes": 10249,
+      "sha256": "163b06b7dd9b4c3ad629825da55efc5f8c05e4646253f2d6b6767718c8231ea8"
     },
     {
       "file": "docs/guides/GUIDE_UTILISATEUR.md",
@@ -123,13 +123,13 @@
     },
     {
       "file": "docs/maintenance/PRESENTATION_PUBLIQUE.md",
-      "bytes": 5375,
-      "sha256": "947960292e24b517f6dca063d34021cc4a6424350b46495dcc31e3456115728c"
+      "bytes": 5373,
+      "sha256": "1531b0cd0d16d117627e19688c37de6ef11d6f337bcc23f903fc2cbe7be01c76"
     },
     {
       "file": "docs/maintenance/SYNCHRONISATION_GIT.md",
-      "bytes": 5399,
-      "sha256": "468bde5e062c7beab9c3af3380bc73abcb98e0539ea2ef86881d9554d472e2a6"
+      "bytes": 5398,
+      "sha256": "532a153f754b0129b980b0d1049007d393c37e57c363382f344ca6729a6c203e"
     },
     {
       "file": "docs/maintenance/VALIDATION_MANUELLE.md",

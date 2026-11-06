@@ -1,6 +1,6 @@
 # Z-score Niger
 
-**[Essayer l’application](https://zscore-niger.vercel.app/) · [Versions et sources](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/releases) · [Méthode et limites](docs/references/METHODE.md) · [Contribuer](CONTRIBUTING.md)**
+**[Essayer l’application](https://zscore-niger.vercel.app/) · [Versions et sources](https://github.com/mohamedoumarougarba-til227/nutritional-zscore-calculator/releases) · [Méthode et limites](docs/references/METHODE.md) · [Contribuer](CONTRIBUTING.md)**
 
 Application web gratuite et sans compte pour calculer les indicateurs de croissance OMS selon l’âge, conserver le travail localement et exporter les résultats. Interface français, anglais et arabe, thèmes clair/sombre et fonctionnement hors ligne après chargement.
 
