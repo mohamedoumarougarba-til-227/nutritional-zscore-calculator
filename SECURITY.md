@@ -2,7 +2,7 @@
 
 Pour une vulnérabilité, écrire à **contact@tilbadge.com**, objet « Z-score Niger — signalement sécurité ». Fournir une description, la version/SHA, les étapes de reproduction et un exemple entièrement fictif. Ne pas transmettre une sauvegarde réelle pour démontrer le problème.
 
-Le [signalement privé GitHub](https://github.com/mohamedoumarougarba-til-227/nutritional-zscore-calculator/security/advisories/new) est également disponible (activation vérifiée le 5 novembre 2026). Utiliser ce canal ou l’adresse ci-dessus pour un problème sensible, plutôt qu’une issue publique. Aucun rapport ne doit contenir de dossier patient réel ou de secret.
+Le [signalement privé GitHub](https://github.com/mohamedoumarougarba-til227/nutritional-zscore-calculator/security/advisories/new) est également disponible (activation vérifiée le 5 novembre 2026). Utiliser ce canal ou l’adresse ci-dessus pour un problème sensible, plutôt qu’une issue publique. Aucun rapport ne doit contenir de dossier patient réel ou de secret.
 
 **Ne jamais publier dans une issue, PR ou capture :** dossiers ou mesures de vrais patients, sauvegardes réelles, données médicales identifiantes, identifiants de compte, clés, jetons ou autres secrets. Si un exemple synthétique suffit, utiliser cet exemple. Ne pas tester sur des données ou systèmes auxquels vous n’avez pas accès.
 

@@ -26,7 +26,7 @@ La version 4.0.0 ajoute les données, sources/licence OMS 2007 et les modules de
 
 ## Liaison Vercel
 
-Le projet `zscore-niger` (`prj_NDSyq5yfLyYBhmzHXPpTkjm3DzjG`), dans l’équipe `mohameds-projects-0af41c6a`, est relié au dépôt privé `mohamedoumarougarba-til-227/nutritional-zscore-calculator`. Le titulaire a autorisé ce dépôt dans l’application GitHub Vercel. La branche de production est `main` ; les push sur cette branche utilisent l’intégration Git native, sans jeton ajouté au dépôt.
+Le projet `zscore-niger` (`prj_NDSyq5yfLyYBhmzHXPpTkjm3DzjG`), dans l’équipe `mohameds-projects-0af41c6a`, est relié au dépôt privé `mohamedoumarougarba-til227/nutritional-zscore-calculator`. Le titulaire a autorisé ce dépôt dans l’application GitHub Vercel. La branche de production est `main` ; les push sur cette branche utilisent l’intégration Git native, sans jeton ajouté au dépôt.
 
 Construction : Node 24.x, commande `node tools/scripts/vercel-build.cjs`, installation npm désactivée, sortie `dist`. Le build vérifie les sources/notices GPL et la cohérence du paquet avant distribution. Une modification de documentation incluse dans les sources exige aussi `node tools/scripts/build-release.cjs`, car elle change l’archive correspondante et son empreinte.
 
