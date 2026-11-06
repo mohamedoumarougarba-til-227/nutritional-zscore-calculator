@@ -13,6 +13,19 @@ const {WorkspaceApp}=require('../../src/js/workspace-app.js');
 const {SupplementaryGrowth}=require('../../src/js/services/supplementary-growth.js');
 const {LotAnalysis}=require('../../src/js/components/lot-analysis.js');
 const json=file=>JSON.parse(fs.readFileSync(path.join(__dirname,'../..',file),'utf8'));
+test('public Markdown local links stay inside the distributed file selection',()=>{
+    const root=path.resolve(__dirname,'../..'),files=new Set(json('tools/git-sync-allowlist.json').files);
+    for(const source of [...files].filter(file=>file.endsWith('.md'))){
+        const text=fs.readFileSync(path.join(root,source),'utf8');
+        for(const match of text.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)){
+            const href=match[1].trim().replace(/^<|>$/g,'');
+            if(/^(?:https?:|mailto:|data:|#)/i.test(href))continue;
+            const local=decodeURIComponent(href.split('#')[0]);if(!local)continue;
+            const target=path.relative(root,path.resolve(path.dirname(path.join(root,source)),local)).split(path.sep).join('/');
+            assert.ok(files.has(target),`${source}: local link is not distributed: ${href}`);
+        }
+    }
+});
 const engine=new GrowthEngine(json('src/data/who-official.json'),json('src/data/who-2007.json'),json('src/data/who-additional.json'));
 const translations=json('src/data/interface-translations.json');
 const example=extra=>({name:'FICTIF-PUBLIC',caseId:'FICTIF-PUBLIC',measurementDate:'2026-10-26',ageMode:'days',ageDays:365,gender:'M',weight:8500,height:75,position:'L',oedema:'n',...extra});

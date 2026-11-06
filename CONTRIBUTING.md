@@ -49,3 +49,5 @@ Avant une PR, vérifier les impacts :
 - **Offline :** ressources, SRI, manifestes, sources GPL et mise à jour sans purge des données.
 
 Publier uniquement des exemples inventés. Pour une vulnérabilité, suivre [SECURITY.md](SECURITY.md), pas une issue publique contenant des données sensibles. Une correction ne doit jamais transformer un message logiciel en diagnostic ou prescription automatique.
+
+Les liens Markdown locaux doivent viser des fichiers de la sélection publique. Ne créez pas de lien cliquable vers `.local/`, `docs/projet/` ou une preuve privée absente d’un clone ; mentionnez si nécessaire son statut interne sans la publier. Un test public contrôle ces cibles à partir de l’allowlist, y compris dans l’archive de sources sans `.git`. Les URL distantes et les ancres restent à relire séparément.

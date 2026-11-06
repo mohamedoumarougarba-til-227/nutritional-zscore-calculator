@@ -1,5 +1,12 @@
 # Préparer et adopter une mise à jour
 
+## 5.8.6 — liens de documentation publique
+
+Trente liens de guides et notes historiques ouvraient des fichiers internes absents d’un clone public. Leur mention est conservée comme référence interne non distribuée, sans lien trompeur. Aucune preuve privée n’est publiée ou supprimée. Un test public vérifie que les cibles Markdown locales appartiennent à la sélection distribuée ; il ne valide ni les URL distantes ni tous les fragments d’ancrage.
+
+Les sources/paquet sont identifiés5.8.6, moteur4.4.0 inchangé. Aucun calcul, référence, traduction, CSV/PDF, comportement de stockage ou format modifié.
+
+
 ## 5.8.5 — légende du centile des mesures complémentaires seules
 
 Lorsqu’un rapport individuel ne comportait qu’un périmètre crânien calculé, le centile figurait dans les notes mais sa légende était absente : l’en-tête ne regardait que les indicateurs principaux. Le modèle et le générateur PDF tiennent désormais compte des centiles effectivement imprimés des mesures complémentaires. La légende reste absente si aucune position n’est imprimée.
@@ -80,11 +87,11 @@ Sur mobile, un bouton Actions fixé en bas ouvre une grille compacte avec icône
 
 ## Complément de vérification — 19 octobre 2026, 4.0.0 inchangée
 
-[Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md) : confirmation d’import et reprise du clavier vérifiées dans les trois langues ; annulation/aperçu restituent le focus. Les courbes OMS 2007 arabes sont dépliées et inspectées à 320 px. Aucun runtime modifié ; la suite de 187 tests précédente reste le dernier passage complet, sans répétition inutile. Les nouveaux essais physiques et la revue métier ne sont pas acquis par ce contrôle PC.
+Parcours natif PC (référence interne non distribuée) : confirmation d’import et reprise du clavier vérifiées dans les trois langues ; annulation/aperçu restituent le focus. Les courbes OMS 2007 arabes sont dépliées et inspectées à 320 px. Aucun runtime modifié ; la suite de 187 tests précédente reste le dernier passage complet, sans répétition inutile. Les nouveaux essais physiques et la revue métier ne sont pas acquis par ce contrôle PC.
 
 ## Audit du moteur actuel — 19 octobre 2026, application 4.0.0 inchangée
 
-La commande `npm run audit:clinical` couvre maintenant le moteur combiné et les deux références OMS 2006/2007, avec échec si une preuve OMS 2007 manque ou est altérée. 187 tests réussis ; preuve clinique et essais physiques restent distincts. Aucun changement du runtime, des archives ou de la release. [Bilan et état Git](../../.local/audit/2026-10-19/audit-combine/rapport.md).
+La commande `npm run audit:clinical` couvre maintenant le moteur combiné et les deux références OMS 2006/2007, avec échec si une preuve OMS 2007 manque ou est altérée. 187 tests réussis ; preuve clinique et essais physiques restent distincts. Aucun changement du runtime, des archives ou de la release. Bilan et état Git (référence interne non distribuée).
 
 ## Références combinées — 4.0.0, 19 octobre 2026
 
@@ -126,21 +133,21 @@ Première étape du plan d’évolution : fiabilité du socle. 149 tests automat
 
 À la demande du propriétaire, retrait des mentions Prototype, Bêta, Version de développement et de la mention de relecture médicale à réaliser dans les textes de l’application, en français, anglais et arabe. Le pied de page utilise À propos ; les informations, l’aide, l’impression et les PDF décrivent les repères nutritionnels et leurs limites d’usage. Aucun calcul, schéma de sauvegarde ou droit d’accès modifié. Ce changement éditorial ne constitue pas une nouvelle validation médicale ni une publication. Les preuves historiques et les validations encore ouvertes dans le suivi sont conservées.
 
-143 tests automatisés réussis, puis 33 contrôles ciblés réussis après harmonisation des styles ; mise à jour et fenêtre d’information vérifiées dans le navigateur intégré. Aucun nouvel essai TECNO ou Chrome natif. [Bilan, fichiers et commandes](../../.local/audit/historique/2026-10-17/libelles-application/rapport.md). Release `4f79df19ff478725810b049ed95b9bc5e232023eabf86aa4c9a619554db32517` ; paquet local de 43 fichiers / 2 096 308 octets, non publié.
+143 tests automatisés réussis, puis 33 contrôles ciblés réussis après harmonisation des styles ; mise à jour et fenêtre d’information vérifiées dans le navigateur intégré. Aucun nouvel essai TECNO ou Chrome natif. Bilan, fichiers et commandes (référence interne non distribuée). Release `4f79df19ff478725810b049ed95b9bc5e232023eabf86aa4c9a619554db32517` ; paquet local de 43 fichiers / 2 096 308 octets, non publié.
 
 ## État de sauvegarde corrigé — 2.9.14
 
-Une ancienne écriture ne peut plus afficher Enregistré pour une saisie plus récente ni modifier l’indicateur d’un autre travail. Écriture immédiate et reprise après échec affichent Sauvegarde en cours jusqu’à confirmation de la dernière version concernée. **143 tests automatisés réussis**. [Bilan et portée](../../.local/audit/historique/2026-10-16/etat-sauvegarde/rapport.md). Release 2abd656c802ae9228c4756246aad382d6e36f6a2683ee7f53c078d91ab5ea576 ; paquet 43 fichiers / 2096660 octets, non publié.
+Une ancienne écriture ne peut plus afficher Enregistré pour une saisie plus récente ni modifier l’indicateur d’un autre travail. Écriture immédiate et reprise après échec affichent Sauvegarde en cours jusqu’à confirmation de la dernière version concernée. **143 tests automatisés réussis**. Bilan et portée (référence interne non distribuée). Release 2abd656c802ae9228c4756246aad382d6e36f6a2683ee7f53c078d91ab5ea576 ; paquet 43 fichiers / 2096660 octets, non publié.
 
 ## Correction de fiabilité — 2.9.13
 
-Import CSV protégé contre les activations simultanées ; lecture de fichier annulée si le travail ou la page a changé ; erreur de lecture signalée et commandes réactivées après échec. Les lignes ajoutées restent disponibles si leur sauvegarde échoue. **138 tests automatisés réussis**, contrôle ciblé du collage CSV dans le navigateur intégré ; sélecteur réel et TECNO non validés à nouveau. [Rapport et preuves](../../.local/audit/historique/2026-10-16/csv-concurrence/rapport.md). Release 3cb9816d148766490733869a8f3513bcece3a26851e76cfb32ac14874e06522f, paquet 43 fichiers / 2096311 octets, non publié.
+Import CSV protégé contre les activations simultanées ; lecture de fichier annulée si le travail ou la page a changé ; erreur de lecture signalée et commandes réactivées après échec. Les lignes ajoutées restent disponibles si leur sauvegarde échoue. **138 tests automatisés réussis**, contrôle ciblé du collage CSV dans le navigateur intégré ; sélecteur réel et TECNO non validés à nouveau. Rapport et preuves (référence interne non distribuée). Release 3cb9816d148766490733869a8f3513bcece3a26851e76cfb32ac14874e06522f, paquet 43 fichiers / 2096311 octets, non publié.
 
 ## État actuel — 16 octobre, 2.9.12
 
-Lots : Reprendre un travail/Nouveau travail en haut ; informations import/âge estimé regroupées dans une seule aide i près du titre, sans répétition par ligne. Les alertes propres aux mesures restent visibles et les métadonnées/rapports détaillés sont conservés. **130 tests automatisés réussis** ; reprise/nouveau/reprise et rendu ordinateur/mobile vérifiés dans le navigateur intégré, sans nouvel essai physique TECNO. [Bilan technique](../../.local/audit/historique/2026-10-16/utilite-et-perimetre/rapport.md).
+Lots : Reprendre un travail/Nouveau travail en haut ; informations import/âge estimé regroupées dans une seule aide i près du titre, sans répétition par ligne. Les alertes propres aux mesures restent visibles et les métadonnées/rapports détaillés sont conservés. **130 tests automatisés réussis** ; reprise/nouveau/reprise et rendu ordinateur/mobile vérifiés dans le navigateur intégré, sans nouvel essai physique TECNO. Bilan technique (référence interne non distribuée).
 
-[Étude d’utilité pour le Niger](../projet/ETUDE_UTILITE_NIGER.md) et [audit du périmètre initial](../projet/AUDIT_PERIMETRE_INITIAL.md) ajoutés : intérêt plausible à démontrer au pilote ; promesses initiales absentes, choix remplacés et validations externes distingués. Aucun ajout de synchronisation, PB, triage national ou export DHIS2 sans spécification. Release 93c3672e788f1a5fed1fd4bee286428810d01dc6724e709f1f3a4d4a83a71d1c ; paquet neuf 43 fichiers / 2 094 362 octets, non publié. Objectif global actif et incomplet ; cible 3 Go/plafond 5 Go inchangés.
+Étude d’utilité pour le Niger (référence interne non distribuée) et audit du périmètre initial (référence interne non distribuée) ajoutés : intérêt plausible à démontrer au pilote ; promesses initiales absentes, choix remplacés et validations externes distingués. Aucun ajout de synchronisation, PB, triage national ou export DHIS2 sans spécification. Release 93c3672e788f1a5fed1fd4bee286428810d01dc6724e709f1f3a4d4a83a71d1c ; paquet neuf 43 fichiers / 2 094 362 octets, non publié. Objectif global actif et incomplet ; cible 3 Go/plafond 5 Go inchangés.
 
 Version actuelle de l’interface : 4.0.0. Version du moteur combiné : 4.0.0 (noyau OMS 2006 3.1.0 conservé), indépendante de la présentation. La référence des résultats précédents reste celle enregistrée lors de leur calcul.
 
@@ -167,17 +174,17 @@ Les anciens caches et historiques sont conservés. Plusieurs versions peuvent do
 
 ## Adoption 2.7.2
 
-Release retenue : 7a5d02e3a6a9741db9b1af4ec0cab15a97bb043b9c3f9fb04cd19d3e3d59ffda. 40 ressources, 2 033 079 octets de corps HTTP ; paquet de 43 fichiers/2 045 238 octets. Destinations explicites du focus après calcul et reprise, sans migration ni modification du moteur, des références, du PDF ou du transfert. Les 188 sessions présentes avant les essais et autres enregistrements sont inchangés ; 201 sessions après les calculs et reprises fictifs. Adoption depuis 2.7.1, réouverture et restauration/calcul sans serveur vérifiés. Aucune publication. Preuves : [rapport clavier](../../.local/audit/historique/2026-10-14/parcours-clavier/rapport.md).
+Release retenue : 7a5d02e3a6a9741db9b1af4ec0cab15a97bb043b9c3f9fb04cd19d3e3d59ffda. 40 ressources, 2 033 079 octets de corps HTTP ; paquet de 43 fichiers/2 045 238 octets. Destinations explicites du focus après calcul et reprise, sans migration ni modification du moteur, des références, du PDF ou du transfert. Les 188 sessions présentes avant les essais et autres enregistrements sont inchangés ; 201 sessions après les calculs et reprises fictifs. Adoption depuis 2.7.1, réouverture et restauration/calcul sans serveur vérifiés. Aucune publication. Preuves : rapport clavier (référence interne non distribuée).
 
 ## Adoption 2.7.1
 
-Release retenue : 94bc91b8d1afbf8d3dde9e3a23bcd09cfaa777d3dd31f192c309af74211c3625. 40 ressources, 2 032 674 octets de corps HTTP ; paquet vérifié de 43 fichiers/2 044 833 octets. Aide intégrée et corrections du focus/conseils, sans changement du moteur, des tables OMS, du PDF ou des modules de stockage/transfert. Les 186 sessions antérieures restent identiques dans 188 sessions après deux adoptions locales, chacune précédée d'une sauvegarde. Rechargement et guide au clavier vérifiés après arrêt confirmé du serveur. Le paquet n'est pas publié. Preuves : [rapport 2.7.1](../../.local/audit/historique/2026-10-14/accessibilite-aide/rapport.md).
+Release retenue : 94bc91b8d1afbf8d3dde9e3a23bcd09cfaa777d3dd31f192c309af74211c3625. 40 ressources, 2 032 674 octets de corps HTTP ; paquet vérifié de 43 fichiers/2 044 833 octets. Aide intégrée et corrections du focus/conseils, sans changement du moteur, des tables OMS, du PDF ou des modules de stockage/transfert. Les 186 sessions antérieures restent identiques dans 188 sessions après deux adoptions locales, chacune précédée d'une sauvegarde. Rechargement et guide au clavier vérifiés après arrêt confirmé du serveur. Le paquet n'est pas publié. Preuves : rapport 2.7.1 (référence interne non distribuée).
 
 ## Adoption 2.7.0
 
 Release retenue : 627314bb03f72e77688fa91799ce64cb200cf7044f75d3073e074c06846c4605. 40 ressources, 2 023 290 octets de corps HTTP ; paquet vérifié de 43 fichiers, 2 035 449 octets. Aucun changement du moteur, des tables OMS ou des modules de stockage/transfert. Les anciennes versions et caches sont conservés.
 
-Adoption depuis 2.6.2 puis révisions locales de 2.7.0 vérifiées. Archives avant/après contrôlées indépendamment : les 181 sessions précédentes et autres enregistrements restent inchangés ; 186 sessions à la fin des essais. Après arrêt confirmé du serveur et fermeture du port : rechargement, aperçu, reprise en copie de 500 mesures et PDF compact réussis. La dernière révision protège l'affichage des libellés hérités inconnus ; les modèles ordinaires de 500 mesures dans les trois langues restent strictement identiques à ceux utilisés pour les exports natifs précédents. Aucune publication ni essai physique acquis. Preuves : [rapport PDF compact](../../.local/audit/historique/2026-10-14/pdf-compact/rapport.md).
+Adoption depuis 2.6.2 puis révisions locales de 2.7.0 vérifiées. Archives avant/après contrôlées indépendamment : les 181 sessions précédentes et autres enregistrements restent inchangés ; 186 sessions à la fin des essais. Après arrêt confirmé du serveur et fermeture du port : rechargement, aperçu, reprise en copie de 500 mesures et PDF compact réussis. La dernière révision protège l'affichage des libellés hérités inconnus ; les modèles ordinaires de 500 mesures dans les trois langues restent strictement identiques à ceux utilisés pour les exports natifs précédents. Aucune publication ni essai physique acquis. Preuves : rapport PDF compact (référence interne non distribuée).
 
 ## Vérifications et limites actuelles
 

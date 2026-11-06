@@ -1,13 +1,13 @@
 # Méthode et périmètre actuels
 
-## Profil américain explicite — sources 5.8.5 / moteur 4.4.0
+## Profil américain explicite — sources 5.8.6 / moteur 4.4.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](CDC.md).
 
 Contrôles numériques, modèles de sortie et parcours navigateur datés sont distingués dans la [matrice manuelle](../maintenance/VALIDATION_MANUELLE.md). Les observations décrites n'établissent ni validation clinique, ni accessibilité complète ou impression papier. La version publiée est identifiée par son tag, son SHA et son manifeste ; elle peut différer du checkout de travail.
 
 
-CURRENT — sources 5.8.5, moteur combiné 4.4.0. Cette page explique le calcul ; ce n’est pas un protocole de traitement.
+CURRENT — sources 5.8.6, moteur combiné 4.4.0. Cette page explique le calcul ; ce n’est pas un protocole de traitement.
 
 ## Références et domaines
 
