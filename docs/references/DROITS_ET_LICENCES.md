@@ -27,7 +27,7 @@ Documenter cette qualification, les éléments éventuellement couverts, les sou
 
 Exécuter **npm run audit:licenses**. L'audit est local et en lecture seule : il compare les huit fichiers PDF/polices à leur provenance, la licence Anthro à l'original conservé, les données converties et les cinq TSV à leurs empreintes, puis vérifie que les ressources et notices distribuées figurent dans la liste publique. Il retourne séparément technicalPassed et legalReady ; ce dernier reste faux tant que les décisions de droits sont ouvertes.
 
-La préparation et la vérification de paquet exécutent aussi ce contrôle avant de produire ou valider un paquet. Un succès technique ne constitue ni une autorisation de publication ni une revue juridique. Les preuves sont sous [audit droits et références](../../.local/audit/historique/2026-10-14/droits-references/rapport.md).
+La préparation et la vérification de paquet exécutent aussi ce contrôle avant de produire ou valider un paquet. Un succès technique ne constitue ni une autorisation de publication ni une revue juridique. Les preuves sont sous audit droits et références (référence interne non distribuée).
 
 Pour une nouvelle version de bibliothèque ou de source, conserver l'ancienne, sa provenance et ses mentions, puis examiner les nouveaux termes et actualiser les empreintes avec preuve. Ne pas contourner le contrôle en supprimant une notice de l'inventaire.
 

@@ -1,6 +1,6 @@
 # Administrer et mettre à jour Z-score Niger
 
-Guide actuel pour les sources 5.8.5 et le moteur combiné 4.4.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
+Guide actuel pour les sources 5.8.6 et le moteur combiné 4.4.0. L'application publique est gratuite et sans compte. Son interface consulte les références en lecture seule ; aucune API distante d'édition ou de dossier patient n'est présente. L'administration consiste à préparer une version et à contrôler le compte de l'hébergement. Aucun module d'administration côté navigateur n'est distribué ; les références publiques ne sont modifiables que par une nouvelle publication du titulaire.
 
 ## Environnement et propriété
 
@@ -16,7 +16,7 @@ Le titulaire a choisi **GPLv3** pour son code original. Conserver `COPYING`, `NO
 
 ## Portée de l’audit du moteur combiné 4.1.0
 
-`npm run audit:clinical` contrôle maintenant les deux références sur le moteur combiné actuel : 7 652 cas OMS 2006, 3 093 cas de noyau OMS 2007 et 880 entrées en jours. Une preuve OMS 2007 manquante/altérée ou une différence donne un statut technique en échec ; `clinicalReady: false` ne devient pas une validation professionnelle. Les oracles indépendants sont conservés localement, non téléchargés au lancement et exclus de la sélection Git actuelle. Cette commande nécessite donc le dossier local complet, comme les tests. [Preuves et commandes](../../.local/audit/2026-10-19/audit-combine/rapport.md).
+`npm run audit:clinical` contrôle maintenant les deux références sur le moteur combiné actuel : 7 652 cas OMS 2006, 3 093 cas de noyau OMS 2007 et 880 entrées en jours. Une preuve OMS 2007 manquante/altérée ou une différence donne un statut technique en échec ; `clinicalReady: false` ne devient pas une validation professionnelle. Les oracles indépendants sont conservés localement, non téléchargés au lancement et exclus de la sélection Git actuelle. Cette commande nécessite donc le dossier local complet, comme les tests. Preuves et commandes (référence interne non distribuée).
 
 ## Préparer une version vérifiable
 
@@ -44,13 +44,13 @@ Ne pas changer d'adresse sans prévoir le déplacement volontaire des sauvegarde
 
 ## Sauvegardes et support
 
-Le sélecteur de fichiers et le retour de focus après confirmation/annulation sont vérifiés sur PC dans les trois langues ; les parcours physiques Android restent distincts. [Parcours natif PC](../../.local/audit/2026-10-19/focus-import/rapport.md).
+Le sélecteur de fichiers et le retour de focus après confirmation/annulation sont vérifiés sur PC dans les trois langues ; les parcours physiques Android restent distincts. Parcours natif PC (référence interne non distribuée).
 
 Les dossiers restent dans le navigateur ; sauvegarder le code du serveur ne sauvegarde pas le travail des utilisateurs. Rappeler l'export complet sur support indépendant. Le format complet courant est `.zscore`, avec une option chiffrée `.zscore.enc` par mot de passe. Les anciens formats JSON ne sont plus acceptés. Seul le fichier exporté chiffré est protégé : données du navigateur, imports préparés, sauvegardes ordinaires, CSV et PDF restent en clair, sans synchronisation patient dans le cloud. Aucun mot de passe n'est conservé et il n'existe pas de récupération si celui-ci est perdu. Une copie locale et son original restent sur le même appareil ; les deux peuvent être perdus avec celui-ci.
 
 Demander un cas fictif reproductible, version, appareil/navigateur, date, message et étapes. Conserver les preuves ; ne pas collecter un historique réel par défaut. Avant un import ou une récupération, consulter l'aperçu et garder l'export original. Le même fichier importé peut être signalé ; des exports différents du même travail ne constituent pas nécessairement le même fichier.
 
-Les quotas réellement disponibles, fermeture forcée, redémarrage, import via sélecteur sur Android, transfert entre téléphones et lecteur d'écran Android restent à vérifier. Utiliser la [grille terrain](../projet/VALIDATION_TERRAIN.md), sans transformer un test automatisé réussi en validation physique.
+Les quotas réellement disponibles, fermeture forcée, redémarrage, import via sélecteur sur Android, transfert entre téléphones et lecteur d'écran Android restent à vérifier. Utiliser la grille terrain (référence interne non distribuée), sans transformer un test automatisé réussi en validation physique.
 
 ## Vérification publique — 5.3.0
 

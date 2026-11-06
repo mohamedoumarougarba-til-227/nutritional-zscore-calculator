@@ -13,7 +13,7 @@
 
 L'article [OMS / Nations Unies au Niger, 30 septembre 2026](https://niger.un.org/fr/323605-%C3%A0-maradi-une-nouvelle-chance-pour-les-enfants-atteints-de-malnutrition-aigu%C3%AB-s%C3%A9v%C3%A8re) décrit l'application des directives OMS 2023 au CRENI du CHR de Maradi avec le ministère et l'OMS. C'est une source primaire récente de contexte local, sans texte intégral ni décision de validation d'une édition nationale PCIMA. Elle ne ferme donc pas l'authentification nationale et ne justifie aucune nouvelle règle de calcul ou prescription.
 
-L'ouverture actuelle de l'ancien lien CADEV (?p=2110) renvoie la page d'accueil. L'extrait de recherche relatif à une formation et à une révision 2023 ne peut pas être traité comme un article intégral consulté. Les intitulés 2025/2026 sur des plateformes de partage restent exclus de toute règle métier. Registre : [sources et limites](../../.local/audit/historique/2026-10-14/droits-references/sources.json). Les droits des ressources scientifiques sont traités séparément dans [DROITS_ET_LICENCES.md](DROITS_ET_LICENCES.md).
+L'ouverture actuelle de l'ancien lien CADEV (?p=2110) renvoie la page d'accueil. L'extrait de recherche relatif à une formation et à une révision 2023 ne peut pas être traité comme un article intégral consulté. Les intitulés 2025/2026 sur des plateformes de partage restent exclus de toute règle métier. Registre : sources et limites (référence interne non distribuée). Les droits des ressources scientifiques sont traités séparément dans [DROITS_ET_LICENCES.md](DROITS_ET_LICENCES.md).
 
 ## Empreintes et preuve locale
 
@@ -31,4 +31,4 @@ L'édition nationale actuellement applicable reste **non authentifiée**. Pour f
 
 Le moteur 2.0.0 a été comparé à WHO Anthro R : 7 652 cas, 19 974 valeurs d'indicateurs, sans écart inexpliqué dans les comparaisons retenues. Les 2 982 suspensions conservatrices liées à une mesure debout avant neuf mois sont isolées et attendent une décision métier : l'application suspend là où Anthro peut produire un score signalé. Ne pas assimiler ce choix à une règle nationale validée.
 
-La revue doit couvrir classifications et limites, bornes avant arrondi, unités, âges exacts/estimés, position de mesure, œdèmes, valeurs inhabituelles et interprétation des courbes. Consigner professionnel, date, version, source, cas fictifs, conclusion et retest. La grille [VALIDATION_TERRAIN.md](../projet/VALIDATION_TERRAIN.md) distingue cette revue des tests automatisés et des essais physiques.
+La revue doit couvrir classifications et limites, bornes avant arrondi, unités, âges exacts/estimés, position de mesure, œdèmes, valeurs inhabituelles et interprétation des courbes. Consigner professionnel, date, version, source, cas fictifs, conclusion et retest. La grille VALIDATION_TERRAIN.md (référence interne non distribuée) distingue cette revue des tests automatisés et des essais physiques.
