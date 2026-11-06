@@ -1,4 +1,4 @@
-# Guide utilisateur — Z-score Niger 5.8.6
+# Guide utilisateur — Z-score Niger 5.8.7
 
 ## Créer une copie après un échec de sauvegarde
 
@@ -27,7 +27,7 @@ Télécharger le contrôle des lignes pour retrouver leurs numéros dans ce trav
 Sélectionner explicitement ce profil dans les réglages pour les nouveaux travaux, ou dans la référence de la visite. Entrer le PMA exact en jours (189–448), ou l’âge gestationnel à la naissance et l’âge chronologique exact (jours/deux dates). Les mois estimés ne sont pas convertis. Renseigner au moins un poids en g, une longueur couchée en cm ou un périmètre crânien en cm. Les âges inconnus restent inconnus. Les résultats décrivent une position dans cette référence postnatale, sans catégorie de diagnostic OMS ni admission/prescription. Naissance, perte/reprise de poids et PMA avant 32 semaines demandent une interprétation particulière avec le soignant. Voir [méthode et limites](../references/INTERGROWTH.md).
 
 
-## Profil américain explicite — sources 5.8.6 / moteur 4.4.0
+## Profil américain explicite — sources 5.8.7 / moteur 4.4.0
 
 Réglages propose OMS 2006/2007 ou OMS avant deux ans puis CDC 2000/IMC étendu 2022. Ce choix est conservé par visite et modifiable explicitement dans le formulaire ; la préférence seule ne réécrit pas les travaux existants. Les imports peuvent indiquer `growthProfile` (`who`/`us`). CDC couvre 24 à moins de 240 mois sans poids/taille. Catégories, courbes et résumés sont séparés des références OMS ; âge déclaré, âge utilisé et méthode figurent dans les sorties. Voir [méthode CDC](../references/CDC.md).
 
@@ -99,3 +99,7 @@ Les icônes d’information ouvrent une aide proche du champ ; les listes resten
 Dans la saisie, ouvrir **Mesures complémentaires** pour renseigner le périmètre crânien (cm) et les plis tricipital et sous-scapulaire (mm), uniquement si la mesure a été réalisée correctement. Le PB (mm) de l’évaluation clinique est réutilisé pour PB/âge ; ne pas le saisir deux fois. Avant 60 mois, le périmètre crânien est calculable dès la naissance, PB/âge et plis dès 91 jours. Hors du domaine, la mesure reste conservée et le score est indiqué non calculé.
 
 Les résultats complémentaires repliables, les courbes, le CSV et les notes PDF conservent leur référence. Les positions −2/+2 Z ne sont pas des diagnostics et ne remplacent pas les seuils absolus du dépistage PB. Voir [Méthode](../references/METHODE.md).
+
+## Donner un avis ou signaler un problème
+
+Le lien du pied de page ouvre le formulaire externe Tally en français, anglais ou arabe selon la langue active. Une connexion Internet est nécessaire ; le formulaire s’ouvre dans un autre onglet et ne reçoit automatiquement aucun contenu de dossier ou de calcul. Décrire les étapes et utiliser uniquement des mesures fictives et des captures anonymisées. Trois images facultatives de 10 Mo chacune au maximum et un e-mail facultatif sont proposés par les formulaires. Sans connexion, revenir à l’onglet de Z-score : la saisie et les dossiers restent locaux. Ne jamais envoyer une sauvegarde réelle ou une fiche patient.
