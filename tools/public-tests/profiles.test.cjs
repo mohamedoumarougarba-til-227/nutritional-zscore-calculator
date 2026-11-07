@@ -147,6 +147,27 @@ test('CDC curves use the extended BMI inverse, stored effective ages and referen
     assert.equal(JSON.stringify(entries),before);
 });
 
+test('Settings growth profile selector reaches popup through header action',async()=>{
+    const calls=[];
+    const ui=Object.assign(Object.create(WorkspaceApp.prototype),{openChoice:(id,kind)=>calls.push([id,kind])});
+    ui.openHeaderPanel('growthProfile');
+    assert.deepEqual(calls,[['growthProfile-button','growthProfile']]);
+    calls.length=0;
+    const dispatch=Object.assign(Object.create(WorkspaceApp.prototype),{readForms(){},openHeaderPanel:kind=>calls.push(['action',kind])});
+    await dispatch.action('header-panel',{dataset:{kind:'growthProfile'},closest(){return null;}});
+    assert.deepEqual(calls,[['action','growthProfile']]);
+    for(const key of ['fr','en','ar']){
+        const translations=data('interface-translations.json');
+        const app=Object.assign(Object.create(WorkspaceApp.prototype),{translations,prefs:{language:key,theme:'light',growthProfile:'who'}});
+        const settings=app.settingsHTML(),form=app.formHTML('single',app.emptyDraft('who'));
+        assert.ok(settings.includes(app.t('growthProfileDefault')));
+        assert.ok(settings.includes(app.t('growthProfileDefaultHelp')));
+        assert.ok(form.includes(app.t('growthProfileVisit')));
+        assert.ok(form.includes(app.t('growthProfileVisitHelp')));
+        assert.ok(!form.includes('name=\"growthProfile\" disabled'));
+    }
+});
+
 test('profile settings and new visits preserve existing work and never silently convert a WHO visit to CDC',async t=>{
     const previous=global.document;t.after(()=>{global.document=previous;});global.document={getElementById:()=>({close(){}})};
     const who=engine.calculate(input()),before=JSON.stringify(who);
