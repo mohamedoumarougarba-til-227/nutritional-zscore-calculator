@@ -3,8 +3,8 @@
   "version": "5.8.7",
   "license": "GPL-3.0-only (original application code); upstream component licences retained",
   "file": "zscore-sources.zip",
-  "bytes": 8336087,
-  "sha256": "39637e1c87a0de65d0b9204031978448af8da31c574a549ebfc14b50cbdea2b5",
+  "bytes": 8341557,
+  "sha256": "620eb74cca1b6717478d2057152cbd3774b4d01b93755bb847ce8b55acfb0661",
   "files": [
     {
       "file": ".gitattributes",
@@ -278,8 +278,8 @@
     },
     {
       "file": "src/data/interface-translations.json",
-      "bytes": 175944,
-      "sha256": "ea9f38742a16631998f61c0c769eebb7c70a0a421b6b231c5b37d4b6fe1412b4"
+      "bytes": 177394,
+      "sha256": "4810a1ba7977bd293c282dcfb2b620db141242b35cc4e8e78b3e590c12797ad2"
     },
     {
       "file": "src/data/who-2007-manifest.json",
@@ -428,8 +428,8 @@
     },
     {
       "file": "src/js/workspace-app.js",
-      "bytes": 140175,
-      "sha256": "c852cb4ff5837ac4776d5d4c158603d4d0e2a239ac1dc981dfb87b6d2c9d3721"
+      "bytes": 141955,
+      "sha256": "15b00840659273a487f9bde1da8cf3ad211de4526c3c675119c42cdabe9263ff"
     },
     {
       "file": "src/js/workspace-bootstrap.js",
@@ -513,8 +513,8 @@
     },
     {
       "file": "tools/public-tests/intergrowth-routing.test.cjs",
-      "bytes": 17225,
-      "sha256": "ba1f1df0730436d2abfd8d726cea40595256f5ad59e29ef08614a49f71b97bcd"
+      "bytes": 18513,
+      "sha256": "8906e5028a37c9cae13751316cbcfe6ff3c678c21c9c43f58712db7c1b96998e"
     },
     {
       "file": "tools/public-tests/intergrowth-visit.test.cjs",
@@ -533,8 +533,8 @@
     },
     {
       "file": "tools/public-tests/profiles.test.cjs",
-      "bytes": 22443,
-      "sha256": "ded3555b4e6fd6118d937269bbaee37b943696685526b6f9952ea9d4d703154b"
+      "bytes": 23395,
+      "sha256": "76cb026032e130bb24282ddb7d5b7865d833b881213387fe3dc61be535343ecd"
     },
     {
       "file": "tools/public-tests/public.test.cjs",

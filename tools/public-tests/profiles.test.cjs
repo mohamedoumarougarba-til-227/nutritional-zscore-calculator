@@ -168,6 +168,20 @@ test('Settings growth profile selector reaches popup through header action',asyn
     }
 });
 
+test('CDC results explain WHO-only supplementary scores and WHO screening without changing stored measures',()=>{
+    const record=engine.calculate(input({growthProfile:'us',ageYears:3,ageMonths:2,headCircumference:48,muac:140}));
+    const before=JSON.stringify(record),translations=data('interface-translations.json');
+    for(const language of ['fr','en','ar']){
+        const ui=Object.assign(Object.create(WorkspaceApp.prototype),{prefs:{language,growthProfile:'us'},translations});
+        const form=ui.formHTML('single',record.child),html=ui.resultsHTML(record,false,true);
+        assert.ok(form.includes(translations[language].additionalMeasuresWho));
+        assert.ok(html.includes(translations[language].growthResultsCdc));
+        assert.ok(html.includes(translations[language].additionalResultsWho));
+        assert.ok(html.includes(translations[language].screeningTitleWho));
+    }
+    assert.equal(JSON.stringify(record),before);
+});
+
 test('profile settings and new visits preserve existing work and never silently convert a WHO visit to CDC',async t=>{
     const previous=global.document;t.after(()=>{global.document=previous;});global.document={getElementById:()=>({close(){}})};
     const who=engine.calculate(input()),before=JSON.stringify(who);
