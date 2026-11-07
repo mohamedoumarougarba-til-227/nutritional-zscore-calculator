@@ -81,6 +81,24 @@ test('INTERGROWTH CSV input supports direct or derived PMA and partial measures 
     assert.throws(()=>CSVManager.parse('gender,ageDays,weight\nM,365,8500',{extended:true}));
 });
 
+test('INTERGROWTH hides empty unsupported skinfold inputs but preserves nonempty values until explicit user clear',async()=>{
+    const ui=Object.assign(Object.create(WorkspaceApp.prototype),{prefs:{language:'fr',growthProfile:'intergrowth'},translations});
+    const empty=raw({tricepsSkinfold:'',subscapularSkinfold:''});
+    const cleanHtml=ui.formHTML('single',empty);
+    assert.ok(!cleanHtml.includes('class="additional-fields"'));
+    const filled={...empty,tricepsSkinfold:'7.2'},html=ui.formHTML('single',filled);
+    assert.ok(html.includes('name="tricepsSkinfold"'));
+    assert.ok(html.includes('data-action="clear-unsupported-skinfolds"'));
+    assert.ok(html.includes('class="additional-fields" open'));
+    assert.ok(html.includes('value="7.2"'));
+    let saved=false;
+    Object.assign(ui,{state:{draft:{...filled},batchDraft:{}},readForms(){},render(){},scheduleSave(){saved=true;}});
+    await ui.action('clear-unsupported-skinfolds',{dataset:{prefix:'single'},closest(){return null;}});
+    assert.equal(ui.state.draft.tricepsSkinfold,'');assert.equal(ui.state.draft.subscapularSkinfold,'');
+    assert.equal(ui.state.draft.weight,filled.weight);assert.equal(saved,true);
+    assert.ok(!ui.formHTML('single',ui.state.draft).includes('class="additional-fields"'));
+});
+
 test('INTERGROWTH FR/EN/AR forms and PDF models identify PMA, methods and non-screening context',()=>{
     const e=engine.calculate(raw({name:'<FICTIF-PRETERM>'}));
     for(const language of ['fr','en','ar']){

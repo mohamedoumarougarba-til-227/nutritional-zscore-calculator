@@ -3,16 +3,16 @@ const RELEASE = {
   "format": 1,
   "version": "5.8.7",
   "assets": {
-    "./": "07b9ca278cd74626604584899885e06f3d33df340baa3a15ef10b52686839580",
-    "index.html": "07b9ca278cd74626604584899885e06f3d33df340baa3a15ef10b52686839580",
+    "./": "9944a580802e67a9a2a7bffaeb65e837406f8e32570500801e0afb1074bca1e6",
+    "index.html": "9944a580802e67a9a2a7bffaeb65e837406f8e32570500801e0afb1074bca1e6",
     "manifest.json": "2fbf102cd1c823126214b76c16231337004bb80c6e70acd3a9cc24942d5d67c2",
     "css/workspace.css": "ece85eb9c7f07b6fef9e8e82490fcf644913551a40f85c2c9cbcbcb6db65b74e",
     "data/who-official.json": "3f563c1dc59b6a5d7f7521f70536b101687af301d391b8181a54440baf008d40",
     "data/who-manifest.json": "9667ed4dca4e8d71d1b9ee52e463bad52192e0ebb881779277638e7288872fc7",
-    "data/interface-translations.json": "ea9f38742a16631998f61c0c769eebb7c70a0a421b6b231c5b37d4b6fe1412b4",
+    "data/interface-translations.json": "4810a1ba7977bd293c282dcfb2b620db141242b35cc4e8e78b3e590c12797ad2",
     "data/LICENSE-anthro.txt": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2",
     "js/workspace-bootstrap.js": "383b314ff823461e3adf047659050b619ea488a940c137b3a830ba42091837ed",
-    "js/workspace-app.js": "c852cb4ff5837ac4776d5d4c158603d4d0e2a239ac1dc981dfb87b6d2c9d3721",
+    "js/workspace-app.js": "15b00840659273a487f9bde1da8cf3ad211de4526c3c675119c42cdabe9263ff",
     "js/services/clinical-engine.js": "95d324a672a73e0d769a9b9aa99a6fbc266852a5dfdecd6f5304b1366c12708d",
     "js/services/history-manager.js": "9c332a13949abd2d18eaa86086aeb51796b67bc840361bd400aa7aaedb596bda",
     "js/services/transfer-manager.js": "f4b6b9ad4a89a7d020da1227be4d4263234543e283374d869dd83793afb1f0a8",
@@ -45,14 +45,14 @@ const RELEASE = {
     "js/services/reference-2007.js": "d0036a75db6dbf5cde670d56c1096a9ff6745c735cbfdd4401cd250bef6844d1",
     "js/services/growth-engine.js": "39b077b2b5e85f18414b6632ac50256830574b6ed4e32571bba438e910693f37",
     "css/legal.css": "327242333fad456650c8ebdc92498f0f5a036fc8da7dee1fd28e8645113e223b",
-    "legal.html": "88c5a5e53c75a73666866f941c5aca2de0d7f187eb5d9d2456ffadf5c324906f",
-    "legal-en.html": "c41b8c958702b36bf8eb1a290a4a5ff6964a395b122c24338b3e5320bac2a073",
-    "legal-ar.html": "462e6c6cc36bb2dc987e551f452057320b675568b6f8e58105559f4c6d1c107d",
+    "legal.html": "9c6f4f56c9c0a0849ee22d9ce0b140502e909839baec88b135bfdeb61cac4ff4",
+    "legal-en.html": "9f39614b22e9621a01504db97b164d236ab8183d7467004b192da216c8539177",
+    "legal-ar.html": "d68e2a9c794e994918863a425784d19c473b370568638e9f034e74c0c794f256",
     "data/LICENSE-TIL.txt": "b1148b5fbd10dfdd1efd7625fdb0959887b1e302b1f8b9a015b59468a5a77f39",
     "data/who-data-sources.zip": "b1af0334e74603f1825193f2a8d0bd1cffcce285fe0ad422e14541150a760b37",
     "data/who-data-sources.json": "641eb776f3dee5894bb19649c55c79ed38060d1346c61e8e917a65c5bafbd8cc",
-    "data/zscore-sources.zip": "39637e1c87a0de65d0b9204031978448af8da31c574a549ebfc14b50cbdea2b5",
-    "data/zscore-sources.json": "625c220b2631d775a73d5df303c91e26fe6245bceeacb6e1841626ca5712c2a3",
+    "data/zscore-sources.zip": "620eb74cca1b6717478d2057152cbd3774b4d01b93755bb847ce8b55acfb0661",
+    "data/zscore-sources.json": "ba9ee365d600be5a23803250429f996edadf730fc4baab32316e8894bc1c2f9d",
     "vendor/pdf/NOTICE-report.txt": "62737eead55cce21047c84826116418612d79ee09ee686d25ae4279ba528b4e0",
     "vendor/pdf/report-provenance.json": "3772c55fc0cea5d50363d27dcad524f3aa0481c7831a514ff43cbed5e67c8652",
     "js/services/nutrition-assessment.js": "6bee38d6e67f2d0c67cc1ca4c066e8db7e48f8093c5919008c6eb5ce02b81568",
@@ -72,7 +72,7 @@ const RELEASE = {
     "js/services/lot-quality.js": "dfcce9a9f9d4063c82365419172f20ace7e78e28384f5aa6efe1459ce3475e6d"
   },
   "workerTemplateSHA256": "7e6d76e432dcb20618d0ce00607945c9abd0a9a8d5dcd1cbd4f164d2380f35c7",
-  "id": "3ce27248fced49f69baaa6381167d887d9756eaabcc25abb307210e0a05a4683"
+  "id": "b4ab2ed938622a1becf0d1abe5baf2bfca90b8c0aa8e471fd6516d5680817d50"
 };
 /** Verified release cache. Earlier caches, journals and patient archives are never deleted. */
 const STATIC_CACHE_NAME = 'zscore-release-' + RELEASE.id + '-' + self.registration.scope;
